@@ -46,7 +46,9 @@ const RegistrationFom = () => {
 
   return (
     
-    <div className="w-full bg-white p-6 rounded-xl">
+    <div className="w-full bg-white p-6 rounded-xl shadow-2xl m-5 z-10">
+      <h1 className="text-2xl font-inter font-extrabold text-center my-2 text-[#5B6BD4]">Student Registration</h1>
+        
     <ConfigProvider
     theme={{
         token:{
@@ -60,10 +62,10 @@ const RegistrationFom = () => {
 
       <div className="mt-3 w-full">
         {current < steps.length - 1 && (
-          <Button variant="contained" className="w-1/3" onClick={() => next()}>Next</Button>
+          <Button variant="contained" className="w-1/3" style={{backgroundColor:"#5B6BD4"}} onClick={() => next()}>Next</Button>
         )}
         {current === steps.length - 1 && (
-          <Button variant="contained" className="w-1/3" onClick={() => message.success("Processing complete!")}>
+          <Button variant="contained" style={{backgroundColor:"#5B6BD4"}} className="w-1/3" onClick={() => message.success("Processing complete!")}>
             Done
           </Button>
         )}
@@ -73,6 +75,8 @@ const RegistrationFom = () => {
           variant="outlined"
             style={{
               margin: "0 8px",
+              color:"#5B6BD4",
+              borderColor:"#5B6BD4"
             }}
             onClick={() => prev()}
           >

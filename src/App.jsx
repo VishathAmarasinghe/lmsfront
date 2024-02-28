@@ -3,6 +3,7 @@ import Aos from "aos";
 
 import { useEffect } from "react";
 import LoginRegistration from "./Pages/CommonPages/LoginRegistration";
+import PageStructure from "./Pages/CommonPages/PageStructure";
 
 
 function App() {
@@ -14,7 +15,8 @@ function App() {
 
 
   return (
-    <LoginRegistration actionType="Regist"/>
+    // <LoginRegistration actionType="Regist"/>
+    <PageStructure/>
   )
 }
 

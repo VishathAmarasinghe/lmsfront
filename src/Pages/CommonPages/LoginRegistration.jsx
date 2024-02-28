@@ -6,9 +6,9 @@ import RegistrationFom from '../../Components/RegistrationFom'
 
 const LoginRegistration = ({actionType}) => {
   return (
-    <div className='w-full h-screen border-2 overflow-auto md:overflow-auto   bg-[#EBEEFF]'>
+    <div className='w-full h-screen border-2 overflow-auto overflow-x-hidden md:overflow-hidden    bg-[#EBEEFF]'>
       {/* <Grow> */}
-      <div data-aos="fade-left" className='w-full  h-[10%] bg-[#EBEEFF] fixed top-0  flex items-center md:justify-end justify-center'>
+      <div data-aos="fade-left" className='w-full z-50  h-[10%] bg-[#EBEEFF] fixed top-0  flex items-center md:justify-end justify-center'>
             <img src={logo} className='w-44 mx-6' alt='logo'/>
         </div>
       {/* </Grow> */}
