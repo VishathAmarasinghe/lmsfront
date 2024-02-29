@@ -11,6 +11,10 @@ import { Breadcrumb, ConfigProvider, Layout, Menu, theme } from "antd";
 import { logo, logoicon } from "../../assets";
 import HeaderBar from "../../Components/Header";
 import InstitutionInfo from "../../InnerPages/InstitutionInfo";
+import NewAppointment from "../../InnerPages/NewAppointment";
+import PastAppointments from "../../InnerPages/PastAppointments";
+import NotiesParents from "../../InnerPages/NotiesParents";
+import ParentProfile from "../../InnerPages/ParentProfile";
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -146,7 +150,11 @@ const PageStructure = () => {
                 borderRadius: borderRadiusLG,
               }}
             >
-              <InstitutionInfo/>
+              {/* <InstitutionInfo/> */}
+              {/* <NewAppointment/> */}
+              {/* <PastAppointments/> */}
+              {/* <NotiesParents/> */}
+              <ParentProfile/>
             </div>
           </Content>
         </Layout>

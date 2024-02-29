@@ -44,7 +44,7 @@
 
 
 ::-webkit-scrollbar {
-    width: 1px; /* Width of the scrollbar */
+    width: 2px; /* Width of the scrollbar */
   }
   
   ::-webkit-scrollbar-track {
@@ -52,7 +52,7 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    background: #EBEEFF; /* Color of the scrollbar thumb */
+    background: #5B6BD4; /* Color of the scrollbar thumb */
     border-radius: 10px; /* Rounded corners for the scrollbar thumb */
   }
 
