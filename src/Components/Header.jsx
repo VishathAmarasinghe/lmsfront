@@ -22,7 +22,7 @@ const Header = ({openMobilePanel}) => {
   return (
     <div className="w-full h-full border-2 border-red-600 flex flex-row justify-between">
       <div className="flex flex-row items-center justify-center align-middle border-2 border-gray-600">
-        <div className="">
+        <div className="flex md:hidden">
           <MenuRoundedIcon onClick={openMobilePanel} />
         </div>
         <div className="hidden md:flex justify-center mx-5 ">
@@ -49,6 +49,9 @@ const Header = ({openMobilePanel}) => {
                 <Avatar size={40} icon={<UserAddOutlined />} />
                 </IconButton>
             </Tooltip>
+           
+                
+           
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"

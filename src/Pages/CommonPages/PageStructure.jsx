@@ -10,6 +10,7 @@ import {
 import { Breadcrumb, ConfigProvider, Layout, Menu, theme } from "antd";
 import { logo, logoicon } from "../../assets";
 import HeaderBar from "../../Components/Header";
+import InstitutionInfo from "../../InnerPages/InstitutionInfo";
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -45,8 +46,12 @@ const PageStructure = () => {
     setMobileMenu((pre) => !pre);
   };
 
+  const handleMenuclick=(e)=>{
+    console.log("clicked e ",e);
+  }
+
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row border-2 border-red-700 h-screen overflow-hidden ">
       <div className="h-[40px] mt-5 flex md:hidden z-50  border-2 border-black">
         {/* <div className=" border-2 border-green-800 h-[40px]">
           <MenuRoundedIcon onClick={openMobilePanel} />
@@ -92,12 +97,27 @@ const PageStructure = () => {
                   alt="logo"
                 />
               </div>
+              <ConfigProvider 
+                theme={{
+                    components:{
+                        Menu:{
+                            fontFamily:"inter",
+                            
+                            itemSelectedColor:"black",
+                            itemSelectedBg:"rgba(91,107,212,0.45)",
+                            
+                        }
+                    }
+                }}
+              >
               <Menu
+              onClick={handleMenuclick}
                 theme="light"
                 defaultSelectedKeys={["1"]}
                 mode="inline"
                 items={items}
               />
+              </ConfigProvider>
             </Sider>
           </ConfigProvider>
         </div>
@@ -117,14 +137,16 @@ const PageStructure = () => {
             }}
           >
             <div
+            className="h-[100%] border-2 border-green-500"
               style={{
-                padding: 24,
-                minHeight: 360,
-                background: colorBgContainer,
+                padding: 4,
+                // minHeight: "100%",
+                
+                background: "#EBEEFF",
                 borderRadius: borderRadiusLG,
               }}
             >
-              Bill is a cat.
+              <InstitutionInfo/>
             </div>
           </Content>
         </Layout>
