@@ -1,6 +1,5 @@
 import React from 'react'
 import { IconButton, InputAdornment, TextField, Checkbox } from "@mui/material";
-import ProfilePicUploading from './ProfilePicUploading';
 
 
 

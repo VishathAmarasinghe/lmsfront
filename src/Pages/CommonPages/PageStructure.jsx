@@ -15,6 +15,8 @@ import NewAppointment from "../../InnerPages/NewAppointment";
 import PastAppointments from "../../InnerPages/PastAppointments";
 import NotiesParents from "../../InnerPages/NotiesParents";
 import ParentProfile from "../../InnerPages/ParentProfile";
+import MainClassPage from "../../InnerPages/MainClassPage";
+import OwnerPageTeacherPanel from "../../InnerPages/OwnerPageTeacherPanel";
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -136,12 +138,12 @@ const PageStructure = () => {
           </Header>
           <Content
             style={{
-              margin: "15px 16px",
+              margin: "0",
               backgroundColor: "#EBEEFF",
             }}
           >
             <div
-            className="h-[100%] border-2 border-green-500"
+            className="h-[100%] border-2 border-black"
               style={{
                 padding: 4,
                 // minHeight: "100%",
@@ -154,7 +156,9 @@ const PageStructure = () => {
               {/* <NewAppointment/> */}
               {/* <PastAppointments/> */}
               {/* <NotiesParents/> */}
-              <ParentProfile/>
+              {/* <ParentProfile/> */}
+              {/* <MainClassPage/> */}
+              <OwnerPageTeacherPanel/>
             </div>
           </Content>
         </Layout>

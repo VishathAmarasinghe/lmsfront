@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { lecturer } from "../assets";
 import ProfileDetails from "../Components/ParentProfile/ProfileDetails";
 import { Avatar, Collapse, Progress } from "antd";
 import { Divider } from "@mui/material";
 import StudentProfileCard from "../Components/ParentProfile/StudentProfileCard";
+import ProfileEditingDrawer from "../Components/ParentProfile/ProfileEditingDrawer";
 
 const ParentProfile = () => {
+  const [open, setOpen] = useState(false);
     const items = [
         {
           key: '1',
@@ -24,10 +26,10 @@ const ParentProfile = () => {
         },
       ];
   return (
-    <div className="w-full h-[100%] flex flex-col items-center  shadow-2xl rounded-2xl overflow-y-auto  ">
-      {/* <h1 className="text-2xl text-center font-semibold">Profile</h1> */}
-      <div className="w-[95%]  flex flex-col md:flex-row justify-between ">
-        <div className="flex flex-col h-[80%] w-full bg-white p-3 rounded-lg shadow-xl  md:w-[40%]  justify-center items-center">
+    <div className="w-full h-[100%] flex flex-col items-center border-2 border-pink-700  shadow-2xl  overflow-y-auto  ">
+      
+      <div className="w-[95%] border-2 border-red-500  flex flex-col md:flex-row justify-between ">
+        <div className="flex flex-col h-[90%] border-2 m-3 border-green-700 w-full bg-white p-3 rounded-lg shadow-xl  md:w-[40%]  justify-center items-center">
           <Avatar
             className="w-[35%] h-[25%] rounded-2xl"
             src={<img src={lecturer} />}
@@ -48,8 +50,9 @@ const ParentProfile = () => {
             <p className="text-gray-500 text-[16px]">Phone No</p>
             <p className="font-medium">0786070666</p>
           </div>
+          <button onClick={()=>setOpen(true)} className="w-[90%] bg-blue-600 p-2 font-inter font-medium text-white rounded-lg mt-2 hover:bg-blue-700 hover:shadow-lg" >Update profile</button>
         </div>
-        <div className="w-full md:w-[55%] bg-white p-3 rounded-lg shadow-xl">
+        <div className="w-full md:w-[55%] bg-white p-3 m-3 rounded-lg shadow-xl">
           <div className="flex flex-col w-full  shadow-lg">
             <div className="w-full bg-gray-200 h-10 flex p-2 flex-col justify-center rounded-lg">
               <p className="text-xl font-inter font-semibold">Personal details</p>
@@ -70,6 +73,10 @@ const ParentProfile = () => {
           </div>
         </div>
       </div>
+      {/* <div className="border-2 border-blue-800 h-s"> */}
+        <ProfileEditingDrawer open={open} setOpen={setOpen}/>
+      {/* </div> */}
+     
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { UserAddOutlined } from "@ant-design/icons";
+import { BellOutlined, UserAddOutlined } from "@ant-design/icons";
 import { Avatar, Badge, ConfigProvider, Space } from "antd";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
@@ -38,21 +38,17 @@ const Header = ({openMobilePanel}) => {
       </div>
       <div className="flex flex-row h-full border-2 border-green-300 items-center mr-4">
         <div className="hidden md:flex">
-        <Badge count={100} overflowCount={20}>
-          <NotificationsRoundedIcon style={{ fontSize: "27px" }} />
+        <Badge count={10} overflowCount={20} size="5px">
+          {/* <NotificationsRoundedIcon style={{ fontSize: "27px" }} /> */}
+          <BellOutlined className="text-[20px] text-gray-500"/>
         </Badge>
         </div>
         
         
-        <Space className="border-2 border-red-500 h-full mx-4 flex flex-col justify-center align-middle items-center">
+        <Space className="border-2 border-red-500 h-full mx-5 flex flex-col justify-center align-middle items-center">
         <p className="font-semibold text-[15px]  ">Vishath</p>
         {/* <p>sds</p> */}
         </Space>
-        
-  
-      
-        
-        
         <Box sx={{flexGrow:0}}>
             <Tooltip title="Open Settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }} >
