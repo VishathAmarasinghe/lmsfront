@@ -4,9 +4,10 @@ import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import React, { useState } from "react";
 import Search from "antd/es/input/Search";
+import logo from '../assets/logo.png';
 import { Box, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 
-const Header = ({openMobilePanel}) => {
+const Header = ({openMobilePanel,classMode}) => {
     const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
     const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -22,10 +23,13 @@ const Header = ({openMobilePanel}) => {
   return (
     <div className="w-full h-full border-2 border-red-600 flex flex-row justify-between">
       <div className="flex flex-row items-center justify-center align-middle border-2 border-gray-600">
-        <div className="flex md:hidden">
+        {classMode?<div className="border-2 border-green-600 ">
+          <img src={logo} alt="logo" className="w-[65%] md:w-[70%] ml-5"/>
+        </div>:<></>}
+        {!classMode?<div className="flex md:hidden">
           <MenuRoundedIcon onClick={openMobilePanel} />
-        </div>
-        <div className="hidden md:flex justify-center mx-5 ">
+        </div>:<></>}
+        {!classMode?<div className="hidden md:flex justify-center mx-5 ">
         <ConfigProvider theme={{
         token:{
             colorPrimary:"#5B6BD4",
@@ -34,7 +38,7 @@ const Header = ({openMobilePanel}) => {
     }}>
             <Search placeholder="search here" />
           </ConfigProvider>
-        </div>
+        </div>:<></>}
       </div>
       <div className="flex flex-row h-full border-2 border-green-300 items-center mr-4">
         <div className="hidden md:flex">

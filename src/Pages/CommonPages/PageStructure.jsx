@@ -134,7 +134,7 @@ const PageStructure = () => {
               background: colorBgContainer,
             }}
           >
-            <HeaderBar openMobilePanel={openMobilePanel} />
+            <HeaderBar classMode={false}  openMobilePanel={openMobilePanel} />
           </Header>
           <Content
             style={{
@@ -158,7 +158,7 @@ const PageStructure = () => {
               {/* <NotiesParents/> */}
               {/* <ParentProfile/> */}
               {/* <MainClassPage/> */}
-              <OwnerPageTeacherPanel/>
+              {/* <OwnerPageTeacherPanel/> */}
             </div>
           </Content>
         </Layout>

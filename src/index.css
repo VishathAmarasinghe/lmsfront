@@ -74,3 +74,8 @@
   .scalar-card {
     @apply relative transition-transform duration-300 ease-in-out hover:scale-105;
   }
+
+
+  .scalar-cardlg {
+    @apply relative transition-transform duration-300 ease-in-out hover:scale-125;
+  }
