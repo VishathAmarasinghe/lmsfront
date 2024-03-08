@@ -4,6 +4,7 @@ import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import NewAccordianAdder from "./NewAccordianAdder";
+import ChangingclassInnerCards from "./ChangingclassInnerCards";
 
 const ClassContent = () => {
     const [ openeditingDrawer,setOpeneditingDrawer ]=useState(false);
@@ -23,8 +24,9 @@ const ClassContent = () => {
 
   return (
     <div className="w-full border-2 border-black flex flex-col items-center">
-      <div className="w-[95%] border-2 border-green-600 mt-2 flex flex-row">
+      <div className="w-[95%] border-2 border-green-600 mt-2 flex flex-col">
         <NewAccordianAdder  openeditingDrawer={openeditingDrawer }setOpeneditingDrawer={setOpeneditingDrawer}/>
+        <div className="w-full flex flex-row">
         <div className="w-[95%] border-2 border-yellow-500 p-3">
           <p>hello this is new classroom</p>
           <p>hello this is next new classroom</p>
@@ -51,6 +53,9 @@ const ClassContent = () => {
             <BorderColorRoundedIcon className="text-[#9C9C9C] text-[20px] scalar-cardlg hover:text-black" />
           </button>
         </div>
+        </div>
+        <ChangingclassInnerCards/>
+
       </div>
     </div>
   );

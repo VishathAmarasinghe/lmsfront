@@ -6,8 +6,8 @@ import lecturerAvatar from "../../assets/lecturer.jpg";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import DeleteButtonPopUp from "./DeleteButtonPopUp";
-import TeacherDetaileditingDrawer from "./TeacherDetaileditingDrawer";
+import GradeDeleteButtonPopUp from "./GradeDeleteBtnPopUp";
+import GradeDetailedEditingDrawer from "./GradeDetailedEditingDrawer";
 const data = [
   {
     key: "1",
@@ -47,7 +47,7 @@ const data = [
   },
 ];
 
-const TeacherTable = () => {
+const GradeBookTable = () => {
   const [opendeleteModel, setOpendeleteModel] = useState(false);
   const [openeditingDrawer, setOpeneditingDrawer] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -242,11 +242,11 @@ const TeacherTable = () => {
   return (
     <>
       <Table columns={columns} dataSource={data} />
-      <DeleteButtonPopUp
+      <GradeDeleteButtonPopUp
         opendeleteModel={opendeleteModel}
         setOpendeleteModel={setOpendeleteModel}
       />
-      <TeacherDetaileditingDrawer
+      <GradeDetailedEditingDrawer
         openeditingDrawer={openeditingDrawer}
         setOpeneditingDrawer={setOpeneditingDrawer}
       />
@@ -254,4 +254,4 @@ const TeacherTable = () => {
   );
 };
 
-export default TeacherTable;
+export default GradeBookTable;

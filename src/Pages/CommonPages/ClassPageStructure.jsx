@@ -12,6 +12,8 @@ import {
 } from "@ant-design/icons";
 import ClassHeaderPageStructure from "../../Components/Class/ClassHeaderPageStructure";
 import ClassContent from "../../Components/Class/ClassContent";
+import ClassParticipants from "../../InnerPages/ClassParticipants";
+import GradeBook from "../../InnerPages/GradeBook";
 
 function getItem(label, key, icon, children) {
   return {
@@ -121,7 +123,13 @@ const ClassPageStructure = () => {
         <Layout>
           <Content className="w-full border-2 border-red-600 mt-2">
             <div className="w-full flex flex-col  h-full">
-              <ClassContent/>
+
+              
+              {/* <ClassContent/> */}
+              {/* <ClassParticipants/> */}
+                <GradeBook/>
+
+
             </div>
           </Content>
         </Layout>
