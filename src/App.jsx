@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import LoginRegistration from "./Pages/CommonPages/LoginRegistration";
 import PageStructure from "./Pages/CommonPages/PageStructure";
 import ClassPageStructure from "./Pages/CommonPages/ClassPageStructure";
+import { Route, Routes } from "react-router-dom";
 
 
 function App() {
@@ -18,7 +19,12 @@ function App() {
   return (
     // <LoginRegistration actionType="Regist"/>
     // <PageStructure/>
-    <ClassPageStructure/>
+    // <ClassPageStructure/>
+    <Routes>
+      <Route path="/login" element={<LoginRegistration actionType="login"/>}/>
+      <Route path="/register" element={<LoginRegistration actionType="register"/>}/>
+      <Route path="/" element={<PageStructure/>}/>
+    </Routes>
   )
 }
 

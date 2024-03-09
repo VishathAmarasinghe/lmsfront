@@ -24,7 +24,7 @@ const Header = ({openMobilePanel,classMode}) => {
     <div className="w-full h-full border-2 border-red-600 flex flex-row justify-between">
       <div className="flex flex-row items-center justify-center align-middle border-2 border-gray-600">
         {classMode?<div className="border-2 border-green-600 ">
-          <img src={logo} alt="logo" className="w-[65%] md:w-[70%] ml-5"/>
+          <img src={logo} alt="logo" className="w-[60%] md:w-[57%] ml-5"/>
         </div>:<></>}
         {!classMode?<div className="flex md:hidden">
           <MenuRoundedIcon onClick={openMobilePanel} />
@@ -40,6 +40,7 @@ const Header = ({openMobilePanel,classMode}) => {
           </ConfigProvider>
         </div>:<></>}
       </div>
+      
       <div className="flex flex-row h-full border-2 border-green-300 items-center mr-4">
         <div className="hidden md:flex">
         <Badge count={10} overflowCount={20} size="5px">
@@ -47,10 +48,9 @@ const Header = ({openMobilePanel,classMode}) => {
           <BellOutlined className="text-[20px] text-gray-500"/>
         </Badge>
         </div>
-        
-        
-        <Space className="border-2 border-red-500 h-full mx-5 flex flex-col justify-center align-middle items-center">
-        <p className="font-semibold text-[15px]  ">Vishath</p>
+        <Space className="border-2 border-red-500 h-full mx-5 flex flex-col justify-center  items-center">
+        <p className="font-semibold text-[15px] font-inter ">Vishath</p>
+        <p className="font-inter mt-1 text-[12px]">Teacher</p>
         {/* <p>sds</p> */}
         </Space>
         <Box sx={{flexGrow:0}}>

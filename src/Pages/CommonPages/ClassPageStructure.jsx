@@ -122,7 +122,7 @@ const ClassPageStructure = () => {
         </div>
         <Layout>
           <Content className="w-full border-2 border-red-600 mt-2">
-            <div className="w-full flex flex-col  h-full">
+            <div className="w-full flex flex-col  h-full border-2 border-yellow-500 overflow-y-auto">
 
               
               {/* <ClassContent/> */}

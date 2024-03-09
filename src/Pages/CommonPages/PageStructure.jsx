@@ -17,6 +17,9 @@ import NotiesParents from "../../InnerPages/NotiesParents";
 import ParentProfile from "../../InnerPages/ParentProfile";
 import MainClassPage from "../../InnerPages/MainClassPage";
 import OwnerPageTeacherPanel from "../../InnerPages/OwnerPageTeacherPanel";
+import RegistrationPending from "../../InnerPages/RegistrationPending";
+import RegistrationPaymentProceeder from "../../InnerPages/RegistrationPaymentProceeder";
+import ClassPayments from "../../InnerPages/ClassPayments";
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -131,6 +134,7 @@ const PageStructure = () => {
           <Header
             style={{
               padding: 0,
+              lineHeight:0,
               background: colorBgContainer,
             }}
           >
@@ -159,6 +163,9 @@ const PageStructure = () => {
               {/* <ParentProfile/> */}
               {/* <MainClassPage/> */}
               {/* <OwnerPageTeacherPanel/> */}
+              {/* <RegistrationPending/> */}
+              {/* <RegistrationPaymentProceeder/> */}
+              <ClassPayments/>
             </div>
           </Content>
         </Layout>
