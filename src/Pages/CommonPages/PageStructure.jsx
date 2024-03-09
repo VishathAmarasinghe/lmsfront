@@ -6,6 +6,12 @@ import {
   PieChartOutlined,
   TeamOutlined,
   UserOutlined,
+  LineChartOutlined,
+  CalendarOutlined,
+  SolutionOutlined,
+  ContactsOutlined,
+  ContainerOutlined,
+  ProfileOutlined
 } from "@ant-design/icons";
 import { Breadcrumb, ConfigProvider, Layout, Menu, theme } from "antd";
 import { logo, logoicon } from "../../assets";
@@ -20,6 +26,11 @@ import OwnerPageTeacherPanel from "../../InnerPages/OwnerPageTeacherPanel";
 import RegistrationPending from "../../InnerPages/RegistrationPending";
 import RegistrationPaymentProceeder from "../../InnerPages/RegistrationPaymentProceeder";
 import ClassPayments from "../../InnerPages/ClassPayments";
+import UserRelatedNavigationPanel from "../../Utils/LeftNavigationlist";
+
+
+
+
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -33,7 +44,7 @@ const items = [
   getItem("Option 1", "1", <PieChartOutlined />),
   getItem("Option 2", "2", <DesktopOutlined />),
   getItem("User", "sub1", <UserOutlined />, [
-    getItem("Tom", "3"),
+    getItem("Tom", "3",<UserOutlined/>),
     getItem("Bill", "4"),
     getItem("Alex", "5"),
   ]),
@@ -43,7 +54,6 @@ const items = [
   ]),
   getItem("Files", "9", <FileOutlined />),
 ];
-
 const PageStructure = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobilemenu, setMobileMenu] = useState(false);
@@ -56,7 +66,7 @@ const PageStructure = () => {
   };
 
   const handleMenuclick=(e)=>{
-    console.log("clicked e ",e);
+    console.log("clicked e ",e.key);
   }
 
   return (
@@ -75,7 +85,7 @@ const PageStructure = () => {
             theme="light"
             defaultSelectedKeys={["1"]}
             mode="inline"
-            items={items}
+            items={UserRelatedNavigationPanel("student")}
           />
         </div>
       </div>
@@ -124,7 +134,7 @@ const PageStructure = () => {
                 theme="light"
                 defaultSelectedKeys={["1"]}
                 mode="inline"
-                items={items}
+                items={UserRelatedNavigationPanel("student")}
               />
               </ConfigProvider>
             </Sider>
