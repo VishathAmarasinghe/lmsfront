@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import {
   DesktopOutlined,
@@ -26,7 +26,9 @@ import OwnerPageTeacherPanel from "../../InnerPages/OwnerPageTeacherPanel";
 import RegistrationPending from "../../InnerPages/RegistrationPending";
 import RegistrationPaymentProceeder from "../../InnerPages/RegistrationPaymentProceeder";
 import ClassPayments from "../../InnerPages/ClassPayments";
-import UserRelatedNavigationPanel from "../../Utils/LeftNavigationlist";
+import { UserRelatedNavigationPanel } from "../../Utils/LeftNavigationlist";
+import InnerPageLoader from "./InnerPageLoader";
+
 
 
 
@@ -55,6 +57,7 @@ const items = [
   getItem("Files", "9", <FileOutlined />),
 ];
 const PageStructure = () => {
+  const [pageIndex,setPageIndex]=useState(1);
   const [collapsed, setCollapsed] = useState(false);
   const [mobilemenu, setMobileMenu] = useState(false);
   const {
@@ -67,8 +70,11 @@ const PageStructure = () => {
 
   const handleMenuclick=(e)=>{
     console.log("clicked e ",e.key);
+    setPageIndex(e.key);
   }
 
+
+ 
   return (
     <div className="flex flex-row border-2 border-red-700 h-screen overflow-hidden ">
       <div className="h-[40px] mt-5 flex md:hidden z-50  border-2 border-black">
@@ -82,6 +88,7 @@ const PageStructure = () => {
           } md:hidden absolute w-1/2 h-screen border-2 border-yellow-700 mt-12`}
         >
           <Menu
+          onClick={handleMenuclick}
             theme="light"
             defaultSelectedKeys={["1"]}
             mode="inline"
@@ -175,7 +182,9 @@ const PageStructure = () => {
               {/* <OwnerPageTeacherPanel/> */}
               {/* <RegistrationPending/> */}
               {/* <RegistrationPaymentProceeder/> */}
-              <ClassPayments/>
+              {/* <ClassPayments/> */}
+              <InnerPageLoader innerPageKey={pageIndex}/>
+              
             </div>
           </Content>
         </Layout>

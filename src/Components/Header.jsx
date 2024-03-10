@@ -6,22 +6,26 @@ import React, { useState } from "react";
 import Search from "antd/es/input/Search";
 import logo from '../assets/logo.png';
 import { Box, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import StudentProfileDrawer from "./Student/StudentProfileDrawer";
 
 const Header = ({openMobilePanel,classMode}) => {
-    const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+  const [openstudentProfileDrawer,setOpenstudentProfileDrawer]=useState(false);
+    const settings = ['Profile', 'Settings', 'Logout'];
     const [anchorElUser, setAnchorElUser] = useState(null);
 
       const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
       };
     
-    
-      const handleCloseUserMenu = () => {
+      const handleCloseUserMenu = (type) => {
         setAnchorElUser(null);
+        console.log("dettingg type ",type);
+        setOpenstudentProfileDrawer(true);
       };
 
   return (
     <div className="w-full h-full border-2 border-red-600 flex flex-row justify-between">
+      <StudentProfileDrawer openeditingDrawer={openstudentProfileDrawer} setOpeneditingDrawer={setOpenstudentProfileDrawer} />
       <div className="flex flex-row items-center justify-center align-middle border-2 border-gray-600">
         {classMode?<div className="border-2 border-green-600 ">
           <img src={logo} alt="logo" className="w-[60%] md:w-[57%] ml-5"/>
@@ -79,7 +83,7 @@ const Header = ({openMobilePanel,classMode}) => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={()=>handleCloseUserMenu(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}

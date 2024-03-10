@@ -18,6 +18,8 @@ import {
   ScheduleOutlined,
   FileTextOutlined
 } from "@ant-design/icons";
+import MainClassPage from "../InnerPages/MainClassPage";
+import StudentDashboard from "../InnerPages/StudentDashboard";
 
 function getItem(label, key, icon, children) {
   return {
@@ -65,7 +67,6 @@ const staffitems = [
   getItem("Classes", "20", <TeamOutlined />),
   getItem("Time Table", "21", <CalendarOutlined />),
   getItem("Notices", "22", <ProfileOutlined />),
-  
 ];
 
 const owneritems = [
@@ -96,5 +97,16 @@ const UserRelatedNavigationPanel=(usertype)=>{
   }
 }
 
+const SubContentChanger=(key)=>{
+  switch (key) {
+    case 7:
+      console.log("came here");
+      return StudentDashboard
+    case 8:
+      return MainClassPage
+    default:
+      break;
+  }
+}
 
-export default UserRelatedNavigationPanel;
+export {UserRelatedNavigationPanel};
