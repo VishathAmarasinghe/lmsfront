@@ -1,10 +1,13 @@
-const regisrationReducer = (state = { registrationData: null }, action) => {
-  switch (action.type) {
-    case "Register":
-      console.log(action?.data);
-      return { state };
+const registrationReducer = (state = { registrationData: null }, action) => {
+    switch (action.type) {
+      case "Register":
+        console.log(action?.data);
+        return state; 
+  
+      default:
+        return state; 
+    }
+  };
+  
 
-    default:
-      break;
-  }
-};
+  export default registrationReducer;

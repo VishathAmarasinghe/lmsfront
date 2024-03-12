@@ -1,7 +1,8 @@
 import { Checkbox } from "@mui/material";
+import { ConfigProvider } from "antd";
 import React from "react";
 
-const RegistrationFormThree = () => {
+const RegistrationFormThree = ({resultChecked,setresultChecked}) => {
   const listdetails = [
     {
       title: "Academic Integrity",
@@ -34,7 +35,18 @@ const RegistrationFormThree = () => {
         ))}
       </div>
       <div className="flex flex-row items-center bg-gray-300 mt-2">
-        <Checkbox />
+        <ConfigProvider
+        theme={
+          {
+            token:{
+              colorPrimary:"#5B6BD4"
+            }
+          }
+        }
+        >
+          <Checkbox checked={resultChecked} onChange={()=>setresultChecked(pre=>!pre)} />
+        </ConfigProvider>
+
         <p>I agree the terms and Conditions</p>
       </div>
     </div>
