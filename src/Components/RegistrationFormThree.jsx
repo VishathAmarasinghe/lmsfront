@@ -27,8 +27,8 @@ const RegistrationFormThree = ({resultChecked,setresultChecked}) => {
   return (
     <div>
       <div>
-        {listdetails.map((item) => (
-          <dl className="ml-4">
+        {listdetails.map((item,index) => (
+          <dl className="ml-4" key={index}>
             <dt className="font-semibold text-black">{item.title}</dt>
             <dd className="ml-6">{item.message}</dd>
           </dl>

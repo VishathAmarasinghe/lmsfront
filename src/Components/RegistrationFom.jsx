@@ -7,9 +7,14 @@ import RegistrationFormTwo from "./RegistrationFormTwo";
 import RegistrationFormThree from "./RegistrationFormThree";
 import PerformValidations from "../Utils/Validations";
 import NotificationPopup from "./NotificationComp/Notification";
+import { studentRegister } from "../Actions/auth";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const RegistrationFom = () => {
   
+  const dispatch =useDispatch();
+  const navigation=useNavigate();
   const [api, contextHolder] = notification.useNotification();
   const [resultChecked,setresultChecked]=useState(false);
   const [errorValidator, setErrorValidator] = useState({
@@ -46,7 +51,7 @@ const RegistrationFom = () => {
   });
 
 
-  
+
 
   useEffect(() => {
     console.log("error validator ", errorValidator);
@@ -121,12 +126,18 @@ const RegistrationFom = () => {
   const SaveDetails=()=>{
     if (resultChecked==true) {
       console.log("answer is checked");
-      notification.success(
-        {
-          message:"hello world",
-          description:"hello this is good"
-        }
-      )
+      try {
+        
+        formData.parent.address=formData.student.address;
+        console.log("finalized formData ",formData);
+        dispatch(studentRegister(formData,navigation,notification));
+        // const result=studentRegister(formData);
+        // console.log(result);
+
+      } catch (error) {
+        console.log("error occured ",error);
+      }
+      
       // return <NotificationPopup message="Hello world" description="Hello, this is good" />;
       
     }else{
