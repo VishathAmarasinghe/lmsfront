@@ -1,4 +1,12 @@
 const authReducer=(state={authData:null},action)=>{
+    switch (action.type) {
+        case "SIGNIN":
+            console.log("data is ",action.data);
+            localStorage.setItem("profile",JSON.stringify({...action?.data}));
+            return {...state,authData:action?.data};
+        default:
+            return state;
+    }
 
 }
 

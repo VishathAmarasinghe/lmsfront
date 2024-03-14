@@ -4,9 +4,24 @@ import LockPersonRoundedIcon from '@mui/icons-material/LockPersonRounded';
 import React, { useState } from "react";
 import {  RememberMe, Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
+import { signIn } from "../Actions/auth";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { notification } from "antd";
 
 export const LoginForm = () => {
+  const dispatch=useDispatch();
+  const navigate=useNavigate();
     const labelcheckbox = { inputProps: { 'aria-label': 'Checkbox demo' } };
+    const [LoginDetails,setLoginDetails]=useState({
+      userName_Email:"",
+      password:""
+  });
+
+
+  const ondetailsChangin=(e)=>{
+    setLoginDetails({...LoginDetails,[e.target.name]:e.target.value});
+  }
 
     const [showPassword, setShowPassword]=useState(false);
     const [loading,setloading]=useState(false);
@@ -14,6 +29,9 @@ export const LoginForm = () => {
 
     const handleLogin=()=>{
         setloading(true);
+        console.log("login Details ",LoginDetails);
+        dispatch(signIn(LoginDetails,notification,navigate))
+        
     }
   return (
     <div className="bg-white shadow-2xl w-full md:w-[70%] m-5 p-8 rounded-2xl">
@@ -22,12 +40,15 @@ export const LoginForm = () => {
       <div className="flex flex-col mb-3">
         <label className="font-inter font-medium">User Name</label>
         <TextField
-        error
+        name="userName_Email"
+        value={LoginDetails.userName_Email}
+        onChange={(e)=>ondetailsChangin(e)}
+        // error
         
         className="bg-[#EBEEFF]"
           InputProps={{
             startAdornment: (
-              <InputAdornment>
+              <InputAdornment position="start">
                 <PersonIcon  sx={{color:"#5B6BD4"}} className="mr-2" />
               </InputAdornment>
             ),
@@ -39,6 +60,9 @@ export const LoginForm = () => {
       <div className="flex flex-col mb-3">
         <label className="font-inter font-medium">Password</label>
         <TextField
+        name="password"
+        value={LoginDetails.password}
+        onChange={(e)=>ondetailsChangin(e)}
         type={showPassword?"text":"password"}
         className="bg-[#EBEEFF]"
           InputProps={{
@@ -67,7 +91,7 @@ export const LoginForm = () => {
       </div>
       <div className="w-full flex flex-row justify-between items-center my-3">
           <div className="flex flex-row  items-center">
-            <Checkbox de {...labelcheckbox} defaultChecked/>
+            <Checkbox  {...labelcheckbox} defaultChecked/>
             <p className="cursor-pointer">Remember Me</p>
             
           </div>

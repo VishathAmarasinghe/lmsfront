@@ -3,4 +3,4 @@ import authReducer from "./authentication";
 import registrationReducer from "./registration";
 
 
-export const reducers=combineReducers({registrationReducer});
+export const reducers=combineReducers({registrationReducer,authReducer});

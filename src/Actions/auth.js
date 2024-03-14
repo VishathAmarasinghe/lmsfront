@@ -1,3 +1,4 @@
+import { notification } from 'antd';
 import * as API from '../API/index';
 
 export const studentRegister=(formData,navigation,notification)=>async(dispatch)=>{
@@ -21,6 +22,32 @@ export const studentRegister=(formData,navigation,notification)=>async(dispatch)
             {
               message:"Registration Error",
               description:"Please Contact reception"
+            }
+          )
+    }
+}
+
+export const signIn=(loginDetails,notification,navigation)=>async(dispatch)=>{
+    try {
+        const {data}=await API.signIn(loginDetails);
+        dispatch({
+            type:"SIGNIN",
+            data:data
+        })
+        navigation("/")
+        notification.success(
+            {
+              message:"Login Success",
+              description:`login as ${data?.result?.role}`
+            }
+          )
+
+    } catch (error) {
+        console.log("error in login to the system");
+        notification.error(
+            {
+              message:"Login Error",
+              description:"Login Error occured, Please try again!"
             }
           )
     }

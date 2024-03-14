@@ -18,6 +18,7 @@ const NotificationPopup = ({ description, message }) => {
     placement: "topRight",
   });
 
+  
   return null;
 };
 

@@ -34,35 +34,22 @@ import InnerPageLoader from "./InnerPageLoader";
 
 
 const { Header, Content, Footer, Sider } = Layout;
-function getItem(label, key, icon, children) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  };
-}
-const items = [
-  getItem("Option 1", "1", <PieChartOutlined />),
-  getItem("Option 2", "2", <DesktopOutlined />),
-  getItem("User", "sub1", <UserOutlined />, [
-    getItem("Tom", "3",<UserOutlined/>),
-    getItem("Bill", "4"),
-    getItem("Alex", "5"),
-  ]),
-  getItem("Team", "sub2", <TeamOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
-  ]),
-  getItem("Files", "9", <FileOutlined />),
-];
+
+
 const PageStructure = () => {
+  const [currentUser,setCurrentUser]=useState(JSON.parse(localStorage.getItem("profile"))?.result?.role);
   const [pageIndex,setPageIndex]=useState(1);
   const [collapsed, setCollapsed] = useState(false);
   const [mobilemenu, setMobileMenu] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  useEffect(()=>{
+    const userValue=JSON.parse(localStorage.getItem("profile"))?.result?.role;
+    setCurrentUser(userValue);
+    console.log("current user ",userValue);
+  },[JSON.parse(localStorage.getItem("profile"))?.result?.role])
 
   const openMobilePanel = () => {
     setMobileMenu((pre) => !pre);
@@ -92,7 +79,7 @@ const PageStructure = () => {
             theme="light"
             defaultSelectedKeys={["1"]}
             mode="inline"
-            items={UserRelatedNavigationPanel("student")}
+            items={UserRelatedNavigationPanel(currentUser)}
           />
         </div>
       </div>
@@ -141,7 +128,7 @@ const PageStructure = () => {
                 theme="light"
                 defaultSelectedKeys={["1"]}
                 mode="inline"
-                items={UserRelatedNavigationPanel("student")}
+                items={UserRelatedNavigationPanel(currentUser)}
               />
               </ConfigProvider>
             </Sider>
