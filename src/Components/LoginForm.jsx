@@ -1,23 +1,33 @@
 import { IconButton, InputAdornment, TextField,Checkbox } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import LockPersonRoundedIcon from '@mui/icons-material/LockPersonRounded';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {  RememberMe, Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { signIn } from "../Actions/auth";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { notification } from "antd";
+import { message, notification } from "antd";
+import { loginValidation } from "../Utils/Validations";
 
 export const LoginForm = () => {
   const dispatch=useDispatch();
   const navigate=useNavigate();
+  const [ValidationErrors,setValidationErrors]=useState(
+    {
+      userNameValidation:"",
+      passwordValidation:""
+    }
+  );
     const labelcheckbox = { inputProps: { 'aria-label': 'Checkbox demo' } };
     const [LoginDetails,setLoginDetails]=useState({
       userName_Email:"",
       password:""
   });
 
+  useEffect(()=>{
+
+  },[])
 
   const ondetailsChangin=(e)=>{
     setLoginDetails({...LoginDetails,[e.target.name]:e.target.value});
@@ -30,7 +40,13 @@ export const LoginForm = () => {
     const handleLogin=()=>{
         setloading(true);
         console.log("login Details ",LoginDetails);
-        dispatch(signIn(LoginDetails,notification,navigate))
+        const validationStatus=loginValidation(LoginDetails,setValidationErrors);
+        if (validationStatus) {
+          message.error("Validation Error. Please enter your details")
+        }else{
+          dispatch(signIn(LoginDetails,notification,navigate))
+        }
+        
         
     }
   return (
@@ -81,7 +97,6 @@ export const LoginForm = () => {
                         }
                     </IconButton>
                 </InputAdornment>
-                
             )
           }}
           

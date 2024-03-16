@@ -53,6 +53,7 @@ const PageStructure = () => {
 
   const openMobilePanel = () => {
     setMobileMenu((pre) => !pre);
+
   };
 
   const handleMenuclick=(e)=>{

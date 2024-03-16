@@ -70,7 +70,7 @@ const staffitems = [
 ];
 
 const owneritems = [
-  getItem("Dashboard", "123", <AppstoreOutlined/>),
+  getItem("Dashboard", "23", <AppstoreOutlined/>),
   getItem("Teachers", "24", <TeamOutlined />),
   getItem("Students", "25", <SolutionOutlined/>),
   getItem("Staff", "26", <UserOutlined />),

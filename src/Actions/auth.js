@@ -52,3 +52,14 @@ export const signIn=(loginDetails,notification,navigation)=>async(dispatch)=>{
           )
     }
 }
+
+export const logout=(navigation)=>async(dispatch)=>{
+    try {
+        dispatch({
+            type:"LOGOUT"
+        })
+        navigation("/login")
+    } catch (error) {
+        console.log("logout error ",error);
+    }
+}

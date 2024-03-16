@@ -26,6 +26,22 @@ function validatePhone(phone) {
   return regex.test(phone);
 }
 
+
+const loginValidation=(loginData,setLoginErrorValidation)=>{
+    const loginErrors={}
+    let errorStatus=false;
+    if (!validateAddress(loginData.userName_Email)) {
+        loginErrors.userNameValidation = "UserName cannot be empty.";
+        errorStatus = true;
+    }
+    if (!validateAddress(loginData.password)) {
+        loginErrors.passwordValidation = "Password cannot be empty.";
+        errorStatus = true;
+    }
+    setLoginErrorValidation(loginErrors);
+    return errorStatus;
+}
+
 function PerformValidations(
   formData,
   setErrorValidator,
@@ -89,5 +105,5 @@ function PerformValidations(
   return errorStatus;
 }
 
-export default PerformValidations;
+export { PerformValidations,loginValidation};
 

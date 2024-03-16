@@ -1,35 +1,37 @@
 import "aos/dist/aos.css";
 import Aos from "aos";
-
-
-
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LoginRegistration from "./Pages/CommonPages/LoginRegistration";
 import PageStructure from "./Pages/CommonPages/PageStructure";
 import ClassPageStructure from "./Pages/CommonPages/ClassPageStructure";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import LoadingPage from "./Pages/CommonPages/LoadingPage";
 
 
 
 function App() {
+  const user=JSON.parse(localStorage.getItem("profile"));
+  const location=useLocation();
 
   useEffect(()=>{
     Aos.init();
     Aos.refresh();
   },[])
 
-
+  useEffect(()=>{
+    // setUser(JSON.parse(localStorage.getItem("profile")));
+    console.log("current user ",user);
+    console.log("location Path ",location.pathname);
+  },[location.pathname])
 
 
   return (
-    // <LoginRegistration actionType="Regist"/>
-    // <PageStructure/>
-    // <ClassPageStructure/>
-
     <Routes>
-      <Route path="/login" element={<LoginRegistration actionType="login"/>}/>
-      <Route path="/register" element={<LoginRegistration actionType="register"/>}/>
-      <Route path="/" element={<PageStructure/>}/>
+      
+      <Route path="/login" Component={()=>(!user?<LoginRegistration actionType="login"/>:<Navigate to="/"/>)}/>
+      <Route path="/register" Component={()=>(!user?<LoginRegistration actionType="register"/>:<Navigate to="/"/>)}/>
+      <Route path="/" Component={()=>(!user?<LoginRegistration actionType="login"/>:<PageStructure/>)}/>
+      <Route path="/" Component={()=>(!user?<LoginRegistration actionType="login"/>:<Navigate to="/"/>)}/>
     </Routes>
 
   )

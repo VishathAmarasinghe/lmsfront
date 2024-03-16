@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Avatar, Button, Input, Space, Table, Tag } from "antd";
 import Highlighter from "react-highlight-words";
@@ -7,19 +7,20 @@ import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RegistrationConfirmStudentDrawer from "./RegistrationConfirmStudentDrawer";
-// import DeleteButtonPopUp from "./DeleteButtonPopUp";
-// import TeacherDetaileditingDrawer from "./TeacherDetaileditingDrawer";
+import { useDispatch } from "react-redux";
+import { get_pending_confirmed_students } from "../../Actions/user";
+import { useSelector } from "react-redux";
+
 const data = [
   {
     key: "1",
+    userID:"US001",
     fname: "John Brown",
     lname: "wijenayaka",
     email: "john@gamil.com",
     phoneNo: "0789696988",
     confirmation:true,
     payment:"pay"
-
-    
   },
   {
     key: "2",
@@ -50,12 +51,29 @@ const data = [
   },
 ];
 
-const RegistrationpendingTable = () => {
-  const [opendeleteModel, setOpendeleteModel] = useState(false);
+const RegistrationpendingTable = ({pendingUsers}) => {
+  const [selectedStudent,setSelectedStudent]=useState(null);
+  const [statusChanger,setStatusChanger]=useState(false);
   const [openeditingDrawer, setOpeneditingDrawer] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+
+
+  const formattedData = pendingUsers.map((user, index) => ({
+    ...user,
+    key: user.UserID, 
+  }));
+
+  const handleConfirmInfo=(rowdata)=>{
+    console.log("selected Row data ",rowdata);
+    setSelectedStudent(rowdata);
+    // setStatusChanger(true);
+    setOpeneditingDrawer(true)
+  }
+
+
+
 
   const drawerConfigOpening = () => {
     setOpeneditingDrawer(true);
@@ -98,7 +116,7 @@ const RegistrationpendingTable = () => {
         />
         <Space>
           <Button
-            type="primary"
+            className="bg-[#065AD8] text-white "
             onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
             icon={<SearchOutlined />}
             size="small"
@@ -173,21 +191,38 @@ const RegistrationpendingTable = () => {
   });
   const columns = [
     {
+      title: "UserID",
+      dataIndex: "UserID",
+      key: "UserID",
+      width: "10%",
+      ...getColumnSearchProps("UserID"),
+      sorter: (a, b) => a.UserID.length - b.UserID.length,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
       title: "First Name",
-      dataIndex: "fname",
-      key: "fname",
-      width: "20%",
-      ...getColumnSearchProps("fname"),
-      sorter: (a, b) => a.fname.length - b.fname.length,
+      dataIndex: "firstName",
+      key: "firstName",
+      width: "15%",
+      ...getColumnSearchProps("firstName"),
+      sorter: (a, b) => a.firstName.length - b.firstName.length,
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Last Name",
-      dataIndex: "lname",
-      key: "lname",
-      width: "20%",
-      ...getColumnSearchProps("lname"),
-      sorter: (a, b) => a.lname.length - b.lname.length,
+      dataIndex: "lastName",
+      key: "lastName",
+      width: "15%",
+      ...getColumnSearchProps("lastName"),
+      sorter: (a, b) => {
+        if (a.lastName !== null && b.lastName !== null) {
+          return a.lastName.length - b.lastName.length;
+        } else {
+          if (a.lastName === null && b.lastName === null) return 0;
+          if (a.lastName === null) return 1;
+          return -1;
+        }
+      },
       sortDirections: ["descend", "ascend"],
     },
    
@@ -201,42 +236,40 @@ const RegistrationpendingTable = () => {
     {
       title: "Phone No",
       dataIndex: "phoneNo",
-      key: "phoneno",
-      ...getColumnSearchProps("phoneno"),
+      key: "phoneNo",
+      ...getColumnSearchProps("phoneNo"),
     },
     {
       title:"Confirmation",
-      dataIndex:"confirmation",
+      dataIndex:"userStatus",
       key:"datadonfirmation",
-      render:(confstate)=>{
-       return confstate?(
-        <Tag color="green">
+      render:(confstate,rowData)=>{
+       return confstate!=="pending"?(
+        <Tag color="green" className="w-[100%] font-medium text-center bg-green-700 text-white">
           Detail Confirmed
         </Tag>
        ):(
-        <button onClick={()=>setOpeneditingDrawer(true)} className="bg-blue-600 text-white p-1 rounded-md scalar-card hover:bg-blue-700 ">Confirm Info</button>
+        <Tag onClick={()=>handleConfirmInfo(rowData)} className="w-[100%] font-medium text-center bg-blue-600 text-white  scalar-card hover:bg-blue-700 ">Confirm Info</Tag>
        )
       }
     },
     {
       title:"payment",
-      dataIndex:"payment",
-      key:"payment",
-      render:()=><button className="bg-blue-600 text-white p-1 rounded-md scalar-card hover:bg-blue-700 ">
+      dataIndex:"email",
+      key:"email",
+      render:()=><Tag className="bg-blue-600 w-[100%] text-center font-medium text-white scalar-card hover:bg-blue-700 ">
         Proceed Payment
-      </button>
-      
+      </Tag>
     }
-    // ...getColumnSearchProps('action'),
   ];
   return (
     <div className="w-full">
-      <Table columns={columns} dataSource={data} />
-      {/* <DeleteButtonPopUp
-        opendeleteModel={opendeleteModel}
-        setOpendeleteModel={setOpendeleteModel}
-      /> */}
+      <Table columns={columns} dataSource={formattedData} pagination={{pageSize:7}}  />
+      
       <RegistrationConfirmStudentDrawer
+      // statusChanger={statusChanger}
+      setSelectedStudent={setSelectedStudent}
+        selectedStudent={selectedStudent}
         openeditingDrawer={openeditingDrawer}
         setOpeneditingDrawer={setOpeneditingDrawer}
       />

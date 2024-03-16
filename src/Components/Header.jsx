@@ -7,20 +7,35 @@ import Search from "antd/es/input/Search";
 import logo from '../assets/logo.png';
 import { Box, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import StudentProfileDrawer from "./Student/StudentProfileDrawer";
+import { useDispatch } from "react-redux";
+import { logout } from "../Actions/auth";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({openMobilePanel,classMode}) => {
-  const [openstudentProfileDrawer,setOpenstudentProfileDrawer]=useState(false);
+
+    const [userDetails, setUserDetails]=useState(JSON.parse(localStorage.getItem("profile"))?.result);
+    const navigation=useNavigate();
+    const [openstudentProfileDrawer,setOpenstudentProfileDrawer]=useState(false);
     const settings = ['Profile', 'Settings', 'Logout'];
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const dispatch=useDispatch();
 
       const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
       };
     
       const handleCloseUserMenu = (type) => {
-        setAnchorElUser(null);
         console.log("dettingg type ",type);
-        setOpenstudentProfileDrawer(true);
+        switch (type) {
+          case "Logout":
+            dispatch(logout(navigation));
+            break;
+          case "Profile":
+            setAnchorElUser(null);
+            setOpenstudentProfileDrawer(true);
+          default:
+            break;
+        }
       };
 
   return (
@@ -31,7 +46,7 @@ const Header = ({openMobilePanel,classMode}) => {
           <img src={logo} alt="logo" className="w-[60%] md:w-[57%] ml-5"/>
         </div>:<></>}
         {!classMode?<div className="flex md:hidden">
-          <MenuRoundedIcon onClick={openMobilePanel} />
+          <MenuRoundedIcon onClick={openMobilePanel}/>
         </div>:<></>}
         {!classMode?<div className="hidden md:flex justify-center mx-5 ">
         <ConfigProvider theme={{
@@ -53,8 +68,8 @@ const Header = ({openMobilePanel,classMode}) => {
         </Badge>
         </div>
         <Space className="border-2 border-red-500 h-full mx-5 flex flex-col justify-center  items-center">
-        <p className="font-semibold text-[15px] font-inter ">Vishath</p>
-        <p className="font-inter mt-1 text-[12px]">Teacher</p>
+        <p className="font-semibold text-[15px] font-inter ">{userDetails.firstName}</p>
+        <p className="font-inter mt-1 text-[12px]">{userDetails.role}</p>
         {/* <p>sds</p> */}
         </Space>
         <Box sx={{flexGrow:0}}>
@@ -64,8 +79,7 @@ const Header = ({openMobilePanel,classMode}) => {
                 </IconButton>
             </Tooltip>
            
-                
-           
+
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"

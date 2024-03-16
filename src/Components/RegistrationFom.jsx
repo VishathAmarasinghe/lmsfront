@@ -5,7 +5,7 @@ import { Button } from "@mui/material";
 import RegistrationFormOne from "./RegistrationFormOne";
 import RegistrationFormTwo from "./RegistrationFormTwo";
 import RegistrationFormThree from "./RegistrationFormThree";
-import PerformValidations from "../Utils/Validations";
+import {PerformValidations} from "../Utils/Validations";
 import NotificationPopup from "./NotificationComp/Notification";
 import { studentRegister } from "../Actions/auth";
 import { useDispatch } from "react-redux";
