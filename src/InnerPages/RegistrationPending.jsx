@@ -30,6 +30,7 @@ const RegistrationPending = () => {
       </div>
     </div>
   );
+
 };
 
 export default RegistrationPending;

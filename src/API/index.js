@@ -7,3 +7,5 @@ export const signIn=(loginDetails)=>axios.post("http://localhost:5000/signup/sig
 
 export const get_pending_confirmed_users=()=>axios.get("http://localhost:5000/userdetails/pendingUsers");
 export const get_parent_details_according_to_Student=(studentID)=>axios.get("http://localhost:5000/userdetails/parentstudentinfo?studentID="+studentID);
+
+export const updateParentStudentData=(updateData)=>axios.patch("http://localhost:5000/userdetails/updateData",updateData);

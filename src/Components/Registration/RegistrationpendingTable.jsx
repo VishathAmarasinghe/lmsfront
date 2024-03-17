@@ -11,45 +11,7 @@ import { useDispatch } from "react-redux";
 import { get_pending_confirmed_students } from "../../Actions/user";
 import { useSelector } from "react-redux";
 
-const data = [
-  {
-    key: "1",
-    userID:"US001",
-    fname: "John Brown",
-    lname: "wijenayaka",
-    email: "john@gamil.com",
-    phoneNo: "0789696988",
-    confirmation:true,
-    payment:"pay"
-  },
-  {
-    key: "2",
-    fname: "Nisal thathsara",
-    lname: "jayawardana",
-    email: "Nisal@gamil.com",
-    phoneNo: "0789645888",
-    confirmation:true,
-    payment:"pay"
-  },
-  {
-    key: "3",
-    fname: "Pathum ",
-    lname: "Chathuranga",
-    email: "pathum@gamil.com",
-    phoneNo: "0744696988",
-    confirmation:false,
-    payment:"pay"
-  },
-  {
-    key: "4",
-    fname: "Wikum",
-    lname: "rasanjana",
-    email: "wikum@gamil.com",
-    phoneNo: "0789677988",
-    confirmation:false,
-    payment:"pay"
-  },
-];
+
 
 const RegistrationpendingTable = ({pendingUsers}) => {
   const [selectedStudent,setSelectedStudent]=useState(null);

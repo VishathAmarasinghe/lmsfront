@@ -25,3 +25,14 @@ export const get_parents_byStudents=async(studentID)=>{
         return [];
     }
 }
+
+
+export const updateUserData=async(updateData)=>{
+    try {
+        const {data}=await API.updateParentStudentData(updateData);
+        console.log("updation result ",data);
+        return data
+    } catch (error) {
+        return error;
+    }
+}

@@ -6,6 +6,7 @@ import StudentNotices from "../../InnerPages/StudentNotices";
 import StaffDashboard from '../../InnerPages/StaffDashboard';
 import RegistrationPending from "../../InnerPages/RegistrationPending";
 import ClassPayments from "../../InnerPages/ClassPayments";
+import RegistrationPaymentProceeder from "../../InnerPages/RegistrationPaymentProceeder";
 
 
 const pageChanger = (pageChanger) => {
@@ -66,6 +67,7 @@ const pageChanger = (pageChanger) => {
       return <ClassPayments/>
 
     case "19":
+      return <RegistrationPaymentProceeder/>
       break
 
     case "20":

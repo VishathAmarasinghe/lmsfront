@@ -15,7 +15,8 @@ import {
   Switch,
 } from "antd";
 import ProfilePicUploading from "../TeacherComp/ProfilePicUploading";
-import { get_parents_byStudents } from "../../Actions/user";
+import { get_parents_byStudents, get_pending_confirmed_students, updateUserData } from "../../Actions/user";
+import { useDispatch } from "react-redux";
 
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -30,9 +31,12 @@ const RegistrationConfirmStudentDrawer = ({
   const [form] = Form.useForm(); // Initialize form instance
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [studentData,setStudentData]=useState({});
+  const dispatch=useDispatch();
 
   useEffect(() => {
-    form.setFieldsValue(selectedStudent); // Set initial form values
+    // form.setFieldsValue(selectedStudent); 
+    setStudentData(selectedStudent);
     
   }, [selectedStudent, form]);
 
@@ -63,6 +67,15 @@ const RegistrationConfirmStudentDrawer = ({
   const saveUpdatedDetails=(values)=>{
     console.log("finalized values ",values);
   }
+
+  const updatedDataSaving=async(values)=>{
+    const data=updateUserData(values);
+    console.log("updated outcome ",data);
+    dispatch(get_pending_confirmed_students())
+    onClose()
+
+
+  }
   
 
   const showDrawer = () => {
@@ -76,10 +89,15 @@ const RegistrationConfirmStudentDrawer = ({
 
   const onFinish = (values) => {
     console.log("Received values from form: ", values);
-    const combinedParentstudent={studentData:values,parentData};
+    const combinedParentstudent={studentData:studentData,parentData};
     console.log("parent Data and student Data ",combinedParentstudent);
+    updatedDataSaving(combinedParentstudent);
     // Handle form submission here
   };
+
+  const handleStudentFieldChange=(value,field)=>{
+    setSelectedStudent({...studentData,[field]:value});
+  }
 
 
   const handleParentFieldChange = (parentIndex, field, value) => {
@@ -182,7 +200,7 @@ const RegistrationConfirmStudentDrawer = ({
                   },
                 ]}
               >
-                <Input readOnly={!editing} placeholder="Please enter your First Name" />
+                <Input readOnly={!editing} onChange={(e)=>handleStudentFieldChange(e.target.value,"firstName")} value={studentData?.firstName} placeholder="Please enter your First Name" />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -196,7 +214,7 @@ const RegistrationConfirmStudentDrawer = ({
                   },
                 ]}
               >
-                <Input readOnly={!editing} placeholder="Please enter your last name" />
+                <Input readOnly={!editing} onChange={(e)=>handleStudentFieldChange(e.target.value,"lastName")} value={studentData?.lastName} placeholder="Please enter your last name" />
               </Form.Item>
             </Col>
           </Row>
@@ -212,7 +230,7 @@ const RegistrationConfirmStudentDrawer = ({
                   },
                 ]}
               >
-                <Input readOnly={!editing} placeholder="Please enter your address" />
+                <Input readOnly={!editing} onChange={(e)=>handleStudentFieldChange(e.target.value,"address")} value={studentData?.address} placeholder="Please enter your address" />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -226,7 +244,7 @@ const RegistrationConfirmStudentDrawer = ({
                   },
                 ]}
               >
-                <Input readOnly={!editing} placeholder="Please enter your email" />
+                <Input readOnly={!editing} onChange={(e)=>handleStudentFieldChange(e.target.value,"email")} value={studentData?.email} placeholder="Please enter your email" />
               </Form.Item>
             </Col>
           </Row>
@@ -242,7 +260,7 @@ const RegistrationConfirmStudentDrawer = ({
                   },
                 ]}
               >
-                <Input readOnly={!editing} placeholder="Please enter your school" />
+                <Input readOnly={!editing} onChange={(e)=>handleStudentFieldChange(e.target.value,"school")} value={studentData?.school} placeholder="Please enter your school" />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -256,7 +274,7 @@ const RegistrationConfirmStudentDrawer = ({
                   },
                 ]}
               >
-                <Input readOnly={!editing} placeholder="Please enter your phoneNo" />
+                <Input readOnly={!editing} onChange={(e)=>handleStudentFieldChange(e.target.value,"phoneNo")} value={studentData?.phoneNo} placeholder="Please enter your phoneNo" />
               </Form.Item>
             </Col>
           </Row>
@@ -271,7 +289,7 @@ const RegistrationConfirmStudentDrawer = ({
               </>
             ) : (
               <div className="w-full">
-                <Collapse accordion items=
+                <Collapse accordion>
                   {parentData.map((parent, index) => (
                     <Panel header={`Parent ${index + 1}`} key={parent.UserID}>
                       <Form
@@ -283,7 +301,12 @@ const RegistrationConfirmStudentDrawer = ({
                       >
                       <Row gutter={16}>
                         <Col span={12}>
-                          <Form.Item label="First Name">
+                          <Form.Item label="First Name" rules={[
+                  {
+                    required: true,
+                    message: "Please enter Phone No",
+                  },
+                ]}>
                             <Input readOnly={!editing} onChange={(e)=>handleParentFieldChange(index,"firstName",e.target.value)} value={parent.firstName} />
                           </Form.Item>
                         </Col>
@@ -320,7 +343,8 @@ const RegistrationConfirmStudentDrawer = ({
                       </Form>
                       {/* Add more details as needed */}
                     </Panel>
-                  ))}/>
+                  ))}
+                </Collapse>
               </div>
             )}
           </Row>
