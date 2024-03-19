@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Avatar, Button, Input, Space, Table, Tag } from "antd";
+import { Avatar, Button, Input, Space, Table, Tag,Alert, message } from "antd";
 import Highlighter from "react-highlight-words";
 import lecturerAvatar from "../../assets/lecturer.jpg";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
@@ -10,6 +10,8 @@ import RegistrationConfirmStudentDrawer from "./RegistrationConfirmStudentDrawer
 import { useDispatch } from "react-redux";
 import { get_pending_confirmed_students } from "../../Actions/user";
 import { useSelector } from "react-redux";
+import { change_page_number } from "../../Actions/PageNumbers";
+import { Setregistration_bill_info } from "../../Actions/RegistrationBillInfo";
 
 
 
@@ -20,6 +22,7 @@ const RegistrationpendingTable = ({pendingUsers}) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+  const dispatch=useDispatch();
 
 
   const formattedData = pendingUsers.map((user, index) => ({
@@ -32,6 +35,17 @@ const RegistrationpendingTable = ({pendingUsers}) => {
     setSelectedStudent(rowdata);
     // setStatusChanger(true);
     setOpeneditingDrawer(true)
+  }
+
+
+  const  handleRegistrationPayment=(rawData)=>{
+    console.log("selected payment person",rawData);
+    if (rawData?.userStatus=="confirmed") {
+      dispatch(change_page_number("30"))
+      dispatch(Setregistration_bill_info(rawData));
+    }else{
+      message.warning("Please confirm student Details before proceeding",1);
+    }
   }
 
 
@@ -219,7 +233,7 @@ const RegistrationpendingTable = ({pendingUsers}) => {
       title:"payment",
       dataIndex:"email",
       key:"email",
-      render:()=><Tag className="bg-blue-600 w-[100%] text-center font-medium text-white scalar-card hover:bg-blue-700 ">
+      render:(value, rawData)=><Tag onClick={()=>handleRegistrationPayment(rawData)} className="bg-blue-600 w-[100%] text-center font-medium text-white scalar-card hover:bg-blue-700 ">
         Proceed Payment
       </Tag>
     }

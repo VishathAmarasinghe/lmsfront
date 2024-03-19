@@ -30,6 +30,7 @@ export const studentRegister=(formData,navigation,notification)=>async(dispatch)
 export const signIn=(loginDetails,notification,navigation)=>async(dispatch)=>{
     try {
         const {data}=await API.signIn(loginDetails);
+        console.log("loggin form ",data);
         dispatch({
             type:"SIGNIN",
             data:data

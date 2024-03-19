@@ -25,7 +25,7 @@ const RegistrationPending = () => {
       <div className="w-full">
         <h1 className="font-inter font-semibold text-[18px] ml-8 my-2 text-gray-500">Student Registrations</h1>
       </div>
-      <div className="w-[95%] h-[90%] border-2 border-red-500  flex flex-col md:flex-row justify-between ">
+      <div data-aos="fade-right" className="w-[95%] h-[90%] border-2 border-red-500  flex flex-col md:flex-row justify-between ">
         {loading ? <LoadingInnerPage /> : <RegistrationpendingTable pendingUsers={pendingUsers} />}
       </div>
     </div>

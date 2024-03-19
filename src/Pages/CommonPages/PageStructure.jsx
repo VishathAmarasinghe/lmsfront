@@ -28,6 +28,8 @@ import RegistrationPaymentProceeder from "../../InnerPages/RegistrationPaymentPr
 import ClassPayments from "../../InnerPages/ClassPayments";
 import { UserRelatedNavigationPanel } from "../../Utils/LeftNavigationlist";
 import InnerPageLoader from "./InnerPageLoader";
+import { useDispatch } from "react-redux";
+import { change_page_number } from "../../Actions/PageNumbers";
 
 
 
@@ -41,6 +43,7 @@ const PageStructure = () => {
   const [pageIndex,setPageIndex]=useState(1);
   const [collapsed, setCollapsed] = useState(false);
   const [mobilemenu, setMobileMenu] = useState(false);
+  const dispatch=useDispatch();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -59,12 +62,14 @@ const PageStructure = () => {
   const handleMenuclick=(e)=>{
     console.log("clicked e ",e.key);
     setPageIndex(e.key);
+    dispatch(change_page_number(e.key));
+    
   }
 
 
  
   return (
-    <div className="flex flex-row border-2 border-red-700 h-screen overflow-hidden ">
+    <div data-aos="zoom-in-up" className="flex flex-row border-2 border-red-700 h-screen overflow-hidden ">
       <div className="h-[40px] mt-5 flex md:hidden z-50  border-2 border-black">
         {/* <div className=" border-2 border-green-800 h-[40px]">
           <MenuRoundedIcon onClick={openMobilePanel} />
@@ -161,16 +166,7 @@ const PageStructure = () => {
                 borderRadius: borderRadiusLG,
               }}
             >
-              {/* <InstitutionInfo/> */}
-              {/* <NewAppointment/> */}
-              {/* <PastAppointments/> */}
-              {/* <NotiesParents/> */}
-              {/* <ParentProfile/> */}
-              {/* <MainClassPage/> */}
-              {/* <OwnerPageTeacherPanel/> */}
-              {/* <RegistrationPending/> */}
-              {/* <RegistrationPaymentProceeder/> */}
-              {/* <ClassPayments/> */}
+              
               <InnerPageLoader innerPageKey={pageIndex}/>
               
             </div>

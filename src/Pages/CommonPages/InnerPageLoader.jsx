@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import StudentDashboard from "../../InnerPages/StudentDashboard";
 import MainClassPage from "../../InnerPages/MainClassPage";
 import StudentTimetable from "../../InnerPages/StudentTimetable";
@@ -7,6 +7,7 @@ import StaffDashboard from '../../InnerPages/StaffDashboard';
 import RegistrationPending from "../../InnerPages/RegistrationPending";
 import ClassPayments from "../../InnerPages/ClassPayments";
 import RegistrationPaymentProceeder from "../../InnerPages/RegistrationPaymentProceeder";
+import { useSelector } from "react-redux";
 
 
 const pageChanger = (pageChanger) => {
@@ -99,13 +100,21 @@ const pageChanger = (pageChanger) => {
 
     case "29":
       break
+    case "30":
+      return <RegistrationPaymentProceeder/>
     default:
       break;
   }
 };
 
 const InnerPageLoader = ({ innerPageKey }) => {
-  return <>{pageChanger(innerPageKey)}</>;
+  const { pageNumber } = useSelector((state) => state.page);
+  const [renderingPage,SetRenderingPage]=useState(<></>);
+  useEffect(()=>{
+      SetRenderingPage(pageChanger(pageNumber));
+  },[pageNumber])
+  return <>{renderingPage}</>;
+  // pageChanger(innerPageKey)
 };
 
 export default InnerPageLoader;

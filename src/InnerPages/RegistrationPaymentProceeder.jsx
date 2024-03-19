@@ -1,27 +1,27 @@
 import { Col, ConfigProvider, Form, Input, Row } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import StudentCard from "../Components/Registration/StudentCard";
 import RegistationBill from "../Components/Registration/RegistationBill";
+import { useSelector } from "react-redux";
 
 const RegistrationPaymentProceeder = () => {
+  const { registrationBillInfo } = useSelector((state) => state.registrationBillInfo);
+
+  useEffect(()=>{
+    console.log("registration bill details",registrationBillInfo);
+  },[registrationBillInfo])
   return (
-    <div className="w-full h-[100%] flex flex-col items-center   shadow-2xl  overflow-y-auto  ">
+    <div  className="w-full h-[100%] flex flex-col items-center   shadow-2xl  overflow-y-auto  ">
        <div className="w-full">
         <h1 className="font-inter font-semibold text-[18px] ml-8 my-2 text-gray-500">Registration Billing</h1>
       </div>
-      <div className="w-[95%]   flex flex-row justify-around rounded-xl bg-white p-2 shadow-xl ring-1 ring-gray-300">
-        <div className="w-1/2  flex flex-col justify-around items-center p-1 mt-1  rounded-lg">
+      <div data-aos="fade-right" className="w-[95%]   flex flex-col lg:flex-row justify-around rounded-xl bg-white p-1 shadow-xl ring-1 ring-gray-300">
+        <div className="w-full lg:w-1/2  flex flex-col justify-around items-center p-1 mt-1  rounded-lg">
           <div className=" w-[95%]">
             <ConfigProvider
             theme={{
               token: {
                 colorBgContainer:"#EBEEFF",
-                
-                // fontSize:"15px",
-                
-
-
-                
               },
             }}
             >
@@ -39,15 +39,9 @@ const RegistrationPaymentProceeder = () => {
               <Row gutter={16}>
                 <Col span={24}>
                   <Form.Item
-                  className="font-medium"
+                  className="font-medium mb-5"
                     name="regNo"
                     label="Register No"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter Registration No",
-                      },
-                    ]}
                   >
                     <Input placeholder="Please enter registration no" />
                   </Form.Item>
@@ -58,60 +52,42 @@ const RegistrationPaymentProceeder = () => {
                   <Form.Item
                     name="studentName"
                     label="Student Name"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter student name",
-                      },
-                    ]}
+                    className="font-medium mb-5"
                   >
                     <Input placeholder="Please enter student name" />
                   </Form.Item>
                   <Form.Item
                     name="regfee"
                     label="RegistrationFee"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter registrationFee",
-                      },
-                    ]}
+                    className="font-medium mb-5"
                   >
                     <Input placeholder="Please enter registration fee" />
                   </Form.Item>
                   <Form.Item
                     name="additionalCharges"
                     label="Additional Charges"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter Additional Charges",
-                      },
-                    ]}
+                    className="font-medium mb-5"
                   >
                     <Input placeholder="Please enter Additional Charges" />
                   </Form.Item>
                   <Form.Item
+                    name="totalpayment"
+                    label="Total Payment"
+                    className="font-medium mb-5"
+                  >
+                    <Input placeholder="Please enter Total payment" />
+                  </Form.Item>
+                  <Form.Item
                     name="payment"
                     label="Payment"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter payment",
-                      },
-                    ]}
+                    className="font-medium mb-5"
                   >
                     <Input placeholder="Please enter payment" />
                   </Form.Item>
                   <Form.Item
                     name="balance"
                     label="Balance"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter balance",
-                      },
-                    ]}
+                    className="font-medium mb-5"
                   >
                     <Input placeholder="Please enter  Balance" />
                   </Form.Item>
@@ -134,14 +110,11 @@ const RegistrationPaymentProceeder = () => {
             </button>
           </div>
         </div>
-        <div className="w-[40%]  mt-2 bg-white flex flex-col items-center p-2 rounded-xl">
-          <div className="w-[75%] mt-4  flex ">
+        <div className="w-[95%] lg:w-[40%]  mt-2 bg-white flex flex-col justify-center items-center p-2 rounded-xl">
+          <div className="w-[90%] md:w-[75%] mt-4  flex ">
             <StudentCard />
           </div>
-          
              <RegistationBill />
-      
-          
         </div>
       </div>
     </div>
