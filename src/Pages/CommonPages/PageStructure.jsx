@@ -69,7 +69,7 @@ const PageStructure = () => {
 
  
   return (
-    <div data-aos="zoom-in-up" className="flex flex-row border-2 border-red-700 h-screen overflow-hidden ">
+    <div  className="flex flex-row border-2 border-red-700 h-screen overflow-hidden ">
       <div className="h-[40px] mt-5 flex md:hidden z-50  border-2 border-black">
         {/* <div className=" border-2 border-green-800 h-[40px]">
           <MenuRoundedIcon onClick={openMobilePanel} />

@@ -15,6 +15,7 @@ const RegistrationFom = () => {
   
   const dispatch =useDispatch();
   const navigation=useNavigate();
+  const [uploadedImage,setuploadingImage]=useState("");
   const [api, contextHolder] = notification.useNotification();
   const [resultChecked,setresultChecked]=useState(false);
   const [errorValidator, setErrorValidator] = useState({
@@ -39,6 +40,7 @@ const RegistrationFom = () => {
       email: "",
       NIC: "",
       school: "",
+      profilepic:"",
     },
     parent: {
       firstName: "",
@@ -49,6 +51,17 @@ const RegistrationFom = () => {
       occupation: "",
     },
   });
+
+
+  useEffect(()=>{
+    setFormData({...formData,student:{
+      ...formData.student,
+      profilepic:uploadedImage
+    }})
+
+    console.log("uploading image added ",uploadedImage);
+
+  },[uploadedImage])
 
 
 
@@ -85,6 +98,7 @@ const RegistrationFom = () => {
       title: "Gardient Info",
       content: (
         <RegistrationFormTwo
+        setuploadingImage={setuploadingImage}
           errorValidator={errorValidator}
           formData={formData}
           handleChangingFormData={handleChangingFormData}
@@ -110,13 +124,13 @@ const RegistrationFom = () => {
 
   const next = () => {
     console.log("printing Form Data ", formData);
-    // Perform validations
+
     const hasErrors = PerformValidations(formData, setErrorValidator, errorValidator,current);
   
     if (!hasErrors) {
-      // If there are no validation errors, move to the next step
+
       setCurrent(current + 1);
-      // Clear validation errors
+
       setErrorValidator({});
     }else{
       message.error("Please enter correct details")
@@ -131,14 +145,12 @@ const RegistrationFom = () => {
         formData.parent.address=formData.student.address;
         console.log("finalized formData ",formData);
         dispatch(studentRegister(formData,navigation,notification));
-        // const result=studentRegister(formData);
-        // console.log(result);
+
 
       } catch (error) {
         console.log("error occured ",error);
       }
       
-      // return <NotificationPopup message="Hello world" description="Hello, this is good" />;
       
     }else{
       console.log("result is not checked");
@@ -156,7 +168,7 @@ const RegistrationFom = () => {
     title: item.title,
   }));
   const contentStyle = {
-    // lineHeight: '260px',
+
     color: token.colorTextTertiary,
     backgroundColor: token.colorFillAlter,
     borderRadius: token.borderRadiusLG,

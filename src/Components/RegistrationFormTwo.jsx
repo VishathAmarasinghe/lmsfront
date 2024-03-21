@@ -6,6 +6,7 @@ const RegistrationFormTwo = ({
   handleChangingFormData,
   formData,
   errorValidator,
+  setuploadingImage
 }) => {
   return (
     <div className="w-full  ">
@@ -13,7 +14,7 @@ const RegistrationFormTwo = ({
         <label className="font-inter text-[14px] font-medium text-black">
           Student Profile Picture
         </label>
-        <ProfilePicUploading />
+        <ProfilePicUploading setuploadingImage={setuploadingImage} />
         <p className="text-red-700 text-[12px]">Error text</p>
       </div>
       <div className="w-full flex md:flex-row flex-col justify-between ">

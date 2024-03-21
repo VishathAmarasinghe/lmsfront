@@ -52,10 +52,10 @@ const RegistrationConfirmStudentDrawer = ({
         if (parents) {
           setParentData(parents);
         } else {
-          setParentData([]); // Set parentData to an empty array if no parents are available
+          setParentData([]); 
         }
       } else {
-        setParentData([]); // Set parentData to an empty array if selectedStudent is not valid
+        setParentData([]); 
       }
       setLoading(false);
     };

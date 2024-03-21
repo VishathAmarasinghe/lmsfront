@@ -27,8 +27,7 @@ const items = [
   },
 ];
 const DropDown = () => (
-//   <Space direction="vertical">
-//     <Space wrap>
+
       <Dropdown
         menu={{
           items,
@@ -37,10 +36,6 @@ const DropDown = () => (
       >
         <Button>bottomLeft</Button>
       </Dropdown>
-      
-      
-//     </Space>
-    
-//   </Space>
+
 );
 export default DropDown;

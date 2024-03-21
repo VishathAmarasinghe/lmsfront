@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { lecturer } from '../../assets'
 import Barcode from 'react-barcode'
 
 
-const StudentCard = () => {
+const StudentCard = ({studentData}) => {
+    const [barcodeValue,setBarcodeValue]=useState(Date.now());
+    useEffect(()=>{
+        setBarcodeValue(studentData.UserID+studentData.studentID+"D"+Date.now())
+    },[])
   return (
     <div className='w-[390px]  flex flex-col mb-2 border-2 border-black'>
         <div className='w-full  flex flex-col justify-center items-center p-1 bg-[#5B6BD4]'>
@@ -17,14 +21,14 @@ const StudentCard = () => {
             <div className='w-[60%] '>
                 <div className='flex flex-row w-full justify-around mt-2'>
                     <p className='font-inter font-semibold'>Student No</p>
-                    <p className='font-inter'>SE008976</p>
+                    <p className='font-inter'>{studentData.UserID+"/"+studentData.studentID}</p>
                 </div>
                 <div className='flex flex-row w-full justify-around mt-2'>
-                    <p className='font-inter font-semibold'>Student No</p>
-                    <p className='font-inter'>SE008976</p>
+                    <p className='font-inter font-semibold'>Student Name</p>
+                    <p className='font-inter'>{studentData.firstName}</p>
                 </div>
                 <div className='w-full  flex flex-col justify-center items-center'>
-                    <Barcode height={30} width={1} fontSize={12} value='S0000129E990876'/>
+                    <Barcode height={25} width={0.8} fontSize={12} value={barcodeValue}/>
                 </div>
                
             </div>

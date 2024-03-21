@@ -1,41 +1,49 @@
-import React, { useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { Modal, Upload } from 'antd';
+import React, { useState } from "react";
+import { PlusOutlined } from "@ant-design/icons";
+import { Modal, Upload } from "antd";
 import ImgCrop from "antd-img-crop";
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-const ProfilePicUploading = () => {
+
+const ProfilePicUploading = ({ setuploadingImage }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
-  const [previewTitle, setPreviewTitle] = useState('');
-  const [fileList, setFileList] = useState([
-    {
-      uid: '-1',
-      name: 'image.png',
-      status: 'done',
-      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    },
-  ]);
+  const [previewImage, setPreviewImage] = useState("");
+  const [previewTitle, setPreviewTitle] = useState("");
+  const [fileList, setFileList] = useState([]);
+
   const handleCancel = () => setPreviewOpen(false);
+
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
     setPreviewImage(file.url || file.preview);
     setPreviewOpen(true);
-    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+    setPreviewTitle(
+      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
+    );
   };
-  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+
+  const handleChange = async ({ fileList: newFileList }) => {
+    console.log('New file listssss:', newFileList);
+    setFileList(newFileList);
+  
+    if (newFileList.length > 0 && newFileList[newFileList.length - 1].status === 'error') {
+      console.log('Processing file:', newFileList[newFileList.length - 1]);
+      try {
+        const base64String = await getBase64(newFileList[newFileList.length - 1].originFileObj);
+        console.log('Base64 image:', base64String);
+        setuploadingImage(base64String);
+      } catch (error) {
+        console.error('Error converting image to base64:', error);
+      }
+    }
+  };
+  
+
   const uploadButton = (
     <button
       style={{
         border: 0,
-        background: 'none',
+        background: "none",
       }}
       type="button"
     >
@@ -49,24 +57,40 @@ const ProfilePicUploading = () => {
       </div>
     </button>
   );
+
+  const convertImageToBase64 = async (file) => {
+    try {
+      const base64String = await getBase64(file.originFileObj);
+      console.log("Base64 image:", base64String);
+      setuploadingImage(base64String);
+    } catch (error) {
+      console.error("Error converting image to base64:", error);
+    }
+  };
+
   return (
     <>
-    <ImgCrop rotationSlider  >
-      <Upload
-        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-        listType="picture-card"
-        fileList={fileList}
-        onPreview={handlePreview}
-        onChange={handleChange}
-      >
-        {fileList.length >= 1 ? null : uploadButton}
-      </Upload>
+      <ImgCrop rotationSlider>
+        <Upload
+          accept="image/png, image/jpeg"
+          listType="picture-card"
+          fileList={fileList}
+          onPreview={handlePreview}
+          onChange={handleChange}
+        >
+          {fileList.length >= 1 ? null : uploadButton}
+        </Upload>
       </ImgCrop>
-      <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+      <Modal
+        open={previewOpen}
+        title={previewTitle}
+        footer={null}
+        onCancel={handleCancel}
+      >
         <img
           alt="example"
           style={{
-            width: '100%',
+            width: "100%",
           }}
           src={previewImage}
         />
@@ -74,4 +98,18 @@ const ProfilePicUploading = () => {
     </>
   );
 };
+
+const getBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 export default ProfilePicUploading;
