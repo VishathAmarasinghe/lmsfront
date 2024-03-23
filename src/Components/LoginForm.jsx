@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { message, notification } from "antd";
 import { loginValidation } from "../Utils/Validations";
+import { getUserPhoto } from "../API";
 
 export const LoginForm = () => {
   const dispatch=useDispatch();
@@ -25,9 +26,7 @@ export const LoginForm = () => {
       password:""
   });
 
-  useEffect(()=>{
 
-  },[])
 
   const ondetailsChangin=(e)=>{
     setLoginDetails({...LoginDetails,[e.target.name]:e.target.value});
@@ -43,9 +42,11 @@ export const LoginForm = () => {
         const validationStatus=loginValidation(LoginDetails,setValidationErrors);
         if (validationStatus) {
           message.error("Validation Error. Please enter your details")
+          setloading(false);
         }else{
-          dispatch(signIn(LoginDetails,notification,navigate))
+          dispatch(signIn(LoginDetails,notification,navigate,setloading))
         }
+        
         
         
     }
@@ -70,7 +71,7 @@ export const LoginForm = () => {
             ),
           }}
         />
-        <p className="text-red-700">Error text</p>
+        {/* <p className="text-red-700">Error text</p> */}
       </div>
 
       <div className="flex flex-col mb-3">
@@ -102,7 +103,7 @@ export const LoginForm = () => {
           
           
         />
-        <p className="text-red-700">Error text</p>
+        {/* <p className="text-red-700">Error text</p> */}
       </div>
       <div className="w-full flex flex-row justify-between items-center my-3">
           <div className="flex flex-row  items-center">

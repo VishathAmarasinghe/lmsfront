@@ -36,3 +36,14 @@ export const updateUserData=async(updateData)=>{
         return error;
     }
 }
+
+
+export const getUserProfilePicture=async(studentprofileLocation)=>{
+    try {
+        const {data}=await API.getUserPhoto(studentprofileLocation)
+        console.log("data profile  ",data);
+        return data;
+    } catch (error) {
+        console.log("error ",error);
+    }
+}

@@ -61,6 +61,11 @@ const RegistrationPaymentProceeder = () => {
     if (billImage!="") {
       setPaymentData({...paymentData,receiptimage:billImage})
     }
+
+    const studentIDCardImage=await htmlToImagetranslator(document.getElementById("studentCard"));
+    if (studentIDCardImage!="") {
+      
+    }
     
     const {data}=await registrationPayment(paymentData);
     console.log("data ",data);

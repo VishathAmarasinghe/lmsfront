@@ -3,6 +3,7 @@ import ClassCard from "../Components/Class/ClassCard";
 import { Button } from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import ClassAddingDrawer from "../Components/Class/ClassAddingDrawer";
+import ClassAddingModel from "../Components/Class/ClassAddingModel";
 
 const MainClassPage = () => {
     const [addingCompOpen,setAddingCompOpen]=useState(false);
@@ -28,7 +29,8 @@ const MainClassPage = () => {
           <ClassCard />
         </div>
       </div>
-      <ClassAddingDrawer addingCompOpen={addingCompOpen} setAddingCompOpen={setAddingCompOpen}/>
+      {/* <ClassAddingDrawer addingCompOpen={addingCompOpen} setAddingCompOpen={setAddingCompOpen}/> */}
+      <ClassAddingModel addingCompOpen={addingCompOpen} setAddingCompOpen={setAddingCompOpen}/>
 
     </div>
   );

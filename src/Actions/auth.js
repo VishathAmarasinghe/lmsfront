@@ -27,7 +27,7 @@ export const studentRegister=(formData,navigation,notification)=>async(dispatch)
     }
 }
 
-export const signIn=(loginDetails,notification,navigation)=>async(dispatch)=>{
+export const signIn=(loginDetails,notification,navigation,setloading)=>async(dispatch)=>{
     try {
         const {data}=await API.signIn(loginDetails);
         console.log("loggin form ",data);
@@ -51,6 +51,8 @@ export const signIn=(loginDetails,notification,navigation)=>async(dispatch)=>{
               description:"Login Error occured, Please try again!"
             }
           )
+          setloading(false);
+
     }
 }
 

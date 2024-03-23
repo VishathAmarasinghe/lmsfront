@@ -31,7 +31,7 @@ const ClassAddingDrawer = ({ addingCompOpen, setAddingCompOpen }) => {
       <Drawer
         getContainer={false}
         title="Add Class"
-        //   width={720}
+          width={720}
         onClose={onClose}
         open={addingCompOpen}
         styles={{

@@ -44,10 +44,11 @@ const pageChanger = (pageChanger) => {
       return <StudentNotices/>;
 
     case "11":
-      break
+      break;
+      
 
     case "12":
-      break
+      return <MainClassPage/>
 
     case "13":
       break
