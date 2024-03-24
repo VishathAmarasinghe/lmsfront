@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Form,
@@ -12,9 +12,53 @@ import {
   Tag,
 } from "antd";
 import HallCard from "./HallCard";
+import SubjectAddingDrawer from "./SubjectAddingDrawer";
+import { daysOfTheWeek } from "../../Utils/defaultValues";
+import { get_all_grades, get_all_halls, get_all_subjects } from "../../Actions/class";
+import { getAvailableClassesOneDay } from "../../Utils/getAvailableClasses";
 
 const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
   const [onlineMode, setOnlineMode] = useState(false);
+  const [subjectAddingDrawerOpen,setSubjectAddingDrawerOpen]=useState(false);
+  const [halls,setHalls]=useState([]);
+  const [subjects,setSubjects]=useState([]);
+  const [allgrades,setAllgrades]=useState([])
+
+  const handleAddingNewSubject=()=>{
+    setSubjectAddingDrawerOpen(true);
+  }
+
+  useEffect(()=>{
+    fetch_grades_subjects_halls();
+
+  },[])
+
+
+  const fetch_grades_subjects_halls=async()=>{
+    const grades=await get_all_grades();
+
+    const gradeWithOptions=grades.map(grade=>({
+        value: grade.gradeID,
+        label: grade.gradeName,
+    }))
+
+    setAllgrades(gradeWithOptions);
+
+    const subjects=await get_all_subjects();
+    const subjectWithOptions=subjects.map(subject=>({
+        value: subject.subjectID,
+        label: `${subject.subjectName} (${subject.medium})`,
+    }))
+    setSubjects(subjectWithOptions);
+
+    const halls =await get_all_halls();
+    setHalls(halls);
+
+    getAvailableClassesOneDay("monday","HA1");
+
+  }
+
+
   return (
     <Modal
       title="Add New Class"
@@ -25,6 +69,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
       onCancel={() => setAddingCompOpen(false)}
     >
       <div className="w-full h-full overflow-y-auto overflow-x-hidden">
+        <SubjectAddingDrawer  subjectAddingDrawerOpen={subjectAddingDrawerOpen} setSubjectAddingDrawerOpen={setSubjectAddingDrawerOpen}/>
         <Form layout="vertical" hideRequiredMark>
           <Row gutter={16}>
             <Col span={12}>
@@ -46,10 +91,10 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
               <Form.Item name="subject" label="Subject">
                 <Row gutter={24}>
                   <Col span={16}>
-                    <Select />
+                    <Select options={subjects} />
                   </Col>
                   <Col>
-                    <button className="bg-blue-600 p-2 rounded-md text-white">
+                    <button onClick={handleAddingNewSubject} className="bg-blue-600 p-2 rounded-md text-white">
                       Add new Subject
                     </button>
                   </Col>
@@ -73,7 +118,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
                   },
                 ]}
               >
-                <Select />
+                <Select options={allgrades} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -122,7 +167,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
                   },
                 ]}
               >
-                <Select />
+                <Select options={daysOfTheWeek} defaultValue="monday" />
               </Form.Item>
             </Col>
           </Row>
@@ -140,14 +185,10 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
                   ]}
                 >
                   <div className="grid grid-cols-2 md:grid-cols-6 place-content-center">
-                    <HallCard />
-                    <HallCard />
-                    <HallCard />
-                    <HallCard />
-                    <HallCard />
-                    <HallCard />
-                    <HallCard />
-                    <HallCard />
+                    {
+                        halls.map((hall)=>(<HallCard hall={hall}/>))
+                    }
+                    
                   </div>
                 </Form.Item>
               </Col>
