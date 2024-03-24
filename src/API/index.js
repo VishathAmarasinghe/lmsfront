@@ -23,3 +23,5 @@ export const getAllHalls=()=>axios.get("http://localhost:5050/classService/halls
 
 
 export const getclasswithHalls=(day,hall)=>axios.get(`http://localhost:5050/classService/classwithhall?day=${day}&hall=${hall}`);
+
+export const newclassCreating=(classData)=>axios.post("http://localhost:5050/classService/newclass",classData);
