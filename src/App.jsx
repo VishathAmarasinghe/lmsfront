@@ -31,6 +31,7 @@ function App() {
       <Route path="/login" Component={()=>(!user?<LoginRegistration actionType="login"/>:<Navigate to="/"/>)}/>
       <Route path="/register" Component={()=>(!user?<LoginRegistration actionType="register"/>:<Navigate to="/"/>)}/>
       <Route path="/" Component={()=>(!user?<LoginRegistration actionType="login"/>:<PageStructure/>)}/>
+      <Route path="/class" Component={()=>(!user?<LoginRegistration actionType="login"/>:<ClassPageStructure/>)}/>
       <Route path="/" Component={()=>(!user?<LoginRegistration actionType="login"/>:<Navigate to="/"/>)}/>
     </Routes>
 

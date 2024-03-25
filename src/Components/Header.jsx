@@ -11,11 +11,11 @@ import { useDispatch } from "react-redux";
 import { logout } from "../Actions/auth";
 import { useNavigate } from "react-router-dom";
 
-const Header = ({openMobilePanel,classMode}) => {
+const Header = ({openMobilePanel,classMode,openprofileeditingDrawer, setProfileOpeneditingDrawer}) => {
 
     const [userDetails, setUserDetails]=useState(JSON.parse(localStorage.getItem("profile"))?.result);
     const navigation=useNavigate();
-    const [openstudentProfileDrawer,setOpenstudentProfileDrawer]=useState(false);
+    
     const settings = ['Profile', 'Settings', 'Logout'];
     const [anchorElUser, setAnchorElUser] = useState(null);
     const dispatch=useDispatch();
@@ -32,7 +32,7 @@ const Header = ({openMobilePanel,classMode}) => {
             break;
           case "Profile":
             setAnchorElUser(null);
-            setOpenstudentProfileDrawer(true);
+            setProfileOpeneditingDrawer(true);
           default:
             break;
         }
@@ -40,7 +40,7 @@ const Header = ({openMobilePanel,classMode}) => {
 
   return (
     <div className="w-full h-full border-2 border-red-600 flex flex-row justify-between">
-      <StudentProfileDrawer openeditingDrawer={openstudentProfileDrawer} setOpeneditingDrawer={setOpenstudentProfileDrawer} />
+      
       <div className="flex flex-row items-center justify-center align-middle border-2 border-gray-600">
         {classMode?<div className="border-2 border-green-600 ">
           <img src={logo} alt="logo" className="w-[60%] md:w-[57%] ml-5"/>

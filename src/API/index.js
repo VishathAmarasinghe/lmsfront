@@ -25,3 +25,9 @@ export const getAllHalls=()=>axios.get("http://localhost:5050/classService/halls
 export const getclasswithHalls=(day,hall)=>axios.get(`http://localhost:5050/classService/classwithhall?day=${day}&hall=${hall}`);
 
 export const newclassCreating=(classData)=>axios.post("http://localhost:5050/classService/newclass",classData);
+
+export const getClassesByTeacher=(teacherID)=>axios.get(`http://localhost:5050/classService/classwithteacher?teacherID=${teacherID}`);
+
+export const newAccordian=(accordianData)=>axios.post("http://localhost:5050/classService/accordian",accordianData);
+
+export const getAccordiansByClass=(classID)=>axios.get(`http://localhost:5050/classService/accordian?classID=${classID}`);

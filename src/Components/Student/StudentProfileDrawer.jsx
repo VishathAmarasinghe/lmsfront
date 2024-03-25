@@ -17,15 +17,15 @@ import ProfilePicUploading from "../TeacherComp/ProfilePicUploading";
 
 const { Option } = Select;
 const { Panel } = Collapse;
-
-const StudentProfileDrawer  = ({ openeditingDrawer,setOpeneditingDrawer }) => {
+ 
+const StudentProfileDrawer  = ({ openprofileeditingDrawer,setProfileOpeneditingDrawer }) => {
     const [newpasswordVisible,setnewPasswordVisible]=useState(false);
     const [newConfirmPasswordVisible,setNewConfirmPasswordVisible]=useState(false);
   const showDrawer = () => {
-    setOpeneditingDrawer(true);
+    setProfileOpeneditingDrawer(true)
   };
   const onClose = () => {
-    setOpeneditingDrawer(false)
+    setProfileOpeneditingDrawer(false)
   };
 
 
@@ -36,7 +36,7 @@ const StudentProfileDrawer  = ({ openeditingDrawer,setOpeneditingDrawer }) => {
         title="Update Account"
         width={720}
         onClose={onClose}
-        open={openeditingDrawer}
+        open={openprofileeditingDrawer}
         styles={{
           body: {
             paddingBottom: 80,

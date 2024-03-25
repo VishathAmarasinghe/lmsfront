@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddBoxRoundedIcon from "@mui/icons-material/AddBoxRounded";
 import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import NewAccordianAdder from "./NewAccordianAdder";
 import ChangingclassInnerCards from "./ChangingclassInnerCards";
+import ClassContentDescription from "./ClassContentDescription";
+import { useSelector } from "react-redux";
 
 const ClassContent = () => {
     const [ openeditingDrawer,setOpeneditingDrawer ]=useState(false);
+    const [subAccID,setSubAccID]=useState(null);
+    const [selectedClass,setSelectedClass]=useState("");
+    const classInside=useSelector(state=>state.classes.selectedClass);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -22,18 +27,21 @@ const ClassContent = () => {
     setOpeneditingDrawer(true);
   }
 
+  useEffect(()=>{
+    setSelectedClass(classInside);
+  },[classInside])
+
   return (
     <div className="w-full border-2 border-black flex flex-col items-center">
       <div className="w-[95%] border-2 border-green-600 mt-2 flex flex-col">
-        <NewAccordianAdder  openeditingDrawer={openeditingDrawer }setOpeneditingDrawer={setOpeneditingDrawer}/>
+        <NewAccordianAdder subAccID={subAccID} setSubAccID={setSubAccID}  openeditingDrawer={openeditingDrawer }setOpeneditingDrawer={setOpeneditingDrawer}/>
         <div className="w-full flex flex-row">
         <div className="w-[95%] border-2 border-yellow-500 p-3">
-          <p>hello this is new classroom</p>
-          <p>hello this is next new classroom</p>
+          <ClassContentDescription classDetails={selectedClass}/>
         </div>
         <div className="border-2 border-blue-600 w-[5%] flex flex-col justify-center items-center">
-          <button onClick={handleClick}>
-            <AddBoxRoundedIcon className="text-[#9C9C9C] text-[20px] scalar-cardlg hover:text-black mb-1" />
+          <button onClick={handleClick} className="my-2">
+            <AddBoxRoundedIcon className="text-[#bebebe] text-[20px] scalar-cardlg hover:text-black mb-1" />
           </button>
           <Menu
             id="basic-menu"
@@ -49,8 +57,8 @@ const ClassContent = () => {
             
           </Menu>
 
-          <button>
-            <BorderColorRoundedIcon className="text-[#9C9C9C] text-[20px] scalar-cardlg hover:text-black" />
+          <button className="my-2">
+            <BorderColorRoundedIcon className="text-[#bebebe] text-[20px] scalar-cardlg hover:text-black" />
           </button>
         </div>
         </div>

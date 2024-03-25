@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   Button,
@@ -11,26 +11,75 @@ import {
   Row,
   Select,
   Space,
+  message,
 } from "antd";
 import KanbanBoard from "./KanbanBoard";
+import TextArea from "antd/es/input/TextArea";
+import { useSelector } from "react-redux";
+import { createNewAccordian } from "../../Actions/class";
 
 const { Option } = Select;
 const { Panel } = Collapse;
 
-const NewAccordianAdder = ({ openeditingDrawer, setOpeneditingDrawer }) => {
-  const [changingboardvalue,setchangingboardvalue]=useState("");
+const NewAccordianAdder = ({ openeditingDrawer, setOpeneditingDrawer,subAccID,setSubAccID }) => {
+  const {selectedClass}=useSelector((state)=>state.classes);
+  const [form] = Form.useForm();
+  const [accordianData, setAccordianData] = useState({
+    accName: "",
+    accDescription: "",
+    classID: selectedClass?.classID,
+    accType: "accordian",
+    subAccID:subAccID
+  });
+
+
+  useEffect(()=>{
+    setAccordianData({...accordianData,classID:selectedClass?.classID})
+  },[selectedClass])
+
+
+  useEffect(()=>{
+    setAccordianData({...accordianData,subAccID:subAccID})
+  },[subAccID])
+
+
   const showDrawer = () => {
     setOpeneditingDrawer(true);
   };
+
   const onClose = () => {
     setOpeneditingDrawer(false);
+    setAccordianData({
+      accName: "",
+      accDescription: "",
+      classID: "",
+      accType: "accordian",
+      subAccID:subAccID
+    })
+    form.resetFields();
   };
+
+  const handleFormValuesChange = (changedValues, allValues) => {
+    setAccordianData({ ...accordianData, ...changedValues });
+  };
+
+  const handleSubmitAccordiant=async()=>{
+    console.log("all acc details",accordianData);
+   const result= await createNewAccordian(accordianData);
+   if (result.status==200) {
+    message.success("Accordian Created Successfully")
+   }else{
+    message.error("Error in creating accordian")
+   }
+   onClose()
+  }
+
   return (
     <>
       <Drawer
         getContainer={false}
         title="New Accordian"
-        width={310}
+        width={350}
         onClose={onClose}
         open={openeditingDrawer}
         styles={{
@@ -42,7 +91,7 @@ const NewAccordianAdder = ({ openeditingDrawer, setOpeneditingDrawer }) => {
           <Space>
             <button onClick={onClose}>Cancel</button>
             <button
-              onClick={onClose}
+              onClick={handleSubmitAccordiant}
               className="bg-blue-700 px-2 py-1 ml-2 hover:bg-blue-800 text-white font-medium rounded-lg"
             >
               Add
@@ -50,11 +99,17 @@ const NewAccordianAdder = ({ openeditingDrawer, setOpeneditingDrawer }) => {
           </Space>
         }
       >
-        <Form layout="vertical" hideRequiredMark>
+        <Form
+          form={form}
+          onValuesChange={handleFormValuesChange}
+          layout="vertical"
+          initialValues={accordianData}
+          hideRequiredMark
+        >
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item
-                name="boardName"
+                name="accName"
                 label="Accordian Name"
                 rules={[
                   {
@@ -63,22 +118,41 @@ const NewAccordianAdder = ({ openeditingDrawer, setOpeneditingDrawer }) => {
                   },
                 ]}
               >
-                <Input onChange={(e)=>setchangingboardvalue(e.target.value)} placeholder="Please enter suitable name" />
+                <Input placeholder="Please enter suitable name" />
+              </Form.Item>
+              <Form.Item
+                name="accDescription"
+                label="Accordian Description"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter Description",
+                  },
+                ]}
+              >
+                <TextArea placeholder="description (Not Mandatory)" />
               </Form.Item>
             </Col>
           </Row>
         </Form>
         <div>
-            <p>Sample</p>
-            <Collapse
+          <p>Sample</p>
+          <Collapse
             items={[
-                {
-                    key:"1",
-                    label:changingboardvalue,
-                    children:<p>Content Here</p>
-                }
+              {
+                key: "1",
+                label: accordianData.accName,
+                children: (
+                  <div className="flex flex-col">
+                    <p>{accordianData.accDescription}</p>
+                    <p className="text-slate-300">
+                      notes,quizzes,uploading go here
+                    </p>
+                  </div>
+                ),
+              },
             ]}
-            />
+          />
         </div>
       </Drawer>
     </>

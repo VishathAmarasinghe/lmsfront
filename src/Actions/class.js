@@ -55,3 +55,58 @@ export const newClass=async(classData)=>{
         console.log("class creating error ", error);
     }
 }
+
+export const get_classes_by_teacher=(teacherID)=>async(dispatch)=>{
+    try {
+        const {data}=await API.getClassesByTeacher(teacherID);
+        dispatch({
+            type:"FETCH_TEACHER_CLASSES",
+            classes:data[0]
+        })
+        console.log("data   ",data[0]);
+    } catch (error) {
+        console.log("techer detail fetching Error");
+    }
+}
+
+export const selectedClass=(classData)=>async(dispatch)=>{
+    try {
+      
+        dispatch({
+            type:"SELECTED_CLASS",
+            class:classData
+        })
+       
+    } catch (error) {
+        console.log("class selecting Error");
+    }
+}
+
+export const createNewAccordian=async(accordianData)=>{
+    try {
+        const result=await API.newAccordian(accordianData);
+        console.log("data of accordian ",result);
+        return result;
+        
+    } catch (error) {
+        console.log("accordian Creating Error ",error);
+
+    }
+}
+
+
+export const getAllAccordianByClassID=async(classID)=>async(dispatch)=>{
+    try {
+        const result=await API.getAccordiansByClass(classID);
+        console.log("data of accordian get ",result);
+        dispatch({
+            type:"ACCORDIANS_BY_CLASS",
+            classAccordians:result.data
+        })
+        return result;
+        
+    } catch (error) {
+        console.log("accordian Creating Error ",error);
+
+    }
+}

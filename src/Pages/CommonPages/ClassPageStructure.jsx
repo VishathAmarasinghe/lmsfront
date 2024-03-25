@@ -2,7 +2,8 @@ import { Layout, theme,ConfigProvider,Menu } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import HeaderBar from "../../Components/Header";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import React, { useState } from "react";
+import StudentProfileDrawer from "../../Components/Student/StudentProfileDrawer";
+import React, { useEffect, useState } from "react";
 import {
   DesktopOutlined,
   FileOutlined,
@@ -14,6 +15,11 @@ import ClassHeaderPageStructure from "../../Components/Class/ClassHeaderPageStru
 import ClassContent from "../../Components/Class/ClassContent";
 import ClassParticipants from "../../InnerPages/ClassParticipants";
 import GradeBook from "../../InnerPages/GradeBook";
+import { classNavigationPanel } from "../../Utils/ClassNavigationList";
+import ClassPageLoader from "./ClassPageLoader";
+import { useDispatch } from "react-redux";
+import { change_classsPage } from "../../Actions/PageNumbers";
+import { useNavigate } from "react-router-dom";
 
 function getItem(label, key, icon, children) {
   return {
@@ -26,50 +32,60 @@ function getItem(label, key, icon, children) {
 
 const {Sider}=Layout;
 const ClassPageStructure = () => {
+  const [navigationList,setNavigationList]=useState([]);
+  const navigation=useNavigate();
+  const [classPageIndex,setClassPageIndex]=useState("A1");
   const [collapsed, setCollapsed] = useState(false);
   const [mobilemenu, setMobileMenu] = useState(false);
+  const dispatch=useDispatch();
+  const [openeditingDrawer,setOpeneditingDrawer]=useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const items = [
-    getItem("Option 1", "1", <PieChartOutlined />),
-    getItem("Option 2", "2", <DesktopOutlined />),
-    getItem("User", "sub1", <UserOutlined />, [
-      getItem("Tom", "3"),
-      getItem("Bill", "4"),
-      getItem("Alex", "5"),
-    ]),
-    getItem("Team", "sub2", <TeamOutlined />, [
-      getItem("Team 1", "6"),
-      getItem("Team 2", "8"),
-    ]),
-    getItem("Files", "9", <FileOutlined />),
-  ];
+  useEffect(()=>{
+    
+    setNavigationList(classNavigationPanel(JSON.parse(localStorage.getItem("profile"))?.result?.role));
 
+  },[JSON.parse(localStorage.getItem("profile"))?.result?.role])
+
+ 
   const openMobilePanel = () => {
     setMobileMenu((pre) => !pre);
   };
 
+  const closeClassPanel=()=>{
+    navigation("/")
+  }
+
+
   const handleMenuclick=(e)=>{
     console.log("clicked e ",e);
+    setClassPageIndex(e.key);
+    dispatch(change_classsPage(e.key));
   }
   return (
-    <Layout className="w-full h-screen">
+    <Layout className="w-full h-screen z-40">
+      <StudentProfileDrawer openprofileeditingDrawer={openeditingDrawer} setProfileOpeneditingDrawer={setOpeneditingDrawer} />
       <Header
         style={{
           padding: 0,
           position:"sticky",
           top:0,
+          zIndex:20,
+          lineHeight:0,
           background: colorBgContainer,
-        }}
+        }} 
       >
-        <HeaderBar classMode={true} openMobilePanel={openMobilePanel} />
+        <HeaderBar classMode={true} openprofileeditingDrawer={openeditingDrawer} setProfileOpeneditingDrawer={setOpeneditingDrawer} openMobilePanel={openMobilePanel} />
       </Header>
-      <Content className="flex flex-col justify-center items-center bg-[#EBEEFF]">
-        <Layout className="w-[96%] mt-3   h-[95%] bg-gray-500 rounded-xl">
+      <Content className="flex flex-col justify-center items-center bg-[#EBEEFF] border-2 border-black z-30">
+        <Layout className="w-[96%] mt-3   h-[95%] bg-gray-500 rounded-xl border-2 border-black">
         <div className="bg-[#4551A1] p-1  rounded-tl-xl rounded-tr-xl">
-          <CloseRoundedIcon className="text-white scalar-card hover:text-black"/>
+          <button onClick={closeClassPanel}>
+            <CloseRoundedIcon  className="text-white scalar-card hover:text-black"/>
+          </button>
+          
         </div>
         <Layout>
           <Header  style={{
@@ -114,7 +130,7 @@ const ClassPageStructure = () => {
                 theme="light"
                 defaultSelectedKeys={["1"]}
                 mode="inline"
-                items={items}
+                items={navigationList}
               />
               </ConfigProvider>
             </Sider>
@@ -127,7 +143,8 @@ const ClassPageStructure = () => {
               
               {/* <ClassContent/> */}
               {/* <ClassParticipants/> */}
-                <GradeBook/>
+                {/* <GradeBook/> */}
+                <ClassPageLoader innerPageKey={classPageIndex}/>
 
 
             </div>

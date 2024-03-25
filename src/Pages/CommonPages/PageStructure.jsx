@@ -30,6 +30,7 @@ import { UserRelatedNavigationPanel } from "../../Utils/LeftNavigationlist";
 import InnerPageLoader from "./InnerPageLoader";
 import { useDispatch } from "react-redux";
 import { change_page_number } from "../../Actions/PageNumbers";
+import { get_classes_by_teacher } from "../../Actions/class";
 
 
 
@@ -52,6 +53,10 @@ const PageStructure = () => {
     const userValue=JSON.parse(localStorage.getItem("profile"))?.result?.role;
     setCurrentUser(userValue);
     console.log("current user ",userValue);
+
+    if (userValue=="teacher") {
+      dispatch(get_classes_by_teacher(JSON.parse(localStorage.getItem("profile"))?.result?.UserID));
+    }
   },[JSON.parse(localStorage.getItem("profile"))?.result?.role])
 
   const openMobilePanel = () => {
@@ -63,7 +68,6 @@ const PageStructure = () => {
     console.log("clicked e ",e.key);
     setPageIndex(e.key);
     dispatch(change_page_number(e.key));
-    
   }
 
 

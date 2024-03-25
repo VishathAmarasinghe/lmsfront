@@ -4,3 +4,10 @@ export const change_page_number=(pageNumber)=>(dispatch)=>{
         pageNumber
     })
 }
+
+export const change_classsPage=(classPageNumber)=>(dispatch)=>{
+    dispatch({
+        type:"CLASS_PAGE",
+        classPageNumber
+    })
+}
