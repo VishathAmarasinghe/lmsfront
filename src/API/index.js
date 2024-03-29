@@ -31,3 +31,14 @@ export const getClassesByTeacher=(teacherID)=>axios.get(`http://localhost:5050/c
 export const newAccordian=(accordianData)=>axios.post("http://localhost:5050/classService/accordian",accordianData);
 
 export const getAccordiansByClass=(classID)=>axios.get(`http://localhost:5050/classService/accordian?classID=${classID}`);
+
+
+export const getSpecificClass=(classID)=>axios.get(`http://localhost:5050/classService/class?classID=${classID}`);
+
+export const uploadNotes=(formData)=>axios.post("http://localhost:5050/classService/noteUpload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  export const deleteNotewithMaterial=(noteData)=>axios.delete("http://localhost:5050/classService/note",{data:noteData});

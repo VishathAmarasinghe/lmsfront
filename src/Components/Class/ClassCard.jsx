@@ -19,7 +19,7 @@ const ClassCard = ({classinfo}) => {
   const classOnclickHandle=()=>{
     dispatch(selectedClass(classinfo))
     console.log("selected class Info ",classinfo);
-    navigate("/class");
+    navigate(`/class/${classinfo.classID}`);
     }
   return (
     <div onClick={classOnclickHandle} className=' w-full md:w-[90%]  shadow-lg hover:shadow-2xl rounded-xl relative scalar-cardsm'>

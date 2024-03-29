@@ -13,7 +13,6 @@ const MainClassPage = () => {
     const [addingCompOpen,setAddingCompOpen]=useState(false);
 
   
-
     useEffect(()=>{
       console.log("teacher classes ",classes);
     },[])

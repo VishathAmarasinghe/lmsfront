@@ -19,7 +19,9 @@ import { classNavigationPanel } from "../../Utils/ClassNavigationList";
 import ClassPageLoader from "./ClassPageLoader";
 import { useDispatch } from "react-redux";
 import { change_classsPage } from "../../Actions/PageNumbers";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getSpecificClass } from "../../Actions/class";
+import { useSelector } from "react-redux";
 
 function getItem(label, key, icon, children) {
   return {
@@ -33,10 +35,13 @@ function getItem(label, key, icon, children) {
 const {Sider}=Layout;
 const ClassPageStructure = () => {
   const [navigationList,setNavigationList]=useState([]);
+  const [selectedClassDetails,setSelectedClassDetails]=useState("");
   const navigation=useNavigate();
+  const defaultmenuSelector=useSelector((state)=>state.page);
   const [classPageIndex,setClassPageIndex]=useState("A1");
   const [collapsed, setCollapsed] = useState(false);
   const [mobilemenu, setMobileMenu] = useState(false);
+  const {classID}=useParams();
   const dispatch=useDispatch();
   const [openeditingDrawer,setOpeneditingDrawer]=useState(false);
   const {
@@ -45,9 +50,23 @@ const ClassPageStructure = () => {
 
   useEffect(()=>{
     
-    setNavigationList(classNavigationPanel(JSON.parse(localStorage.getItem("profile"))?.result?.role));
+    const activeUser=JSON.parse(localStorage.getItem("profile"))?.result?.role;
+    console.log("defualt menu selector ",defaultmenuSelector);
+    setNavigationList(classNavigationPanel(activeUser));
+    if (activeUser=="teacher") {
+      dispatch(change_classsPage("A5"))
+    }
+    
 
   },[JSON.parse(localStorage.getItem("profile"))?.result?.role])
+
+
+  useEffect(()=>{
+    
+    dispatch(getSpecificClass(classID));
+    // const classData=getSpecificClass(classID);
+    // setSelectedClassDetails(classData);
+  },[classID])
 
  
   const openMobilePanel = () => {
@@ -128,7 +147,7 @@ const ClassPageStructure = () => {
               <Menu
               onClick={handleMenuclick}
                 theme="light"
-                defaultSelectedKeys={["1"]}
+                defaultSelectedKeys={["A5"]}
                 mode="inline"
                 items={navigationList}
               />
@@ -140,13 +159,7 @@ const ClassPageStructure = () => {
           <Content className="w-full border-2 border-red-600 mt-2">
             <div className="w-full flex flex-col  h-full border-2 border-yellow-500 overflow-y-auto">
 
-              
-              {/* <ClassContent/> */}
-              {/* <ClassParticipants/> */}
-                {/* <GradeBook/> */}
                 <ClassPageLoader innerPageKey={classPageIndex}/>
-
-
             </div>
           </Content>
         </Layout>

@@ -7,11 +7,16 @@ import NewAccordianAdder from "./NewAccordianAdder";
 import ChangingclassInnerCards from "./ChangingclassInnerCards";
 import ClassContentDescription from "./ClassContentDescription";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getAllAccordianByClassID } from "../../Actions/class";
+import { useParams } from "react-router-dom";
 
 const ClassContent = () => {
     const [ openeditingDrawer,setOpeneditingDrawer ]=useState(false);
+    const dispatch=useDispatch();
     const [subAccID,setSubAccID]=useState(null);
     const [selectedClass,setSelectedClass]=useState("");
+    const {classID}=useParams();
     const classInside=useSelector(state=>state.classes.selectedClass);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -29,6 +34,7 @@ const ClassContent = () => {
 
   useEffect(()=>{
     setSelectedClass(classInside);
+    dispatch(getAllAccordianByClassID(classID))
   },[classInside])
 
   return (
@@ -62,7 +68,7 @@ const ClassContent = () => {
           </button>
         </div>
         </div>
-        <ChangingclassInnerCards/>
+        <ChangingclassInnerCards setSubAccID={setSubAccID}  openeditingDrawer={openeditingDrawer }setOpeneditingDrawer={setOpeneditingDrawer}/>
 
       </div>
     </div>

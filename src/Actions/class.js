@@ -95,13 +95,35 @@ export const createNewAccordian=async(accordianData)=>{
 }
 
 
-export const getAllAccordianByClassID=async(classID)=>async(dispatch)=>{
+export const getAllAccordianByClassID = (classID) => async (dispatch) => {
     try {
-        const result=await API.getAccordiansByClass(classID);
-        console.log("data of accordian get ",result);
+      const result = await API.getAccordiansByClass(classID);
+      console.log("data of accordian get ", result);
+      dispatch({
+        type: "ACCORDIANS_BY_CLASS_REQUEST",
+      });
+      dispatch({
+        type: "ACCORDIANS_BY_CLASS_SUCCESS",
+        classAccordians: result.data,
+      });
+      return result;
+    } catch (error) {
+      console.log("accordian Creating Error ", error);
+      dispatch({
+        type: "ACCORDIANS_BY_CLASS_FAILURE",
+        error: error.message,
+      });
+    }
+  };
+
+
+  export const getSpecificClass=(classID)=>async(dispatch)=>{
+    try {
+        const result=await API.getSpecificClass(classID);
+        console.log("data of selected Class ",result);
         dispatch({
-            type:"ACCORDIANS_BY_CLASS",
-            classAccordians:result.data
+            type:"SELECTED_CLASS",
+            class:result.data
         })
         return result;
         

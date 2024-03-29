@@ -16,7 +16,10 @@ import {
 import KanbanBoard from "./KanbanBoard";
 import TextArea from "antd/es/input/TextArea";
 import { useSelector } from "react-redux";
-import { createNewAccordian } from "../../Actions/class";
+
+import { createNewAccordian, getAllAccordianByClassID } from "../../Actions/class";
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -24,18 +27,20 @@ const { Panel } = Collapse;
 const NewAccordianAdder = ({ openeditingDrawer, setOpeneditingDrawer,subAccID,setSubAccID }) => {
   const {selectedClass}=useSelector((state)=>state.classes);
   const [form] = Form.useForm();
+  const dispatch=useDispatch();
+  const {classID} =useParams();
   const [accordianData, setAccordianData] = useState({
     accName: "",
     accDescription: "",
-    classID: selectedClass?.classID,
+    classID: classID,
     accType: "accordian",
     subAccID:subAccID
   });
 
 
   useEffect(()=>{
-    setAccordianData({...accordianData,classID:selectedClass?.classID})
-  },[selectedClass])
+    setAccordianData({...accordianData,classID:classID})
+  },[classID])
 
 
   useEffect(()=>{
@@ -57,6 +62,8 @@ const NewAccordianAdder = ({ openeditingDrawer, setOpeneditingDrawer,subAccID,se
       subAccID:subAccID
     })
     form.resetFields();
+    dispatch(getAllAccordianByClassID(classID));
+    
   };
 
   const handleFormValuesChange = (changedValues, allValues) => {

@@ -9,5 +9,7 @@ export const change_classsPage=(classPageNumber)=>(dispatch)=>{
     dispatch({
         type:"CLASS_PAGE",
         classPageNumber
+
+        
     })
 }
