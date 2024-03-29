@@ -48,3 +48,12 @@ export const uploadNotes=(formData)=>axios.post("http://localhost:5050/classServ
   export const getnotes=(noteurl)=>axios.get(`http://localhost:5020/fileUpload?filename=${noteurl}`,{
     responseType:"blob"
   });
+
+
+
+  
+export const uploadSubmissionPanel=(formData)=>axios.post("http://localhost:5050/classService/submission", formData, {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+});

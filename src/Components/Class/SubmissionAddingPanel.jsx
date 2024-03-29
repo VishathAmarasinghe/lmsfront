@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import {
   Button,
   Col,
@@ -14,8 +16,10 @@ import {
   Space,
   TimePicker,
   Upload,
+  message,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
+import { uploadSubmissionPanel } from "../../API";
 const { Option } = Select;
 const { Panel } = Collapse;
 const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingPanelOpen}) => {
@@ -26,8 +30,64 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
   };
   const onClose = () => {
     setSubmissionAddingPanelOpen(false)
+    form.resetFields();
   };
 
+  const [form]=Form.useForm();
+  const [fileList, setFileList] = useState([]);
+  const [submissionPanelData,setSubmissionPanelData]=useState({
+    title:"",
+    startDate:"",
+    startTime:"",
+    closeDate:"",
+    closeTime:"",
+    additionInfo:"",
+
+  });
+
+  const handleFileChange = ({ fileList }) => {
+    setFileList(fileList);
+  };
+
+  const handleSubmissionPanelSubmit = async() => {
+
+    const formValues = form.getFieldsValue();
+    
+
+    const formattedSubmissionPanelData = {
+      ...formValues,
+      startDate: formValues.startDate ? formValues.startDate.format('YYYY-MM-DD') : null,
+      startTime: formValues.startTime ? formValues.startTime.format('HH:mm:ss') : null,
+      closeDate: formValues.closeDate ? formValues.closeDate.format('YYYY-MM-DD') : null,
+      closeTime: formValues.closeTime ? formValues.closeTime.format('HH:mm:ss') : null,
+    };
+
+    setSubmissionPanelData(formattedSubmissionPanelData);
+
+    console.log("submiting Data submissions ",submissionPanelData);
+
+    const formData = new FormData();
+    formData.append("submissionPanelData", JSON.stringify(submissionPanelData));
+    fileList.forEach((file) => {
+      console.log("file object ",file.originFileObj);
+      formData.append("files", file.originFileObj);
+    });
+  
+    const submissioResult=await uploadSubmissionPanel(formData);
+    if (submissioResult.status===200) {
+      message.success("submission panel Uploaded");
+    }else{
+      message.error("Error creating submission panel")
+    }
+
+    onClose();
+  };
+  
+
+
+  const handleFormValuesChange = (changedValues, allValues) => {
+    setSubmissionPanelData({ ...submissionPanelData, ...changedValues });
+  };
   return (
     <>
       <Drawer
@@ -45,7 +105,7 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
           <Space>
             <button onClick={onClose}>Cancel</button>
             <button
-              onClick={onClose}
+              onClick={handleSubmissionPanelSubmit}
               className="bg-blue-700 px-2 py-1 ml-2 hover:bg-blue-800 text-white font-medium rounded-lg"
             >
               Open
@@ -53,11 +113,15 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
           </Space>
         }
       >
-        <Form layout="vertical" hideRequiredMark>
+        <Form 
+        initialValues={submissionPanelData}
+        form={form}
+        onChange={handleFormValuesChange}
+        layout="vertical" hideRequiredMark>
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item
-                name="submittitle"
+                name="title"
                 label="Submission Title"
                 rules={[
                   {
@@ -73,7 +137,7 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
               <Row gutter={16}>
                 <Col span={12}>
               <Form.Item
-                name="StartDate"
+                name="startDate"
                 label="Submission Starting date"
                 rules={[
                   {
@@ -103,7 +167,7 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
               <Row gutter={16}>
               <Col span={12}>
               <Form.Item
-                name="StartDate"
+                name="closeDate"
                 label="Submission Closing date"
                 rules={[
                   {
@@ -117,7 +181,7 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
               </Col>
               <Col span={12}>
               <Form.Item
-                name="startTime"
+                name="closeTime"
                 label="Submission Closing Time"
                 rules={[
                   {
@@ -133,7 +197,7 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
               <Row gutter={16}>
                 <Col span={24}>
               <Form.Item
-                name="addiinfo"
+                name="additionInfo"
                 label="Additional Infomation"
                 rules={[
                   {
@@ -142,7 +206,7 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
                   },
                 ]}
               >
-                <TextArea placeholder="Please enter additional info if you have " />
+                <ReactQuill  theme="snow"/>
               </Form.Item>
               <Form.Item
                 name="addiinfo"
@@ -151,14 +215,16 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
                 <Upload
         // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
         listType="picture"
-        // fileList={fileList}
+        fileList={fileList}
         multiple
-        // onChange={handleChange}
+        onChange={handleFileChange}
       >
         <Button icon={<UploadOutlined />}>Upload</Button>
       </Upload>
               </Form.Item>
+              
             </Col>
+            
           </Row>
         </Form>
       </Drawer>
