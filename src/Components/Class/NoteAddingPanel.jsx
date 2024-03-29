@@ -17,6 +17,7 @@ const NoteAddingPanel = ({ accID,notemodelOpen, setnotemodelOpen }) => {
     const formData = new FormData();
     formData.append("accordianID", accID);
     fileList.forEach((file) => {
+      console.log("file object ",file.originFileObj);
       formData.append("files", file.originFileObj);
     });
     const uploadResult=await uploadNotes(formData);
@@ -71,7 +72,7 @@ const NoteAddingPanel = ({ accID,notemodelOpen, setnotemodelOpen }) => {
       <div style={{ textAlign: "right", marginTop: "20px" }}>
         <Button onClick={handleCancel}>Cancel</Button>
         <Button
-          type="primary"
+          className="bg-blue-600 hover:bg-blue-700 hover:text-white"
           style={{ marginLeft: "10px" }}
           onClick={handleOk}
           loading={confirmLoading}

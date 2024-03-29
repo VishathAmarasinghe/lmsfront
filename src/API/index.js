@@ -42,3 +42,9 @@ export const uploadNotes=(formData)=>axios.post("http://localhost:5050/classServ
   });
 
   export const deleteNotewithMaterial=(noteData)=>axios.delete("http://localhost:5050/classService/note",{data:noteData});
+
+
+
+  export const getnotes=(noteurl)=>axios.get(`http://localhost:5020/fileUpload?filename=${noteurl}`,{
+    responseType:"blob"
+  });

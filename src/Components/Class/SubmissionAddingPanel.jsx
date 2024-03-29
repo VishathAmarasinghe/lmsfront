@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
@@ -13,7 +13,9 @@ import {
   Select,
   Space,
   TimePicker,
+  Upload,
 } from "antd";
+import TextArea from "antd/es/input/TextArea";
 const { Option } = Select;
 const { Panel } = Collapse;
 const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingPanelOpen}) => {
@@ -31,7 +33,7 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
       <Drawer
         getContainer={false}
         title="Add Class"
-        //   width={720}
+          width={720}
         onClose={onClose}
         open={submissionaddingpanelOpen}
         styles={{
@@ -66,6 +68,10 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
               >
                 <Input placeholder="Please enter name for submission" />
               </Form.Item>
+              </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={12}>
               <Form.Item
                 name="StartDate"
                 label="Submission Starting date"
@@ -78,6 +84,8 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
               >
                 <DatePicker className="w-full"/>
               </Form.Item>
+              </Col>
+              <Col span={12}>
               <Form.Item
                 name="startTime"
                 label="Submission Starting Time"
@@ -90,6 +98,10 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
               >
                 <TimePicker className="w-full"/>
               </Form.Item>
+              </Col>
+              </Row>
+              <Row gutter={16}>
+              <Col span={12}>
               <Form.Item
                 name="StartDate"
                 label="Submission Closing date"
@@ -102,6 +114,8 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
               >
                 <DatePicker className="w-full"/>
               </Form.Item>
+              </Col>
+              <Col span={12}>
               <Form.Item
                 name="startTime"
                 label="Submission Closing Time"
@@ -114,6 +128,10 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
               >
                 <TimePicker className="w-full"/>
               </Form.Item>
+              </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={24}>
               <Form.Item
                 name="addiinfo"
                 label="Additional Infomation"
@@ -124,7 +142,21 @@ const SubmissionAddingPanel = ({ submissionaddingpanelOpen, setSubmissionAddingP
                   },
                 ]}
               >
-                <Input placeholder="Please enter additional info if you have " />
+                <TextArea placeholder="Please enter additional info if you have " />
+              </Form.Item>
+              <Form.Item
+                name="addiinfo"
+                label="Additional materials"
+              >
+                <Upload
+        // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        listType="picture"
+        // fileList={fileList}
+        multiple
+        // onChange={handleChange}
+      >
+        <Button icon={<UploadOutlined />}>Upload</Button>
+      </Upload>
               </Form.Item>
             </Col>
           </Row>
