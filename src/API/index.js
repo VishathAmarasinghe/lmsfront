@@ -51,9 +51,38 @@ export const uploadNotes=(formData)=>axios.post("http://localhost:5050/classServ
 
 
 
+
+
+
   
 export const uploadSubmissionPanel=(formData)=>axios.post("http://localhost:5050/classService/submission", formData, {
   headers: {
     "Content-Type": "multipart/form-data",
   },
 });
+
+
+export const deleteSubmissionPanel=(panelData)=>axios.delete("http://localhost:5050/classService/submission",{data:panelData});
+
+
+export const submitSubmissions=(formData)=>axios.post("http://localhost:5050/classService/submit", formData, {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+});
+
+export const getSubmittedAssignment=(panelID,studentID)=>axios.get(`http://localhost:5050/classService/submit`,{
+  params:{
+    panelID:panelID,
+    studentID:studentID
+  }
+});
+
+
+export const deleteSubmissionAssignment=(assignmentData)=>axios.delete("http://localhost:5050/classService/submit",{data:assignmentData});
+
+export const getActivatedStudents=()=>axios.get("http://localhost:5050/user/activeStudents");
+
+export const getClassesForSelectedStudent=(studentID)=>axios.get(`http://localhost:5050/classService/classforstudent?studentID=${studentID}`)
+
+export const getClassesForNotSelectedStudent=(studentID)=>axios.get(`http://localhost:5050/classService/classforNotStudents?studentID=${studentID}`)

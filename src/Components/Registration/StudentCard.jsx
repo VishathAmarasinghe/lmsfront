@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { lecturer } from "../../assets";
-import Barcode from "react-barcode";
 import { getUserPhoto } from "../../API";
 import { getUserProfilePicture } from "../../Actions/user";
+import JsBarcode from "jsbarcode";
+import { formatBarcode } from "../../Utils/Validations";
 
 const StudentCard = ({ studentData }) => {
   const [barcodeValue, setBarcodeValue] = useState("1");
@@ -10,6 +11,11 @@ const StudentCard = ({ studentData }) => {
     const date = new Date();
     const year = date.getFullYear();
     setBarcodeValue(studentData.UserID + studentData.studentID + "D" + year);
+    
+    JsBarcode("#barcode",String(String(formatBarcode(studentData.UserID)) + String(formatBarcode(studentData.studentID))) ,{
+      height:"40",
+      
+    });
     console.log("prifle pic ", studentData.photo);
   }, []);
 
@@ -50,12 +56,8 @@ const StudentCard = ({ studentData }) => {
             <p className="font-inter">{studentData.firstName}</p>
           </div>
           <div className="w-full   flex flex-col justify-center items-center">
-            <Barcode
-              height={25}
-              width={0.7}
-              fontSize={12}
-              value={barcodeValue}
-            />
+            
+            <img id="barcode"/>
           </div>
         </div>
       </div>

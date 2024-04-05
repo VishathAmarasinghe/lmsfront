@@ -8,6 +8,7 @@ import RegistrationPending from "../../InnerPages/RegistrationPending";
 import ClassPayments from "../../InnerPages/ClassPayments";
 import RegistrationPaymentProceeder from "../../InnerPages/RegistrationPaymentProceeder";
 import { useSelector } from "react-redux";
+import AddStudentToClass from "../../InnerPages/AddStudentToClass";
 
 
 const pageChanger = (pageChanger) => {
@@ -76,7 +77,7 @@ const pageChanger = (pageChanger) => {
       break
 
     case "21":
-      break
+      return <AddStudentToClass/>
 
     case "22":
       break

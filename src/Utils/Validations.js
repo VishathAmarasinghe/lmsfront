@@ -26,6 +26,40 @@ function validatePhone(phone) {
   return regex.test(phone);
 }
 
+export function validateBarcode(barcode) {
+
+  if (typeof barcode !== 'string') {
+    return false; // Barcode is invalid
+  }
+  const pattern = /^\d{10}$/;
+  if (pattern.test(barcode) && barcode.length === 10) {
+    return true; // Barcode is valid
+  } else {
+    return false; // Barcode is invalid
+  }
+}
+
+
+
+
+
+export function formatBarcode(barcode) {
+
+  const numericPart = barcode.match(/\d+/);
+
+  if (!numericPart) {
+ 
+    return undefined;
+  }
+
+
+  const formattedNumericPart = numericPart[0].padStart(5, '0');
+
+  return formattedNumericPart;
+}
+
+
+
 
 const loginValidation=(loginData,setLoginErrorValidation)=>{
     const loginErrors={}

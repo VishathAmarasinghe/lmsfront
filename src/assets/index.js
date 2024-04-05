@@ -12,8 +12,9 @@ import pastcomp3 from '../assets/pastcomp3.png';
 import pastcomp4 from '../assets/pastcomp4.png';
 import pastcomp5 from '../assets/pastcomp5.png';
 import pastcomp6 from '../assets/pastcomp6.png';
+import scanImage from '../assets/scanImg.png';
 
 
 
 
-export {logo,loginpic,logoicon,eduinstitute,lecturer,student,teacher,classicon,pastcomp1,pastcomp2,pastcomp3,pastcomp4,pastcomp5,pastcomp6};
+export {logo,loginpic,logoicon,eduinstitute,lecturer,student,teacher,classicon,pastcomp1,pastcomp2,pastcomp3,pastcomp4,pastcomp5,pastcomp6,scanImage};

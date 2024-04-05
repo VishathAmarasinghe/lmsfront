@@ -1,0 +1,74 @@
+import React, { useEffect, useState } from 'react';
+import AddStudentClassCard from '../Components/Class/AddStudentClassCard';
+import StudentScanOrSearchCard from '../Components/Class/StudentScanOrSearchCard';
+import { getClassesForNotSelectedStudent } from '../API';
+import { Empty, message } from 'antd';
+import StudentAddingToClassesPopup from '../Components/Class/StudentAddingToClassesPopup';
+
+const AddStudentToClass = () => {
+  const [availableClasses, setAvailableClasses] = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [newSelectedClasses,setNewSelectedClasses] = useState([]);
+  const [modelOpen,setModelOpen]=useState(false);
+
+  useEffect(() => {
+    handleFetchingClasses();
+  }, [selectedStudent]);
+
+  const handleFetchingClasses = async () => {
+    try {
+      const classResult = await getClassesForNotSelectedStudent(selectedStudent?.data?.UserID);
+      setAvailableClasses(classResult.data);
+      console.log( classResult.data);
+    } catch (error) {
+      console.error('Error fetching classes:', error);
+    }
+  };
+
+
+  const handleAddingNewClasses=()=>{
+    if (newSelectedClasses.length > 0) {
+      setModelOpen(true);
+    }else{
+      message.warning("please select classes to add")
+    }
+    
+  }
+
+  return (
+    <div className="w-full h-[100%] flex flex-col items-center shadow-2xl overflow-y-auto">
+        <StudentAddingToClassesPopup modelOpen={modelOpen} setModelOpen={setModelOpen} newSelectedClasses={newSelectedClasses} selectedStudent={selectedStudent}/>
+      <div className="w-full">
+        <h1 className="font-inter font-semibold text-[18px] ml-8 my-2 text-gray-500">
+          Add Student to Class
+        </h1>
+      </div>
+      <div className="w-[95%] h-[90%] border-2 border-red-600 flex flex-row lg:flex-row justify-around rounded-xl bg-white p-1 shadow-xl ring-1 ring-gray-300">
+        <div className='border-2 border-pink-700 w-[50%]'>
+          <StudentScanOrSearchCard selectedStudent={selectedStudent} setSelectedStudent={setSelectedStudent} />
+        </div>
+        <div className='border-2 border-green-600 w-[40%] p-2 flex flex-col justify-between'>
+        <div className='w-full  h-[90%] border-2 border-green-400'>
+          <h1 className='text-gray-500 text-[16px]'>Classes</h1>
+          <div className='grid grid-cols-2 border-2 max-h-[85%] border-red-700 w-full overflow-y-auto'>
+            {availableClasses.length === 0 || availableClasses === null ? (
+              <Empty description="Class Data not available" className='text-slate-400'/>
+            ) : (
+              availableClasses.map((classItem, index) => (
+                <AddStudentClassCard key={classItem?.classID} selectedStudent={selectedStudent} assignType="selectedClass" classItem={classItem} newSelectedClasses={newSelectedClasses} setNewSelectedClasses={setNewSelectedClasses} color={"blue"} />
+              ))
+            )}
+          </div>
+          </div>
+          <div className='w-full'>
+            <button onClick={handleAddingNewClasses} className='bg-green-600 text-white hover:bg-green-700 p-2 w-full rounded-lg mt-2'>
+                Add Selected Classes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AddStudentToClass;

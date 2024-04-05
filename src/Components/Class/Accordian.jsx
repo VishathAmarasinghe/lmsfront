@@ -41,7 +41,7 @@ const Accordian = ({ accDetails, setSubAccID, openeditingDrawer, setOpeneditingD
   return (
     <div>
       <NoteAddingPanel accID={accDetails.accordianID} notemodelOpen={notemodelOpen} setnotemodelOpen={setnotemodelOpen} />
-      <SubmissionAddingPanel submissionaddingpanelOpen={submissionaddingpanelOpen} setSubmissionAddingPanelOpen={setSubmissionAddingPanelOpen} />
+      <SubmissionAddingPanel accID={accDetails.accordianID} submissionaddingpanelOpen={submissionaddingpanelOpen} setSubmissionAddingPanelOpen={setSubmissionAddingPanelOpen} />
       <Collapse
         items={[
           {

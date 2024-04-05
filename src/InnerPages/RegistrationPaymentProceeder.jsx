@@ -1,10 +1,12 @@
-import { Col, ConfigProvider, Form, Input, Row } from "antd";
+import { Col, ConfigProvider, Form, Input, Row, message } from "antd";
 import React, { useEffect, useState } from "react";
 import StudentCard from "../Components/Registration/StudentCard";
 import RegistationBill from "../Components/Registration/RegistationBill";
 import { useSelector } from "react-redux";
 import { htmlToImagetranslator } from "../Utils/htmlCanvasToImage";
 import { registrationPayment } from "../API";
+import { useDispatch } from "react-redux";
+import { change_page_number } from "../Actions/PageNumbers";
 
 const RegistrationPaymentProceeder = () => {
   const [form] = Form.useForm();
@@ -12,6 +14,7 @@ const RegistrationPaymentProceeder = () => {
   const { registrationBillInfo } = useSelector(
     (state) => state.registrationBillInfo
   );
+  const dispatch=useDispatch();
   // const [paymentDatavalues, setpaymentDatavalues]=useState();
   const [paymentData, setPaymentData] = useState({
     payment: {
@@ -67,8 +70,13 @@ const RegistrationPaymentProceeder = () => {
       
     }
     
-    const {data}=await registrationPayment(paymentData);
-    console.log("data ",data);
+    const paymentResult=await registrationPayment(paymentData);
+    console.log("data ",paymentResult.data);
+    if (paymentResult.status===200) {
+      message.success(paymentResult.data);
+      dispatch(change_page_number("17"));
+
+    }
 
 
 

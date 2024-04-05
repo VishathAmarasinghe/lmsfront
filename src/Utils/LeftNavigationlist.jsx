@@ -64,19 +64,22 @@ const staffitems = [
     getItem("Class Payment", "18", <TransactionOutlined />),
     getItem("Past Payments", "19", <ShoppingOutlined />)
   ]),
-  getItem("Classes", "20", <TeamOutlined />),
-  getItem("Time Table", "21", <CalendarOutlined />),
-  getItem("Notices", "22", <ProfileOutlined />),
+  getItem("Classes", "20", <TeamOutlined />,[
+    getItem("Add Students", "21", <TranslationOutlined />),
+    getItem("Classes", "22", <ScheduleOutlined />),
+  ]),
+  getItem("Time Table", "23", <CalendarOutlined />),
+  getItem("Notices", "24", <ProfileOutlined />),
 ];
 
 const owneritems = [
-  getItem("Dashboard", "23", <AppstoreOutlined/>),
-  getItem("Teachers", "24", <TeamOutlined />),
-  getItem("Students", "25", <SolutionOutlined/>),
-  getItem("Staff", "26", <UserOutlined />),
-  getItem("Payments", "27", <ShoppingOutlined/>),
-  getItem("Classes", "28", <ScheduleOutlined />),
-  getItem("Reports", "29", <FileTextOutlined />),
+  getItem("Dashboard", "25", <AppstoreOutlined/>),
+  getItem("Teachers", "26", <TeamOutlined />),
+  getItem("Students", "27", <SolutionOutlined/>),
+  getItem("Staff", "28", <UserOutlined />),
+  getItem("Payments", "29", <ShoppingOutlined/>),
+  getItem("Classes", "30", <ScheduleOutlined />),
+  getItem("Reports", "31", <FileTextOutlined />),
   
 ];
 
