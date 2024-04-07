@@ -86,3 +86,7 @@ export const getActivatedStudents=()=>axios.get("http://localhost:5050/user/acti
 export const getClassesForSelectedStudent=(studentID)=>axios.get(`http://localhost:5050/classService/classforstudent?studentID=${studentID}`)
 
 export const getClassesForNotSelectedStudent=(studentID)=>axios.get(`http://localhost:5050/classService/classforNotStudents?studentID=${studentID}`)
+
+export const addStudentsToClass=(studentAddingData)=>axios.post(`http://localhost:5050/classService/addToClasses`,studentAddingData);
+
+export const checkStudentClassFeePayment=(studentpaymentData)=>axios.post(`http://localhost:5050/payment/classfeeExisitance`,studentpaymentData);

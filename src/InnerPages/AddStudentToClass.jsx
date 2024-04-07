@@ -2,24 +2,43 @@ import React, { useEffect, useState } from 'react';
 import AddStudentClassCard from '../Components/Class/AddStudentClassCard';
 import StudentScanOrSearchCard from '../Components/Class/StudentScanOrSearchCard';
 import { getClassesForNotSelectedStudent } from '../API';
-import { Empty, message } from 'antd';
+import { Button, Empty, message } from 'antd';
 import StudentAddingToClassesPopup from '../Components/Class/StudentAddingToClassesPopup';
+import { useDispatch } from 'react-redux';
+import { getNotAvailableClassesforSpecificStudent } from '../Actions/class';
+import { useSelector } from 'react-redux';
+import { change_page_number } from '../Actions/PageNumbers';
+
 
 const AddStudentToClass = () => {
   const [availableClasses, setAvailableClasses] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [newSelectedClasses,setNewSelectedClasses] = useState([]);
   const [modelOpen,setModelOpen]=useState(false);
+  const studentClassesNotAvailable=useSelector((state)=>state.classes.studentClassesNotAvailable)
+  const dispatch=useDispatch();
+  
 
   useEffect(() => {
     handleFetchingClasses();
   }, [selectedStudent]);
 
+
+  useEffect(()=>{
+      if (studentClassesNotAvailable!=null) {
+        setAvailableClasses(studentClassesNotAvailable);
+      }
+  },[studentClassesNotAvailable])
+
   const handleFetchingClasses = async () => {
     try {
-      const classResult = await getClassesForNotSelectedStudent(selectedStudent?.data?.UserID);
-      setAvailableClasses(classResult.data);
-      console.log( classResult.data);
+
+      
+      dispatch(getNotAvailableClassesforSpecificStudent(selectedStudent?.data?.UserID,message))
+      console.log("student classes not available ",studentClassesNotAvailable);
+      const classes = studentClassesNotAvailable || [];
+      setAvailableClasses(classes);
+      
     } catch (error) {
       console.error('Error fetching classes:', error);
     }
@@ -32,7 +51,10 @@ const AddStudentToClass = () => {
     }else{
       message.warning("please select classes to add")
     }
-    
+  }
+
+  const cancelProcess=()=>{
+    dispatch(change_page_number("16"))
   }
 
   return (
@@ -64,6 +86,9 @@ const AddStudentToClass = () => {
             <button onClick={handleAddingNewClasses} className='bg-green-600 text-white hover:bg-green-700 p-2 w-full rounded-lg mt-2'>
                 Add Selected Classes
             </button>
+            <Button onClick={cancelProcess} type='primary' className='border-2 border-slate-400  text-slate-500 hover:bg-slate-400 hover:text-white w-full rounded-lg mt-2'>
+                Cancel
+            </Button>
           </div>
         </div>
       </div>

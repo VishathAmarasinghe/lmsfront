@@ -6,6 +6,7 @@ import pageChangingReducers from "./Page";
 import registrationBillReducer from "./registrationBill";
 import classReducer from "./class";
 import AccordianReducer from "./accordians";
+import paymentReducers from "./payment";
 
 
 export const reducers=combineReducers({studentRegistration:registrationReducer,
@@ -14,5 +15,6 @@ export const reducers=combineReducers({studentRegistration:registrationReducer,
     page:pageChangingReducers,
     registrationBillInfo:registrationBillReducer,
     classes:classReducer,
-    accordians:AccordianReducer
+    accordians:AccordianReducer,
+    payment:paymentReducers
 });

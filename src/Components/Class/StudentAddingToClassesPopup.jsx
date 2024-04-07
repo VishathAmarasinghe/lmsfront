@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { Button, Modal, Space } from "antd";
+import { Button, Modal, Space, notification,message } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { addStudentsToClass } from "../../API";
+import { useDispatch } from "react-redux";
+import { getClassesforSpecificStudent, getNotAvailableClassesforSpecificStudent } from "../../Actions/class";
 
 const StudentAddingToClassesPopup = ({
   modelOpen,
@@ -9,23 +12,42 @@ const StudentAddingToClassesPopup = ({
   selectedStudent,
 }) => {
   const [loading, setLoading] = useState(false); 
+  const dispatch=useDispatch();
 
   const handleCancel = () => {
     setModelOpen(false);
   };
 
-  const handleSure = () => {
+  const handleSure = async() => {
    
-    setLoading(true);
-
     
-    setTimeout(() => {
-      // Reset loading state after the action is completed
-      setLoading(false);
+    try {
+      setLoading(true);
+      const StudentAddingData={
+        studentID:selectedStudent?.data?.UserID,
+        classes:newSelectedClasses
+      }
+  
+      const addingResult=await addStudentsToClass(StudentAddingData);
+      console.log(addingResult.data);
+      if (addingResult.status==200) {
+        notification.success({
+          message: "Student Added to Classes successfully",
+          description: "Now students can Access the classes via LMS",
+        })
+      };
+    } catch (error) {
+      console.log("error in adding students");
+      notification.error({
+        message: "Error in adding students",
+        description: "Please try again later",
+      })
+    }
 
-      // Close the modal
-      setModelOpen(false);
-    }, 2000); 
+    dispatch(getClassesforSpecificStudent(selectedStudent?.data?.UserID,message))
+    dispatch(getNotAvailableClassesforSpecificStudent(selectedStudent?.data?.UserID,message))
+    setLoading(false);
+    handleCancel();
   };
 
   return (

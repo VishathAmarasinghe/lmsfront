@@ -132,3 +132,40 @@ export const getAllAccordianByClassID = (classID) => async (dispatch) => {
 
     }
 }
+
+
+
+export const getClassesforSpecificStudent=(studentID,message)=>async(dispatch)=>{
+    try {
+        const result=await API.getClassesForSelectedStudent(studentID);
+        console.log("data of selected Class ",result);
+        dispatch({
+            type:"STUDNT_CLASSES",
+            classes:result.data
+        })
+        return result;
+        
+    } catch (error) {
+        console.log("error in feching slected student classes ",error);
+        message.error("error in feching slected student classes");
+
+    }
+}
+
+
+export const getNotAvailableClassesforSpecificStudent=(studentID,message)=>async(dispatch)=>{
+    try {
+        const result=await API.getClassesForNotSelectedStudent(studentID);
+        console.log("data of selected Class ",result);
+        dispatch({
+            type:"STUDNT_CLASSES_NOT_AVAILABLE",
+            classes:result.data
+        })
+        return result;
+        
+    } catch (error) {
+        console.log("error in feching slected student classes ",error);
+        message.error("error in feching slected student classes");
+
+    }
+}

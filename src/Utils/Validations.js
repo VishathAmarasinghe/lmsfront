@@ -39,6 +39,18 @@ export function validateBarcode(barcode) {
   }
 }
 
+export const getMonthName = (monthNumber) => {
+  const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+  ];
+  
+
+  monthNumber = Math.max(1, Math.min(12, monthNumber));
+  
+  return months[monthNumber - 1];
+};
+
 
 
 

@@ -27,7 +27,6 @@ function App() {
 
   return (
     <Routes>
-      
       <Route path="/login" Component={()=>(!user?<LoginRegistration actionType="login"/>:<Navigate to="/"/>)}/>
       <Route path="/register" Component={()=>(!user?<LoginRegistration actionType="register"/>:<Navigate to="/"/>)}/>
       <Route path="/" Component={()=>(!user?<LoginRegistration actionType="login"/>:<PageStructure/>)}/>

@@ -1,70 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ClassPaymentBill from "../Components/Class/ClassPaymentBill";
 import { lecturer } from "../assets";
 import ClassPaymentCardSelection from "../Components/Class/ClassPaymentCardSelection";
-import { Input } from "antd";
+import { Descriptions, Input,Button } from "antd";
+import StudentScanOrSearchCard from "../Components/Class/StudentScanOrSearchCard";
+import ClassPaymentBillList from "../Components/Payments/ClassPaymentBillList";
+import { useDispatch } from "react-redux";
+import { classPaymentSelectedClasses } from "../Actions/payment";
 
 const ClassPayments = () => {
+  const [selectedStudent, setSelectedStudent]=useState(null);
+  const dispatch=useDispatch();
+
+  useEffect(()=>{
+    dispatch(classPaymentSelectedClasses([]))
+  },[])
+  
   return (
-    <div className="w-full h-[100%] flex flex-col items-center justify-center border-2 border-pink-700  shadow-2xl  overflow-y-auto  ">
-      <div className="w-[95%] border-2 border-red-500  flex flex-row justify-between ">
-        <div className="w-1/2 border-2 border-blue-700 flex flex-col justify-around items-center p-1 mt-2 bg-white rounded-lg">
-          <div className="flex flex-row justify-around border-2 border-red-600 items-center">
-            <div className="w-[30%]">
-              <img src={lecturer} className="rounded-md" />
-            </div>
-            <div className="flex flex-col w-[50%] h-full  bg-[#C6CFFF] rounded-lg justify-center items-start">
-              <p className="font-medium ml-4 text-[17px]">Student No: SE0123455</p>
-              <p className="font-medium ml-4 text-[17px]">Student Name: Vishath Amarasinghe</p>
-            </div>
+    <div className="w-full h-[100%] flex flex-col items-center shadow-2xl overflow-y-auto">
+        
+      <div className="w-full">
+        <h1 className="font-inter font-semibold text-[18px] ml-8 my-2 text-gray-500">
+          Class Fees Payment
+        </h1>
+      </div>
+      <div className="w-[95%] bg-white h-[90%] border-2 border-red-600 flex flex-row lg:flex-row justify-between rounded-xl  p-1 shadow-xl ring-1 ring-gray-300">
+        <div className=' shadow-xl p-2 rounded-xl  w-[58%]'>
+          <StudentScanOrSearchCard selectedStudent={selectedStudent} setSelectedStudent={setSelectedStudent} />
+        </div>
+        <div className=' w-[40%] bg-white   shadow-xl border-l-2 border-slate-400 p-2 flex flex-col justify-between'>
+        <div className='w-full  h-[100%] p-2  '>
+          <div className="w-full h-[80%]">
+
+      
+          {/* <h1 className='text-gray-500 text-[16px]'>Bill</h1> */}
+          <ClassPaymentBillList selectedStudent={selectedStudent}/>
           </div>
-          <div className="w-full border-2 border-green-500">
-            <div className="w-full">
-              <p className="text-[17px] font-inter font-medium">
-                Registered Classes
-              </p>
-            </div>
-            <div className="border-2 border-red-600 w-full grid grid-cols-4">
-              <ClassPaymentCardSelection />
-              <ClassPaymentCardSelection />
-              <ClassPaymentCardSelection />
-              <ClassPaymentCardSelection />
-              <ClassPaymentCardSelection />
-            </div>
-            <div>
-              <div className="flex flex-row w-[80%] border-2 border-green-500 justify-between items-center my-2">
-                <p className="text-[16px] font-inter font-semibold">
-                  Total Fee
-                </p>
-                <p className="text-[20px]">Rs:12345</p>
-              </div>
-              <div className="flex flex-row w-[80%] border-2 border-green-500 justify-between items-center my-2">
-                <p className="text-[16px] font-inter font-semibold">
-                  Payment Amount
-                </p>
-                <Input value={"sd233301"}  className="w-[50%] text-right" />
-              </div>
-              <div className="flex flex-row w-[80%] border-2 border-green-500 justify-between items-center my-2">
-                <p className="text-[16px] font-inter font-semibold">
-                  Balance
-                </p>
-                <p className="text-[20px]">Rs:12345</p>
-              </div>
-            </div>
+          
+          <div className='w-full h-[20%] mt-2'>
+            <button  className='bg-green-600 text-white hover:bg-green-700 p-2 w-full rounded-lg mt-2'>
+                Proceed Payment
+            </button>
+            <Button  type='primary' className='border-2 border-slate-400  text-slate-500 hover:bg-slate-400 hover:text-white w-full rounded-lg mt-2'>
+                Cancel
+            </Button>
           </div>
         </div>
-        <div className="w-[40%] border-2 border-red-400 mt-2 bg-white flex flex-col items-center p-2 rounded-xl">
-          <ClassPaymentBill />
-          <div className="flex flex-col  w-full items-center mt-5">
-           
-            <button className="bg-green-700 p-2 w-[96%] mb-2 text-white font-semibold hover:bg-green-800 rounded-lg scalar-card">
-              Proceed Payment
-            </button>
-            <button className=" p-2 w-[96%] mb-2  text-red-700 border-2 border-red-700 font-bold hover:bg-red-700 hover:text-white rounded-lg scalar-card">
-              Cancle
-            </button>
-          </div>
-        </div>
+      </div>
       </div>
     </div>
   );

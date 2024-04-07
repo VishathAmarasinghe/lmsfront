@@ -96,10 +96,11 @@ const fetchingScannedStudent = ()=>{
   };
 
   return (
-    <div className="border-2 border-blue-600 m-2 h-[90%] mt-3">
+    <div className=" m-2 h-[90%] mt-3">
       <Form>
-        <FormItem label="Select Student">
+        <FormItem className="font-medium text-[17px]" label="Select Student">
           <Select
+          className=""
             showSearch
             onChange={handleSelectedValue}
             placeholder="Search by name, phone number, NIC, student ID, or user ID"
@@ -110,7 +111,7 @@ const fetchingScannedStudent = ()=>{
           />
         </FormItem>
       </Form>
-      <div className="border-2 border-red-500 h-[90%] ">
+      <div className=" h-[90%] ">
         {selectedStudent == null ? (
           <div className="flex flex-col items-center justify-center h-[90%]">
             
