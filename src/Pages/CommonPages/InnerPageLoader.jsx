@@ -10,19 +10,21 @@ import RegistrationPaymentProceeder from "../../InnerPages/RegistrationPaymentPr
 import { useSelector } from "react-redux";
 import AddStudentToClass from "../../InnerPages/AddStudentToClass";
 import AttendanceMarkPage from "../../InnerPages/AttendanceMarkPage";
+import ParentDashboard from "../../InnerPages/ParentDashboard";
+import NewAppointment from "../../InnerPages/NewAppointment";
 
 
 const pageChanger = (pageChanger) => {
   console.log("aasa ", pageChanger);
   switch (pageChanger) {
     case "1":
-      break
+      return <ParentDashboard/>
 
     case "2":
       break
 
     case "3":
-      break
+      return <NewAppointment/>
 
     case "4":
       break

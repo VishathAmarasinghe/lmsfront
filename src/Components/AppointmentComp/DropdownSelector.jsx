@@ -1,7 +1,13 @@
-import React from "react";
-import { Button, Dropdown, Space } from "antd";
+import React, { useState } from "react";
+import { Button, Dropdown, Menu } from "antd";
 
-const DropdownSelector = ({titleName}) => {
+const DropdownSelector = ({ titleName }) => {
+  const [selectedStudent, setSelectedStudent] = useState(null);
+
+  const handleMenuClick = (e) => {
+    setSelectedStudent(e.key);
+  };
+
   const items = [
     {
       key: "1",
@@ -16,19 +22,22 @@ const DropdownSelector = ({titleName}) => {
       label: <p>Sumudu rasangana</p>,
     },
   ];
+
+  const menu = (
+    <Menu onClick={handleMenuClick}>
+      {items.map((item) => (
+        <Menu.Item key={item.key}>{item.label}</Menu.Item>
+      ))}
+    </Menu>
+  );
+
   return (
     <div className="w-full  flex flex-row justify-between my-3 md:my-1 items-center  md:w-[40%]">
-
       <p className="font-inter font-semibold">{titleName}</p>
-
-      <Dropdown
-        className="w-[60%]"
-        menu={{
-          items,
-        }}
-        placement="bottom"
-      >
-        <Button className="bg-[#EBEEFF] font-inter shadow-lg">Student </Button>
+      <Dropdown overlay={menu} placement="bottom">
+        <Button className="bg-[#EBEEFF] w-full font-inter shadow-lg">
+          {selectedStudent ? selectedStudent : "Select Student"}
+        </Button>
       </Dropdown>
     </div>
   );

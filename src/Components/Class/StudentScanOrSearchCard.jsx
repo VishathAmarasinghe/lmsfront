@@ -116,7 +116,7 @@ const fetchingScannedStudent = ()=>{
           <div className="flex flex-col items-center justify-center h-[90%]">
             
             <img
-              className="w-[40%] border-2 border-green-600"
+              className="w-[40%]"
               src={scanImage}
             />
             <span className="text-slate-400">

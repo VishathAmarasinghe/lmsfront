@@ -39,6 +39,7 @@ const AttendanceMarkPage = () => {
   };
 
   const handleClassClicked = (selectedClass) => {
+    console.log("selected class ",selectedClass);
     setSelectedClass(selectedClass);
   };
 

@@ -93,3 +93,10 @@ export const checkStudentClassFeePayment=(studentpaymentData)=>axios.post(`http:
 
 
 export const addClassFeePayment=(paymentData)=>axios.post(`http://localhost:5050/payment/addClassFee`,paymentData);
+
+export const attendanceVerfiicationOfStudentsInclass=(classID)=>axios.get(`http://localhost:5050/classService/attendenceVerification?classID=${classID}`);
+
+export const markAttendance=(attendanceData)=>axios.post("http://localhost:5050/classService/markAttendance",attendanceData);
+
+
+export const getAttendanceDataByDateAndClass=(classID,date)=>axios.get(`http://localhost:5050/classService/attendanceDateByClassDate?classID=${classID}&date=${date}`)
