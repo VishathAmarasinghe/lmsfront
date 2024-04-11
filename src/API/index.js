@@ -90,3 +90,6 @@ export const getClassesForNotSelectedStudent=(studentID)=>axios.get(`http://loca
 export const addStudentsToClass=(studentAddingData)=>axios.post(`http://localhost:5050/classService/addToClasses`,studentAddingData);
 
 export const checkStudentClassFeePayment=(studentpaymentData)=>axios.post(`http://localhost:5050/payment/classfeeExisitance`,studentpaymentData);
+
+
+export const addClassFeePayment=(paymentData)=>axios.post(`http://localhost:5050/payment/addClassFee`,paymentData);

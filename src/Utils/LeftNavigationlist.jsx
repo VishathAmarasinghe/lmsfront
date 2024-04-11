@@ -68,8 +68,13 @@ const staffitems = [
     getItem("Add Students", "21", <TranslationOutlined />),
     getItem("Classes", "22", <ScheduleOutlined />),
   ]),
+  getItem("Attendance", "32", <TeamOutlined />,[
+    getItem("Mark Attendance", "33", <TranslationOutlined />),
+    getItem("Attendance Info", "34", <ScheduleOutlined />),
+  ]),
   getItem("Time Table", "23", <CalendarOutlined />),
   getItem("Notices", "24", <ProfileOutlined />),
+  
 ];
 
 const owneritems = [

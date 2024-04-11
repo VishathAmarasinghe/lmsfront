@@ -10,11 +10,27 @@ import { classPaymentSelectedClasses } from "../Actions/payment";
 
 const ClassPayments = () => {
   const [selectedStudent, setSelectedStudent]=useState(null);
+  
+  const [paymentProceedClicked,setPaymentProceedClicked]=useState(false);
+
+
+
+
+
   const dispatch=useDispatch();
 
   useEffect(()=>{
     dispatch(classPaymentSelectedClasses([]))
   },[])
+
+
+  const handlePaymentProceed=()=>{
+    console.log("paymend proceed button clicked");
+    setPaymentProceedClicked((pre)=>!pre);
+  }
+
+
+
   
   return (
     <div className="w-full h-[100%] flex flex-col items-center shadow-2xl overflow-y-auto">
@@ -34,11 +50,11 @@ const ClassPayments = () => {
 
       
           {/* <h1 className='text-gray-500 text-[16px]'>Bill</h1> */}
-          <ClassPaymentBillList selectedStudent={selectedStudent}/>
+          <ClassPaymentBillList paymentProceedClicked={paymentProceedClicked} setPaymentProceedClicked={setPaymentProceedClicked}   selectedStudent={selectedStudent}/>
           </div>
           
           <div className='w-full h-[20%] mt-2'>
-            <button  className='bg-green-600 text-white hover:bg-green-700 p-2 w-full rounded-lg mt-2'>
+            <button onClick={handlePaymentProceed}  className='bg-green-600 text-white hover:bg-green-700 p-2 w-full rounded-lg mt-2'>
                 Proceed Payment
             </button>
             <Button  type='primary' className='border-2 border-slate-400  text-slate-500 hover:bg-slate-400 hover:text-white w-full rounded-lg mt-2'>

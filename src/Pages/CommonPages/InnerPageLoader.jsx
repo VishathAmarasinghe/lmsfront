@@ -9,6 +9,7 @@ import ClassPayments from "../../InnerPages/ClassPayments";
 import RegistrationPaymentProceeder from "../../InnerPages/RegistrationPaymentProceeder";
 import { useSelector } from "react-redux";
 import AddStudentToClass from "../../InnerPages/AddStudentToClass";
+import AttendanceMarkPage from "../../InnerPages/AttendanceMarkPage";
 
 
 const pageChanger = (pageChanger) => {
@@ -104,6 +105,14 @@ const pageChanger = (pageChanger) => {
       break
     case "30":
       return <RegistrationPaymentProceeder/>
+    case "31":
+      break
+    case "32":
+      break
+    case "33":
+      return <AttendanceMarkPage/>
+    case "34":
+      break
     default:
       break;
   }

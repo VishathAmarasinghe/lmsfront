@@ -13,16 +13,20 @@ const AddStudentClassCard = ({ color, classItem,selectedStudent, newSelectedClas
             message.warning("cannot select classes without selecting a student")
         }else{
             const classItemChecking = newSelectedClasses.find((cls) => cls.classID === classItem.classID);
+            console.log("payment selected class  issssss  ",classItemChecking);
             if (!classItemChecking) {
                 setNewSelectedClasses([...newSelectedClasses, classItem]);
                 
             } else {
+                console.log("payment cass bill rray ",paymentclassBillArray);
                 const updatedClasses = newSelectedClasses.filter((cls) => cls.classID !== classItem.classID);
                 setNewSelectedClasses(updatedClasses);
                 const billItemAvailability= paymentclassBillArray.find((cls)=>cls.classID === classItem.classID);
+                console.log("Bill item availability        ",billItemAvailability);
                 if(billItemAvailability){
                  const updatedBillItem=paymentclassBillArray.filter((cls)=>cls.classID !== classItem.classID);
                  dispatch(classPaymentSelectedClasspayments(updatedBillItem));
+                 console.log("updated bill item is  ",updatedBillItem);
                 }
             }
         }

@@ -1,53 +1,105 @@
 import React, { useEffect, useState } from "react";
 import ClasspaymentDisplaycard from "./ClasspaymentDisplaycard";
-import { Select } from "antd";
+import { Input, Select } from "antd";
 import { FileOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
-import { checkStudentClassFeePayment } from "../../API";
+import { addClassFeePayment, checkStudentClassFeePayment } from "../../API";
 import FeesExistingPopup from "./FeesExistingPopup";
 import { useDispatch } from "react-redux";
 import { classPaymentSelectedClasspayments } from "../../Actions/payment";
+import ClassBillDrawer from "./ClassBillDrawer";
 
 const monthSelections = [
   { value: 1, label: "Same Month" },
   { value: 2, label: "Different Month" },
 ];
 
-const ClassPaymentBillList = ({ selectedStudent }) => {
-  const paymentSelectedClass = useSelector(
-    (state) => state.payment.paymentSelectedClass
-  );
+const ClassPaymentBillList = ({ selectedStudent,paymentProceedClicked,setPaymentProceedClicked }) => {
+  const paymentSelectedClass = useSelector((state) => state.payment.paymentSelectedClass);
   const dispatch = useDispatch();
-  const paymentclassBillArray=useSelector((state)=>state.payment.paymentclassBillArray);
+  const paymentclassBillArray = useSelector((state) => state.payment.paymentclassBillArray);
   const [paymentFinalizedClasses, setPaymentFinalizedClasses] = useState([]);
   const [classPaymentList, setPaymentList] = useState([]);
+  const [balance,setBalance] = useState(0);
+  const cashier=JSON.parse(localStorage.getItem("profile")).result.UserID;
+  const [paiedAmount,setPayedAmount]=useState(0)
   const [totalPayment, setTotalPayment] = useState(0);
   const [currentMonth, setCurrentMonth] = useState(1);
   const [feesExisitngOpenModel, setFeesExisitngOpenModel] = useState(false);
+  const [billPreviewDrawerOpen,setBillPreviewDrawerOpen] = useState(false);
   const [modelData, setModelData] = useState({
     classData: "",
     paymentData: "",
   });
 
+  
+
+  useEffect(()=>{
+    if (paymentProceedClicked==true) {
+      const billData ={
+        total:totalPayment,
+        payedAmount:paiedAmount,
+        balance:balance,
+        cashier:cashier,
+        student:selectedStudent?.data?.UserID,
+        classes:paymentFinalizedClasses
+      }
+      console.log("payment array of Bills is ", billData);
+      sendPaymentData(billData);
+
+
+
+      
+    }
+  },[paymentProceedClicked])
+
+
+
+
   useEffect(() => {
-    console.log("payment selected main classes issssssssssss ",paymentSelectedClass);
-    calculateTotalPayment();
+    console.log(
+      "payment selected main classes issssssssssss ",
+      paymentSelectedClass
+    );
+   
     checkPaymentExisitance();
   }, [paymentSelectedClass]);
 
-  useEffect(()=>{
-    dispatch(classPaymentSelectedClasspayments(paymentclassBillArray));
-  },[paymentclassBillArray])
+
+
+  useEffect(() => {
+    setPaymentFinalizedClasses(paymentclassBillArray);
+    console.log(
+      "payment finalized classes issssssssssss ",
+      paymentFinalizedClasses
+    );
+    calculateTotalPayment();
+  }, [paymentclassBillArray]);
+
+
 
 
   useEffect(() => {
     dispatch(classPaymentSelectedClasspayments(paymentFinalizedClasses));
-     console.log("class payment finalized array ",paymentFinalizedClasses);
-  }, [paymentFinalizedClasses])
+    console.log("class payment finalized array ", paymentFinalizedClasses);
+  }, [paymentFinalizedClasses]);
+
+
+
 
   useEffect(() => {
     monthChangingTrigger(1);
   }, []);
+
+
+
+  const sendPaymentData = async(paymentData) => {
+    const paymentBillResult=await addClassFeePayment(paymentData);
+    console.log("paymentBill Result ",paymentBillResult.data);
+  }
+
+
+
 
   const calculateTotalPayment = () => {
     let paymentvalue = 0;
@@ -58,10 +110,14 @@ const ClassPaymentBillList = ({ selectedStudent }) => {
     setTotalPayment(paymentvalue);
   };
 
+
+
+
+
   const checkPaymentExisitance = async () => {
     const classIDs = paymentSelectedClass.map((classItem) => ({
       classID: classItem.classID,
-      month: new Date().getMonth()+1,
+      month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
       joinedDate: classItem.joinDate,
     }));
@@ -87,8 +143,13 @@ const ClassPaymentBillList = ({ selectedStudent }) => {
           element?.verification?.past?.value == 0 ||
           element?.verification?.present?.value == 1
         ) {
-          const checkingExisitaceOFItemInBill=paymentFinalizedClasses.find(billElement=>billElement.classID==element.classID);
-          console.log("alreading existance in bill", checkingExisitaceOFItemInBill);
+          const checkingExisitaceOFItemInBill = paymentFinalizedClasses.find(
+            (billElement) => billElement.classID == element.classID
+          );
+          console.log(
+            "alreading existance in bill",
+            checkingExisitaceOFItemInBill
+          );
           if (!checkingExisitaceOFItemInBill) {
             setModelData({
               classData: classData,
@@ -96,7 +157,6 @@ const ClassPaymentBillList = ({ selectedStudent }) => {
             });
             setFeesExisitngOpenModel(true);
           }
-          
         } else {
           const paymentVouture = {
             classID: classData.classID,
@@ -110,8 +170,10 @@ const ClassPaymentBillList = ({ selectedStudent }) => {
             (cls) => cls.classID === paymentVouture.classID
           );
           if (!classItemChecking) {
-            setPaymentFinalizedClasses([...paymentFinalizedClasses, paymentVouture]);
-
+            setPaymentFinalizedClasses([
+              ...paymentFinalizedClasses,
+              paymentVouture,
+            ]);
           } else {
             const updatedClasses = paymentFinalizedClasses.filter(
               (cls) => cls.classID !== paymentVouture.classID
@@ -123,6 +185,18 @@ const ClassPaymentBillList = ({ selectedStudent }) => {
     }
   };
 
+
+
+
+  const handleReceivedPayment=(e)=>{
+    console.log("cooming typing vvalues  ",e.target.value);
+    setPayedAmount(e.target.value);
+    const balanceValue=Math.abs(parseFloat(totalPayment)-parseFloat(e.target.value));
+    setBalance(balanceValue);
+    console.log("balace values is " + balanceValue);
+    
+  }
+
   const monthChangingTrigger = (value) => {
     if (value === 1) {
       const currentDate = new Date();
@@ -131,8 +205,14 @@ const ClassPaymentBillList = ({ selectedStudent }) => {
     }
   };
 
+
+  const handlingPreviewShowing=()=>{
+    setBillPreviewDrawerOpen(true);
+  }
+
   return (
     <div className=" h-[97%] flex flex-col  justify-between ">
+      <ClassBillDrawer billPreviewDrawerOpen={billPreviewDrawerOpen} setBillPreviewDrawerOpen={setBillPreviewDrawerOpen} />
       <FeesExistingPopup
         paymentFinalizedClasses={paymentFinalizedClasses}
         setPaymentFinalizedClasses={setPaymentFinalizedClasses}
@@ -149,7 +229,7 @@ const ClassPaymentBillList = ({ selectedStudent }) => {
             options={monthSelections}
             defaultValue={1}
           />
-          <button className="p-1 px-4 bg-blue-500 rounded-lg text-white hover:bg-blue-700">
+          <button onClick={handlingPreviewShowing} className="p-1 px-4 bg-blue-500 rounded-lg text-white hover:bg-blue-700">
             <FileOutlined className="p-1" />
             Bill Preview
           </button>
@@ -167,13 +247,15 @@ const ClassPaymentBillList = ({ selectedStudent }) => {
                   key={index}
                   currentMonth={currentMonth}
                   payment={item}
+                  paymentFinalizedClasses={paymentFinalizedClasses} 
+                  setPaymentFinalizedClasses={setPaymentFinalizedClasses}
                 />
               );
             })}
           </div>
         </div>
       </div>
-      <div className="bg-[#F3F7FF] h-[14%] mt-4 p-2 ">
+      <div className="bg-[#F3F7FF]  mt-4 p-2 ">
         <div className="flex flex-row justify-between">
           <p className="w-[70%]  flex flex-row justify-center text-[15px] font-semibold text-slate-500">
             Sub Total
@@ -188,6 +270,20 @@ const ClassPaymentBillList = ({ selectedStudent }) => {
           </p>
           <p className="w-[30%] flex flex-col justify-center items-center font-bold text-[17px] text-black">
             Rs:{totalPayment}
+          </p>
+        </div>
+        <div className="flex flex-row justify-between">
+          <p className="w-[70%]  flex flex-row justify-center text-[15px] font-bold text-black">
+            Payed Amount
+          </p>
+          <input type="number" name="paymentReceived" onChange={(e)=>handleReceivedPayment(e)} className="w-[30%] text-center h-[25px] flex flex-col justify-center items-center font-bold text-[15px] text-black"/>
+        </div>
+        <div className="flex flex-row justify-between">
+          <p className="w-[70%]  flex flex-row justify-center text-[15px] font-bold text-black">
+            Balance
+          </p>
+          <p className="w-[30%] flex flex-col justify-center items-center font-bold text-[15px] text-black">
+            Rs:{balance}
           </p>
         </div>
       </div>
