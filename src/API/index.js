@@ -100,3 +100,8 @@ export const markAttendance=(attendanceData)=>axios.post("http://localhost:5050/
 
 
 export const getAttendanceDataByDateAndClass=(classID,date)=>axios.get(`http://localhost:5050/classService/attendanceDateByClassDate?classID=${classID}&date=${date}`)
+
+export const getAllchildsOfParent=(parentID)=>axios.get(`http://localhost:5050/user/childrenOfParent?parentID=${parentID}`)
+
+
+export const getAllTeachers=()=>axios.get(`http://localhost:5050/user/activatedTeachers`);
