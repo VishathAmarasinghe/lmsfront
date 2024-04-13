@@ -183,7 +183,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
       title="Add New Class"
       centered
       width={"90%"}
-      visible={addingCompOpen}
+      open={addingCompOpen}
       onCancel={handleClose}
       footer={[
         <button

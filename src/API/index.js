@@ -105,3 +105,24 @@ export const getAllchildsOfParent=(parentID)=>axios.get(`http://localhost:5050/u
 
 
 export const getAllTeachers=()=>axios.get(`http://localhost:5050/user/activatedTeachers`);
+
+export const createAppointment=(appointmentData)=>axios.post("http://localhost:5050/user/appointment",appointmentData)
+
+export const getAppointmentsRelatedToParent=(parentID)=>axios.get(`http://localhost:5050/user/parentAppointment?parentID=${parentID}`)
+
+export const deleteAppoinment=(appointmentID)=>axios.delete("http://localhost:5050/user/appointment",{data:{ appointmentID}});
+
+export const getCreatedAppointmentsRelatedToTeacher=(teacherID)=>axios.get(`http://localhost:5050/user/CreatedTeacherAppointment?teacherID=${teacherID}`)
+
+
+export const getClassesWithTeacherAndStudent=(teacherID,studentID)=>axios.get(`http://localhost:5050/classService/classesWithTeacherAndStudent?teacherID=${teacherID}&studentID=${studentID}`);
+
+
+export const updateAppointmentTOApporived=(appoinmentConfirmData)=>axios.patch("http://localhost:5050/classService/appointmentUpdate",appoinmentConfirmData);
+
+
+
+export const createNewAnnouncement=(announcementData)=>axios.post("http://localhost:5050/notification/announcement",announcementData);
+
+
+export const getAnnouncementsCreatedByTeacher=(teacherID)=>axios.get(`http://localhost:5050/notification/teacherAnnouncement?teacherID=${teacherID}`);

@@ -1,20 +1,42 @@
 import React, { useState } from "react";
-import { Button, Modal, Checkbox, message } from "antd";
+import { Button, Modal, Checkbox, message, notification } from "antd";
+import { createAppointment } from "../../API";
+import { useDispatch } from "react-redux";
+import { change_page_number } from "../../Actions/PageNumbers";
 
 const AppointmentConfirmationPopup = ({appointmentData, confirmationOpen, setConfirmationOpen }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [loadingOn,setLoadingOn]=useState(false);
+  const dispatch=useDispatch();
 
-  const handleOk = () => {
+  const handleOk = async() => {
     if (!isChecked) {
-      message.error("Please accept the terms and conditions.", 3); // Show message for 3 seconds
+      message.error("Please accept the terms and conditions.", 3);
       return;
+    }else{
+      setLoadingOn(true);
+      const appointmentResult=await createAppointment(appointmentData);
+      if (appointmentResult.status==200) {
+        notification.success({
+          message:"Appointment Submitted successfully!",
+          description:"Teacher will review the appointment and send back the confirmation later."
+        })
+        dispatch(change_page_number("4"));
+
+      }else{
+        notification.error({
+          message:"appointment submission Error!",
+          description:"please try again later."
+        })
+      }
     }
+    setLoadingOn(false);
     setConfirmationOpen(false);
   };
 
   const handleCancel = () => {
     setConfirmationOpen(false);
+    setLoadingOn(false);
   };
 
   const handleChange = (e) => {

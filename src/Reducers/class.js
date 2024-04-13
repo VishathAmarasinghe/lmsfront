@@ -1,4 +1,4 @@
-const classReducer=(state={teacherClasses:null,selectedClass:null,studentAssignedClasses:null,studentClassesNotAvailable:null},action)=>{
+const classReducer=(state={teacherClasses:[],selectedClass:null,studentAssignedClasses:null,studentClassesNotAvailable:null},action)=>{
     switch (action.type) {
         case "FETCH_TEACHER_CLASSES":
             return {...state,teacherClasses:action.classes};

@@ -17,7 +17,7 @@ const NewAppointment = () => {
   const [confirmationOpen,setConfirmationOpen]=useState(false);
   const [appointmentData,setAppointmentData]=useState({
     studentID:"",
-    parentID:"",
+    parentID:parentID,
     teacherID:"",
     title:"",
     description:""

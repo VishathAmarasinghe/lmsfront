@@ -12,6 +12,9 @@ import AddStudentToClass from "../../InnerPages/AddStudentToClass";
 import AttendanceMarkPage from "../../InnerPages/AttendanceMarkPage";
 import ParentDashboard from "../../InnerPages/ParentDashboard";
 import NewAppointment from "../../InnerPages/NewAppointment";
+import  PastAppointments from '../../InnerPages/PastAppointments';
+import TeacherAppointmentPendingPanel from "../../InnerPages/TeacherAppointmentPendingPanel";
+import TeacherNoticePanel from "../../InnerPages/TeacherNoticePanel";
 
 
 const pageChanger = (pageChanger) => {
@@ -27,7 +30,7 @@ const pageChanger = (pageChanger) => {
       return <NewAppointment/>
 
     case "4":
-      break
+      return <PastAppointments/>
 
     case "5":
       break
@@ -58,10 +61,10 @@ const pageChanger = (pageChanger) => {
       break
 
     case "14":
-      break
+      return <TeacherNoticePanel/>
 
     case "15":
-      break
+      return <TeacherAppointmentPendingPanel/>
 
     case "16":
       return <StaffDashboard/>

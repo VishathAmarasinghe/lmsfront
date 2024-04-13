@@ -7,6 +7,7 @@ import registrationBillReducer from "./registrationBill";
 import classReducer from "./class";
 import AccordianReducer from "./accordians";
 import paymentReducers from "./payment";
+import AppointmentReducer from "./appointments";
 
 
 export const reducers=combineReducers({studentRegistration:registrationReducer,
@@ -16,5 +17,6 @@ export const reducers=combineReducers({studentRegistration:registrationReducer,
     registrationBillInfo:registrationBillReducer,
     classes:classReducer,
     accordians:AccordianReducer,
-    payment:paymentReducers
+    payment:paymentReducers,
+    appointments:AppointmentReducer
 });
