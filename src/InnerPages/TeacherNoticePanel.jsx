@@ -31,6 +31,10 @@ const TeacherNoticePanel = () => {
     setNoticeAddingDrawerOpen(true);
   };
 
+  const handleAnnouncementDelete=()=>{
+    fetchAnnouncements();
+  }
+
   return (
     <div className="w-full h-[100%] flex flex-col items-center shadow-2xl overflow-y-auto">
       <div className="w-full">
@@ -39,22 +43,23 @@ const TeacherNoticePanel = () => {
         </h1>
       </div>
 
-      <div className="w-[95%] border-2 border-red-600  bg-white h-[90%]  flex flex-col lg:flex-col overflow-y-auto items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
-        <div className="border-2 border-blue-600 w-full mt-2">
+      <div className="w-[95%]   bg-white h-[90%]  flex flex-col lg:flex-col overflow-y-auto items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
+        <div className=" w-full mt-2 mb-2">
+        <NoticeAddingDrawer noticeAddingDrawerOpen={noticeAddingDrawerOpen} setNoticeAddingDrawerOpen={setNoticeAddingDrawerOpen}/>
           <Button
             onClick={handleOpenNewPanel}
-            className="flex flex-row justify-center items-center bg-blue-500 text-white font-medium ml-5 p-2 hover:bg-blue-600"
+            className="flex flex-row justify-center items-center bg-blue-500 text-white font-medium ml-7 p-2 hover:bg-blue-600"
           >
             <PlusOutlined />
-            <NoticeAddingDrawer noticeAddingDrawerOpen={noticeAddingDrawerOpen} setNoticeAddingDrawerOpen={setNoticeAddingDrawerOpen}/>
+            
             Add New Announcement
           </Button>
         </div>
-        <div className="border-2 border-green-500 overflow-y-auto h-[90%] w-[95%]">
+        <div className=" overflow-y-auto h-[90%] w-[95%]">
           {
             loading?<LoadingInnerPage/>:(
               announcements.map((appoint)=>
-              <NoticeCard announcement={appoint}  key={appoint?.announcementID}/>
+              <NoticeCard announcement={appoint} userID={teacherID} onAnnouncementDeleted={handleAnnouncementDelete}  key={appoint?.announcementID}/>
               )
             )
           }

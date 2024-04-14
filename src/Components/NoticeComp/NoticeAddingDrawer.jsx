@@ -18,10 +18,7 @@ import TextArea from "antd/es/input/TextArea";
 import { createNewAnnouncement, getClassesByTeacher } from "../../API";
 import { TeamOutlined } from "@ant-design/icons";
 
-const NoticeAddingDrawer = ({
-  noticeAddingDrawerOpen,
-  setNoticeAddingDrawerOpen,
-}) => {
+const NoticeAddingDrawer = ({noticeAddingDrawerOpen, setNoticeAddingDrawerOpen}) => {
   const teacherID = JSON.parse(localStorage.getItem("profile")).result.UserID;
   const [teacherClasses, setTeacherClasses] = useState([]);
   const [selectedClasses, setSelectedClasses] = useState([]);
@@ -29,7 +26,7 @@ const NoticeAddingDrawer = ({
   const [selectedModes,setSelectedModes]=useState([]);
   const [submitLoading,setSubmitloading]=useState(false);
   const [announcementData,setAnnouncementData]=useState({
-    teacherID:teacherID,
+    userID:teacherID,
     title:"",
     description:"",
     audience:"",
@@ -40,10 +37,16 @@ const NoticeAddingDrawer = ({
 
   useEffect(() => {
     if (noticeAddingDrawerOpen == true) {
+      setAnnouncementData({...announcementData,userID:teacherID});
       fetchClassesRelatedToTeacher();
       setClassShower(false);
     }
   }, [noticeAddingDrawerOpen]);
+
+
+  useEffect(()=>{
+    console.log("notice drawer open ",noticeAddingDrawerOpen);
+  },[noticeAddingDrawerOpen])
 
 
   useEffect(()=>{
@@ -53,18 +56,26 @@ const NoticeAddingDrawer = ({
 
   useEffect(()=>{
     console.log("announcement data is ",announcementData);
+    console.log("notice adding drawer Oepn ",noticeAddingDrawerOpen);
   },[announcementData])
 
   const fetchClassesRelatedToTeacher = async () => {
-    const classResult = await getClassesByTeacher(teacherID);
-    console.log("claases ", classResult.data[0]);
-    setTeacherClasses(classResult.data[0]);
+    try {
+      const classResult = await getClassesByTeacher(teacherID);
+      console.log("claases ", classResult.data[0]);
+      setTeacherClasses(classResult.data[0]);
+    } catch (error) {
+      console.log("error",error);
+      message.error("classes fetching Error!")
+    }
+   
   };
 
   const showDrawer = () => {
     setNoticeAddingDrawerOpen(true);
   };
   const onClose = () => {
+    console.log("camer hereee");
     setNoticeAddingDrawerOpen(false);
     setAnnouncementData({
 
@@ -81,11 +92,19 @@ const NoticeAddingDrawer = ({
     
   };
 
+  const closeDrawer=()=>{
+    console.log("xlose detected");
+    setNoticeAddingDrawerOpen(false);
+    console.log("cloed");
+  }
+
 
   const handleSubmitAnnouncement=async()=>{
     setSubmitloading(true);
-    if (announcementData.title!="" && announcementData.description!="" && announcementData.teacherID!="") {
+    try {    
+    if (announcementData.title!="" && announcementData.description!="" && announcementData.userID!="") {
         const announcementResult=await createNewAnnouncement(announcementData);
+        console.log("annoucment Result  ",announcementResult);
         if (announcementResult.status==200) {
             notification.success({
                 message:"Announcement Created successfully!",
@@ -102,6 +121,9 @@ const NoticeAddingDrawer = ({
         message.error("please fill below details to proceed!")
         setSubmitloading(false);
     }
+  } catch (error) {
+      message.error("Announcement creating error!")
+  }
    
   }
 
@@ -207,6 +229,7 @@ const NoticeAddingDrawer = ({
       title="New Announcement"
       width={"40%"}
       onClose={onClose}
+      
       open={noticeAddingDrawerOpen}
       extra={
         <Space>
@@ -221,7 +244,7 @@ const NoticeAddingDrawer = ({
         </Space>
       }
     >
-      <div className="border-2 border-red-600">
+      <div className="">
       <ConfigProvider
             theme={{
               components: {

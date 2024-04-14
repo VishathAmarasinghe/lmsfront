@@ -128,11 +128,11 @@ const RegistrationConfirmStudentDrawer = ({
                     Switch: {
                       base: {
                         "&:hover": {
-                          backgroundColor: "transparent", // Remove hover effect
+                          backgroundColor: "transparent", 
                         },
                         "&:not(:hover)": {
-                          color: "initial", // Set default text color
-                          backgroundColor: "#C5C5C5", // Set default background color
+                          color: "initial", 
+                          backgroundColor: "#C5C5C5", 
                         },
                       },
                     },
@@ -446,7 +446,7 @@ const RegistrationConfirmStudentDrawer = ({
                         </Col>
                       </Row>
                     </Form>
-                    {/* Add more details as needed */}
+
                   </Panel>
                 ))}
               </Collapse>

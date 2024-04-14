@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 
+.custom-header .fc-toolbar-title {
+  font-size: 10px; /* Adjust the font size here */
+}
+
+
 @font-face {
     font-family: interblack;
     src: url('./assets/fonts/Inter-Black.ttf') format("truetype");

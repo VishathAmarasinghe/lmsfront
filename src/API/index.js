@@ -1,3 +1,4 @@
+import { Announcement } from "@mui/icons-material";
 import axios from "axios";
 
 
@@ -126,3 +127,14 @@ export const createNewAnnouncement=(announcementData)=>axios.post("http://localh
 
 
 export const getAnnouncementsCreatedByTeacher=(teacherID)=>axios.get(`http://localhost:5050/notification/teacherAnnouncement?teacherID=${teacherID}`);
+
+export const deleteAnnouncement=(announcementID)=>axios.delete("http://localhost:5050/notification/announcement",{data:{announcementID}})
+
+
+export const getClassesByTeacherCalender=(teacherID)=>axios.get(`http://localhost:5050/classService/teacherClassesCalender?teacherID=${teacherID}`);
+
+export const getAllClassesForCalender=()=>axios.get(`http://localhost:5050/classService/allClassesCalender`);
+
+export const getFullUserInformation=(userID)=>axios.get(`http://localhost:5050/user/fullUserDetails?userID=${userID}`);
+
+export const updateFullUserInformation=(userDetails)=>axios.post("http://localhost:5050/user/updateFullUserDetails",userDetails);

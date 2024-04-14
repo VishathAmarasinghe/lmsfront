@@ -15,6 +15,7 @@ import NewAppointment from "../../InnerPages/NewAppointment";
 import  PastAppointments from '../../InnerPages/PastAppointments';
 import TeacherAppointmentPendingPanel from "../../InnerPages/TeacherAppointmentPendingPanel";
 import TeacherNoticePanel from "../../InnerPages/TeacherNoticePanel";
+import TeacherTimeTable from "../../InnerPages/TeacherTimeTable";
 
 
 const pageChanger = (pageChanger) => {
@@ -58,7 +59,7 @@ const pageChanger = (pageChanger) => {
       return <MainClassPage/>
 
     case "13":
-      break
+      return <TeacherTimeTable/>
 
     case "14":
       return <TeacherNoticePanel/>
