@@ -41,7 +41,7 @@ const { Header, Content, Footer, Sider } = Layout;
 
 const PageStructure = () => {
   const [currentUser,setCurrentUser]=useState(JSON.parse(localStorage.getItem("profile"))?.result?.role);
-  const [openprofileeditingDrawer, setProfileOpeneditingDrawer]=useState(false);
+  const [openprofileeditingDrawer, setProfileOpeneditingDrawer]=useState({status:false,task:""});
   const [pageIndex,setPageIndex]=useState(1);
   const [collapsed, setCollapsed] = useState(false);
   const [mobilemenu, setMobileMenu] = useState(false);

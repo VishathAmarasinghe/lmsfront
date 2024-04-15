@@ -82,7 +82,7 @@ const ProfilePicUploading = ({ setProfilePicture, existingImageUrl }) => {
           onChange={handleChange}
         >
           {fileList.length >= 1 ? null : existingImageUrl ? (
-            <img src={existingImageUrl} alt="Profile" style={{ width: '100%' }} />
+            <img src={existingImageUrl} alt="ProfilePic" style={{ width: '100%' }} />
           ) : (
             uploadButton
           )}

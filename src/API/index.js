@@ -138,3 +138,13 @@ export const getAllClassesForCalender=()=>axios.get(`http://localhost:5050/class
 export const getFullUserInformation=(userID)=>axios.get(`http://localhost:5050/user/fullUserDetails?userID=${userID}`);
 
 export const updateFullUserInformation=(userDetails)=>axios.post("http://localhost:5050/user/updateFullUserDetails",userDetails);
+
+
+export const getAllTeachersInfo=()=>axios.get("http://localhost:5050/user/allteachers");
+
+export const createNewUser=(userDetails)=>axios.post("http://localhost:5050/user/createUser",userDetails);
+
+export const getAllStaffInfo=()=>axios.get("http://localhost:5050/user/allStaff");
+
+
+export const getAllClassesFullInfo=()=>axios.get(`http://localhost:5050/classService/fullclassInfo`);

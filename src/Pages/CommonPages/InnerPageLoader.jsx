@@ -16,6 +16,14 @@ import  PastAppointments from '../../InnerPages/PastAppointments';
 import TeacherAppointmentPendingPanel from "../../InnerPages/TeacherAppointmentPendingPanel";
 import TeacherNoticePanel from "../../InnerPages/TeacherNoticePanel";
 import TeacherTimeTable from "../../InnerPages/TeacherTimeTable";
+import OwnerPageTeacherPanel from "../../InnerPages/OwnerPageTeacherPanel";
+import OwnerDashboard from "../../InnerPages/OwnerDashboard";
+import OwnerPageStudentPanel from "../../InnerPages/OwnerPageStudentPanel";
+import OwnerPageStaffPanel from '../../InnerPages/OwnerPageStaffPanel';
+import OwnerClassPanel from "../../InnerPages/OwnerClassPanel";
+import OwerClassTimeTable from "../../InnerPages/OwerClassTimeTable";
+
+
 
 
 const pageChanger = (pageChanger) => {
@@ -96,16 +104,16 @@ const pageChanger = (pageChanger) => {
       break
 
     case "25":
-      break
+      return <OwnerDashboard/>
 
     case "26":
-      return <StudentDashboard />;
+      return <OwnerPageTeacherPanel/>
 
     case "27":
-      break
+      return <OwnerPageStudentPanel/>
 
     case "28":
-      break
+      return <OwnerPageStaffPanel/>
 
     case "29":
       break
@@ -119,6 +127,10 @@ const pageChanger = (pageChanger) => {
       return <AttendanceMarkPage/>
     case "34":
       break
+    case "35":
+      return <OwnerClassPanel/>
+    case "36":
+      return <OwerClassTimeTable/>
     default:
       break;
   }

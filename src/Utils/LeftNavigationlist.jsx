@@ -83,7 +83,10 @@ const owneritems = [
   getItem("Students", "27", <SolutionOutlined/>),
   getItem("Staff", "28", <UserOutlined />),
   getItem("Payments", "29", <ShoppingOutlined/>),
-  getItem("Classes", "30", <ScheduleOutlined />),
+  getItem("Class Info", "30", <ScheduleOutlined />,[
+    getItem("Classes", "35", <TranslationOutlined />),
+    getItem("Time Table", "36", <ScheduleOutlined />),
+  ]),
   getItem("Reports", "31", <FileTextOutlined />),
   
 ];

@@ -9,6 +9,7 @@ import {
   Drawer,
   Form,
   Input,
+  InputNumber,
   Row,
   Select,
   Space,
@@ -16,19 +17,20 @@ import {
   message,
   notification,
 } from "antd";
-import ProfilePicUploading from "./ProfilePicUploading";
+
 import { createNewUser, getFullUserInformation, updateFullUserInformation } from "../../API";
 import LoadingPage from "../../Pages/CommonPages/LoadingPage";
 import TextArea from "antd/es/input/TextArea";
-import TeacherProfilePicUploading from "./TeacherProfilePicUploading";
+import TeacherProfilePicUploading from "../TeacherComp/TeacherProfilePicUploading";
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 const { Panel } = Collapse;
 
-const TeacherDetaileditingDrawer = ({
+const StaffDetailEditingDrawer = ({
   openeditingDrawer,
   setOpeneditingDrawer,
-  teacherStatus,
+  staffStatus,
   selectedTeacherData
 }) => {
   const teacherID = JSON.parse(localStorage.getItem("profile")).result.UserID;
@@ -42,7 +44,7 @@ const TeacherDetaileditingDrawer = ({
 
 
   useEffect(() => {
-    if (openeditingDrawer?.status == true && teacherStatus!="owner") {
+    if (openeditingDrawer?.status == true && staffStatus!="owner") {
       fetchUserInformation(teacherID);
       setEditing(false);
       setUserDetails(prevUserDetails => ({
@@ -52,7 +54,7 @@ const TeacherDetaileditingDrawer = ({
         newPassword: null,
         confirmPassword: null,
       }));
-    } else if (openeditingDrawer.status == true && teacherStatus=="owner") {
+    } else if (openeditingDrawer.status == true && staffStatus=="owner") {
       setEditing(false);
       if (openeditingDrawer.task=="Create") {
         setEditing(true)
@@ -62,7 +64,7 @@ const TeacherDetaileditingDrawer = ({
           oldpassword: null,
           newPassword: null,
           confirmPassword: null,
-          role: "teacher"
+          role: "staff"
         }));
       } else {
         
@@ -81,9 +83,9 @@ const TeacherDetaileditingDrawer = ({
 
 
   useEffect(()=>{
-    console.log("teacher details are ",userDetails);
+    console.log("staff details are ",userDetails);
     if (userDetails?.role==null || userDetails?.role==undefined) {
-      setUserDetails({...userDetails,role:"teacher"});
+      setUserDetails({...userDetails,role:"staff"});
     }
   },[userDetails])
 
@@ -133,6 +135,28 @@ const TeacherDetaileditingDrawer = ({
         [e.target.name]: e.target.value
       }
     });
+    
+  }
+
+  const handleAdditionalInputNumberChange = (value) => {
+    setUserDetails({
+      ...userDetails,
+      additionalInfo: {
+        ...userDetails.additionalInfo,
+        Salary: value
+      }
+    });
+    
+  }
+
+  const handleDataChange=(date,dateString,e)=>{
+    setUserDetails({
+        ...userDetails,
+        additionalInfo: {
+          ...userDetails.additionalInfo,
+          hireDate: dateString
+        }
+      });
   }
 
   const handleUpdateProfile=async()=>{
@@ -142,7 +166,7 @@ const TeacherDetaileditingDrawer = ({
       if (updationResult.status==200) {
         message.success("User Successfully Updated!")
         setEditing(false);
-        if (teacherStatus=="owner") {
+        if (staffStatus=="owner") {
           fetchUserInformation(selectedTeacherData.UserID);
         }else{
           fetchUserInformation(teacherID);
@@ -347,7 +371,7 @@ const TeacherDetaileditingDrawer = ({
               <Col span={12}>
                 <Form.Item
                   
-                  label="Lecturing School"
+                  label="Monthly Salary"
                   rules={[
                     {
                       required: true,
@@ -355,7 +379,7 @@ const TeacherDetaileditingDrawer = ({
                     },
                   ]}
                 >
-                  <Input className="bg-[#EBEEFF]" readOnly={!editing} name="teacherSchool" onChange={handleAdditionalInputChange} value={userDetails?.additionalInfo?.teacherSchool} placeholder="Please enter your school" />
+                  <InputNumber className="bg-[#EBEEFF] w-full" readOnly={!editing} name="Salary" onChange={(value)=>handleAdditionalInputNumberChange(value)} value={userDetails?.additionalInfo?.Salary} placeholder="Please enter your Salary" />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -376,6 +400,36 @@ const TeacherDetaileditingDrawer = ({
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
+                  
+                  label="Job Role"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter Job Role",
+                    },
+                  ]}
+                >
+                  <Input className="bg-[#EBEEFF] w-full" readOnly={!editing} name="jobRole" onChange={handleAdditionalInputChange} value={userDetails?.additionalInfo?.jobRole} placeholder="Please enter your Job Role" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                 
+                  label="Hire Date"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter Hire Date",
+                    },
+                  ]}
+                >
+                  <DatePicker className="bg-[#EBEEFF]" readOnly={!editing}  name="hireDate" onChange={handleDataChange} value={userDetails?.hireDate=="" || userDetails?.hireDate==null?dayjs():dayjs(userDetails?.hireDate)} placeholder="Please enter Hire Date" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
                  
                   label="NIC Number"
                   rules={[
@@ -390,20 +444,20 @@ const TeacherDetaileditingDrawer = ({
               </Col>
               <Col span={12}>
                 <Form.Item
-                  label="Additional Info"
+                  label="Job Description"
                   rules={[
                     {
                       required: true,
-                      message: "Please enter additional information",
+                      message: "Please enter Job Description",
                     },
                   ]}
                 >
-                  <TextArea className="bg-[#EBEEFF]" readOnly={!editing} name="teacherDescription" onChange={handleAdditionalInputChange} value={userDetails?.additionalInfo?.teacherDescription} placeholder="Please enter your additional information" />
+                  <TextArea className="bg-[#EBEEFF]" readOnly={!editing} name="jobDesription" onChange={handleAdditionalInputChange} value={userDetails?.additionalInfo?.jobDesription} placeholder="Please enter Job description" />
                 </Form.Item>
               </Col>
             </Row>
             {
-              teacherStatus!="owner"?
+              staffStatus!="owner"?
             
             <Row gutter={16}>
               <div className="w-full ">
@@ -487,4 +541,4 @@ const TeacherDetaileditingDrawer = ({
   );
 };
 
-export default TeacherDetaileditingDrawer;
+export default StaffDetailEditingDrawer;

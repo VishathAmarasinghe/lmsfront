@@ -47,7 +47,7 @@ const Header = ({
         break;
       case "Profile":
         setAnchorElUser(null);
-        setProfileOpeneditingDrawer(true);
+        setProfileOpeneditingDrawer({...openprofileeditingDrawer,status:true,task:"Update"});
         break;
       default:
         break;
@@ -65,6 +65,8 @@ const Header = ({
     <div className="w-full h-full border-2 border-red-600 flex flex-row justify-between">
       <div className="flex flex-row items-center justify-center align-middle border-2 border-gray-600">
         <TeacherDetaileditingDrawer
+        selectedTeacherData={[]}
+        teacherStatus={"other"}
           openeditingDrawer={openprofileeditingDrawer}
           setOpeneditingDrawer={setProfileOpeneditingDrawer}
         />
@@ -127,7 +129,7 @@ const Header = ({
                 icon={
                   userDetails.photo == null || userDetails.photo == ""
                     ? userDetails.firstName.substring(0, 1).toUpperCase()
-                    : <img src={`http://localhost:5000/${userDetails.photo}`}/>
+                    : <img alt={userDetails.firstName.substring(0, 1).toUpperCase()} src={`http://localhost:5000/${userDetails.photo}`}/>
                 }
               />
             </IconButton>

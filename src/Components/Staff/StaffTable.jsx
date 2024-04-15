@@ -6,8 +6,8 @@ import lecturerAvatar from "../../assets/lecturer.jpg";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import DeleteButtonPopUp from "./DeleteButtonPopUp";
-import TeacherDetaileditingDrawer from "./TeacherDetaileditingDrawer";
+
+import StaffDetailEditingDrawer from "./StaffDetailEditingDrawer";
 const data = [
   {
     key: "1",
@@ -47,10 +47,10 @@ const data = [
   },
 ];
 
-const TeacherTable = ({ teacherData, setTeacherData,openeditingDrawer, setOpeneditingDrawer }) => {
+const StaffTable = ({ StaffData, setStaffData,openeditingDrawer, setOpeneditingDrawer }) => {
   const [opendeleteModel, setOpendeleteModel] = useState(false);
   
-  const [selectedTeacher,setSelectedTeacher]=useState(null);
+  const [selectedStaffMember,setSelectedTeacher]=useState(null);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
@@ -188,7 +188,7 @@ const TeacherTable = ({ teacherData, setTeacherData,openeditingDrawer, setOpened
           className="scalar-cardlg"
             style={{ backgroundColor: "#87d068" }}
             icon={
-              fname && fname.split(")")[0] && fname.split(")")[0] !== "" ? (
+              fname && fname.split(")")[0] && fname.split(")")[0] !== "" && fname.split(")")[0]!=null && fname.split(")")[0]!="null"  ? (
                 <img src={`http://localhost:5000/${fname.split(")")[0]}`} />
               ) : (
                 fname.split("(")[1].substring(0, 1)
@@ -261,7 +261,7 @@ const TeacherTable = ({ teacherData, setTeacherData,openeditingDrawer, setOpened
               color="green"
               className="scalar-card w-[100%] font-medium text-center bg-green-700 hover:bg-green-800 text-white"
             >
-              Verify Teacher
+              Verify Staff
             </Tag>
           </div>
         );
@@ -271,14 +271,11 @@ const TeacherTable = ({ teacherData, setTeacherData,openeditingDrawer, setOpened
   ];
   return (
     <>
-      <Table columns={columns} dataSource={teacherData} />
-      <DeleteButtonPopUp
-        opendeleteModel={opendeleteModel}
-        setOpendeleteModel={setOpendeleteModel}
-      />
-      <TeacherDetaileditingDrawer
-      selectedTeacherData={selectedTeacher}
-      teacherStatus={"owner"}
+      <Table columns={columns} dataSource={StaffData} />
+   
+      <StaffDetailEditingDrawer
+      selectedTeacherData={selectedStaffMember}
+      staffStatus={"owner"}
         openeditingDrawer={openeditingDrawer}
         setOpeneditingDrawer={setOpeneditingDrawer}
       />
@@ -286,4 +283,4 @@ const TeacherTable = ({ teacherData, setTeacherData,openeditingDrawer, setOpened
   );
 };
 
-export default TeacherTable;
+export default StaffTable;

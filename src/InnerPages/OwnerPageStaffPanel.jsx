@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import TeacherTable from '../Components/TeacherComp/TeacherTable'
 import { Button, message } from 'antd'
 import LoadingInnerPage from './LoadingInnerPage'
 import { PlusOutlined } from '@ant-design/icons'
-import { getAllTeachersInfo } from '../API'
+import { getAllStaffInfo, getAllTeachersInfo } from '../API'
+import StaffTable from '../Components/Staff/StaffTable'
 
-const OwnerPageTeacherPanel = () => {
+const OwnerPageStaffPanel = () => {
   const [loading,setLoading]=useState(true);
-  const [teacherData,setTeacherData]=useState([]);
+  const [staffData,setStaffData]=useState([]);
   const [openeditingDrawer, setOpeneditingDrawer] = useState({
     status:false,
     task:""
@@ -26,16 +26,16 @@ const OwnerPageTeacherPanel = () => {
     setLoading(true);
     try {
 
-      const teacherResult=await getAllTeachersInfo();
-      console.log("teacher result ",teacherResult.data);
-      const teacherDataArray = teacherResult.data.map((teacher) => ({
-        ...teacher,
-        photoName: `${teacher.photo})${teacher.firstName}`,
+      const staffResult=await getAllStaffInfo();
+      console.log("teacher result ",staffResult.data);
+      const staffDataArray = staffResult.data.map((staff) => ({
+        ...staff,
+        photoName: `${staff.photo})${staff.firstName}`,
 
       }));
       
-      console.log("teacher Array ",teacherDataArray);
-      setTeacherData(teacherDataArray);
+      console.log("Staff Array ",staffDataArray);
+      setStaffData(staffDataArray);
       setLoading(false);
 
     } catch (error) {
@@ -49,7 +49,7 @@ const OwnerPageTeacherPanel = () => {
     <div className="w-full h-[100%] flex flex-col items-center shadow-2xl overflow-y-auto">
     <div className="w-full">
       <h1 className="font-inter font-semibold text-[18px] ml-8 my-2 text-gray-500">
-        Teacher Panel
+        Staff Panel
       </h1>
     </div>
 
@@ -62,12 +62,12 @@ const OwnerPageTeacherPanel = () => {
         >
           <PlusOutlined />
           
-          Add New Teacher
+          Add New Staff
         </Button>
       </div>
       <div className=" overflow-y-auto h-[90%] w-[95%]">
         {
-          loading?<LoadingInnerPage/>:<TeacherTable openeditingDrawer={openeditingDrawer} setOpeneditingDrawer={setOpeneditingDrawer}  teacherData={teacherData} setTeacherData={setTeacherData}/>
+          loading?<LoadingInnerPage/>:<StaffTable openeditingDrawer={openeditingDrawer} setOpeneditingDrawer={setOpeneditingDrawer}  StaffData={staffData} setStaffData={setStaffData}/>
           
         }
           
@@ -77,4 +77,5 @@ const OwnerPageTeacherPanel = () => {
   )
 }
 
-export default OwnerPageTeacherPanel
+
+export default OwnerPageStaffPanel;
