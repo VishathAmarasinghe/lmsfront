@@ -10,6 +10,8 @@ import RegistrationPaymentProceeder from "../../InnerPages/RegistrationPaymentPr
 import { useSelector } from "react-redux";
 import ClassContent from "../../Components/Class/ClassContent";
 import ClassParticipants from "../../InnerPages/ClassParticipants";
+import TeacherResultAddingPage from "../../InnerPages/TeacherResultAddingPage";
+import TeacherMarkAnalysis from "../../InnerPages/TeacherMarkAnalysis";
 
 
 const pageChanger = (pageChanger) => {
@@ -34,10 +36,10 @@ const pageChanger = (pageChanger) => {
         return <ClassParticipants/>
 
     case "A7":
-      break
+      return <TeacherResultAddingPage/>
 
     case "A8":
-      return <MainClassPage />;
+      return <TeacherMarkAnalysis/>
 
     case "A9":
       return <StudentTimetable/>;

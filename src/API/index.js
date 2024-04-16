@@ -148,3 +148,19 @@ export const getAllStaffInfo=()=>axios.get("http://localhost:5050/user/allStaff"
 
 
 export const getAllClassesFullInfo=()=>axios.get(`http://localhost:5050/classService/fullclassInfo`);
+
+
+export const getStudentAndTeacherDetails=(allPeople)=>axios.post("http://localhost:5050/user/teacherAndStudentData",allPeople);
+
+export const getStudentListAsExcel=(studentList)=>axios.post("http://localhost:5050/user/generateStudentExcel",studentList,{responseType:"blob"})
+
+export const getResultHeadingForClass=(classID)=>axios.get(`http://localhost:5050/classService/resultForClass?classID=${classID}`);
+
+
+export const uploadResultWithExcel=(formData)=>axios.post("http://localhost:5050/classService/uploadResultWith", formData, {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+});
+
+export const getChartData=(chartData)=>axios.post("http://localhost:5050/classService/charts",chartData);

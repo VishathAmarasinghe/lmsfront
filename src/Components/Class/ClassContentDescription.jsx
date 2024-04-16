@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 const ClassContentDescription = ({ classDetails }) => {
   const [descriptionList, setDescriptionList] = useState([]);
+  console.log("selected class details ",classDetails);
 
   useEffect(() => {
     if (classDetails) {

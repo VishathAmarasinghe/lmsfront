@@ -123,7 +123,7 @@ export const getAllAccordianByClassID = (classID) => async (dispatch) => {
         console.log("data of selected Class ",result);
         dispatch({
             type:"SELECTED_CLASS",
-            class:result.data
+            class:result?.data[0]
         })
         return result;
         
