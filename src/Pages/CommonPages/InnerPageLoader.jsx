@@ -22,6 +22,8 @@ import OwnerPageStudentPanel from "../../InnerPages/OwnerPageStudentPanel";
 import OwnerPageStaffPanel from '../../InnerPages/OwnerPageStaffPanel';
 import OwnerClassPanel from "../../InnerPages/OwnerClassPanel";
 import OwerClassTimeTable from "../../InnerPages/OwerClassTimeTable";
+import ParentPerformance from "../../InnerPages/ParentPerformance";
+import ParentNoticePanel from "../../InnerPages/ParentNoticePanel";
 
 
 
@@ -33,7 +35,7 @@ const pageChanger = (pageChanger) => {
       return <ParentDashboard/>
 
     case "2":
-      break
+      return <ParentPerformance/>
 
     case "3":
       return <NewAppointment/>
@@ -42,7 +44,7 @@ const pageChanger = (pageChanger) => {
       return <PastAppointments/>
 
     case "5":
-      break
+      return <ParentNoticePanel/>
 
     case "6":
       break
@@ -54,10 +56,10 @@ const pageChanger = (pageChanger) => {
       return <MainClassPage />;
 
     case "9":
-      return <StudentTimetable/>;
+      return <TeacherTimeTable/>
 
     case "10":
-      return <StudentNotices/>;
+      return <ParentNoticePanel/>
 
     case "11":
       break;

@@ -19,7 +19,7 @@ const ClassCard = ({classinfo}) => {
   const classOnclickHandle=()=>{
     dispatch(selectedClass(classinfo))
     console.log("selected class Info ",classinfo);
-    navigate(`/class/${classinfo.classID}`);
+    navigate(`/class/${classinfo?.classID}`);
     }
   return (
     <div onClick={classOnclickHandle} className=' w-full md:w-[90%]  shadow-lg hover:shadow-2xl rounded-xl relative scalar-cardsm'>
@@ -27,7 +27,7 @@ const ClassCard = ({classinfo}) => {
             <img src={classCardImage} className='bg-cover  w-full h-[120px] rounded-xl rounded-bl-none rounded-br-none' />
         </div>
         <div className='w-full  bg-white '>
-            <p className='ml-2 text-[17px] font-semibold font-inter mt-1'>{`${classinfo.gradeName} ${classinfo.subjectName} ${classinfo.medium} Medium`}</p>
+            <p className='ml-2 text-[17px] font-semibold font-inter mt-1'>{`${classinfo?.gradeName} ${classinfo?.subjectName} ${classinfo?.medium} Medium`}</p>
             <div className='flex flex-row justify-start items-center ml-2'>
                 <Avatar icon={<img src={classOwnerAvatar}/>}/>
                 <p className='text-[#ABABAB] my-2 ml-2'>Tutor: <span className='font-semibold'>P.K Rajapajsha</span></p>

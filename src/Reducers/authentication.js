@@ -7,6 +7,20 @@ const authReducer=(state={authData:null},action)=>{
         case "LOGOUT":
             localStorage.clear();
             return {...state,authData:null};
+        case "CURRENT_USER_UPDATE":
+            const userData = JSON.parse(localStorage.getItem("profile"));
+            userData.result=action?.data
+            localStorage.clear();
+            localStorage.setItem("profile",JSON.stringify({...userData}));
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000); 
+              
+            
+            return {...state,authData:action?.data};
+        
+
+            
         default:
             return state;
     }

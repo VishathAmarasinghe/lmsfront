@@ -16,7 +16,7 @@ const SubmissionPanalCard = ({ submission, mainMaterial }) => {
   const [deleteConfirmation,setDeleteConfirmation]=useState(false);
   const [deleteLoading,setDeleteLoading]=useState(false);
   const [submissionModelOpen,setSubmissionModelOpen]=useState(false);
-
+  const user=JSON.parse(localStorage.getItem("profile")).result;
   const closeDate = new Date(submission.subCloseDate);
   const closeDateString = closeDate.toISOString().split("T")[0];
 
@@ -77,7 +77,8 @@ const SubmissionPanalCard = ({ submission, mainMaterial }) => {
             <p className="text-[10px] mr-4">Due Date: {closeDateString}</p>
             <p className="text-[10px]">Due Time: {submission.subCloseTime}</p>
           </div>
-          <div className="flex flex-col pr-4">
+          {
+            user?.role=="teacher"?<div className="flex flex-col pr-4">
             <Popconfirm
             placement="topRight"
             title="Delete"
@@ -98,7 +99,9 @@ const SubmissionPanalCard = ({ submission, mainMaterial }) => {
             <button>
               <EditOutlined className="hover:bg-white p-1 rounded-lg hover:text-black" />
             </button>
-          </div>
+          </div>:<></>
+          }
+          
         </div>
       </div>
     </Tag>

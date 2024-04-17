@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import fileDownload from "js-file-download";
 
 const NoteCard = ({ note, mainMaterial }) => {
+  const user=JSON.parse(localStorage.getItem("profile")).result;
   const date = new Date(mainMaterial.uploadDate);
   const dateString = date.toISOString().split("T")[0];
   const { classID } = useParams();
@@ -74,11 +75,14 @@ const NoteCard = ({ note, mainMaterial }) => {
             </p>
           </div>
         </div>
-        <div className="p-4 ">
+        {
+          user?.role=="teacher"?<div className="p-4 ">
           <button onClick={handleNoteDelete}>
             <DeleteOutlined className="hover:bg-white p-1 rounded-lg hover:text-black" />
           </button>
-        </div>
+        </div>:<></>
+        }
+        
       </div>
     </Tag>
   );

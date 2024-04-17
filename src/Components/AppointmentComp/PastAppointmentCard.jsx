@@ -22,7 +22,7 @@ const PastAppointmentCard = ({appintment,fetchParentAppointments}) => {
 
     }
   return (
-    <div className='w-[95%] flex flex-col md:flex-row hover:bg-[#ABB7FD]  mt-4  bg-[#EBEEFF] rounded-lg p-3 shadow-md'>
+    <div data-aos="fade-up" className='w-[95%] flex flex-col md:flex-row hover:bg-[#ABB7FD]  mt-4  bg-[#EBEEFF] rounded-lg p-3 shadow-md'>
         
         <div className=' w-full md:w-[40%]  mr-2'>
             <PastCardrowComp titleName={"Student Name"} value={appintment?.studentFirstName+" "+appintment?.studentLastName} />
@@ -44,7 +44,7 @@ const PastAppointmentCard = ({appintment,fetchParentAppointments}) => {
                {
                 appintment?.status=="Created"?<Tag color='blue' className='w-full p-2 text-center font-medium'>
                     Not Approved
-                </Tag>:appintment?.status=="approved"?<Tag className='p-2' color='green-inverse'>Approved</Tag>:
+                </Tag>:appintment?.status=="approved"?<Tag className='w-full p-2 text-center font-medium' color='green-inverse'>Approved</Tag>:
                 appintment?.status=="finished"?<Tag className='p-2' color='yellow-inverse'>Finished</Tag>:<Tag></Tag>
                }
                 
@@ -63,7 +63,7 @@ const PastAppointmentCard = ({appintment,fetchParentAppointments}) => {
 
                     <Tag  color='red' className='w-full p-2 hover:text-white text-center hover:bg-red-500 font-medium'>Delete</Tag>
                     </Popconfirm>
-                    :<Tag></Tag>
+                    :<></>
                 }
             </button>
         </div>

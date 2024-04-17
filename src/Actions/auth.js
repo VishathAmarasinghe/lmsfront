@@ -66,3 +66,25 @@ export const logout=(navigation)=>async(dispatch)=>{
         console.log("logout error ",error);
     }
 }
+
+
+export const updateLoginUser=(userID)=>async(dispatch)=>{
+  try {
+    const {data}=await API.getFullUserInformation(userID);
+    dispatch({
+        type:"CURRENT_USER_UPDATE",
+        data
+
+    })
+   
+    
+} catch (error) {
+    console.log("error in sending Data ",error);
+    notification.error(
+        {
+          message:"internal data  updation  error!",
+          description:"Please logOut and come again."
+        }
+      )
+}
+}

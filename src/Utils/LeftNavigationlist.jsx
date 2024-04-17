@@ -38,7 +38,6 @@ const Parentitems = [
     getItem("Past Appointments", "4", <ContactsOutlined />)
   ]),
   getItem("Notices", "5", <ProfileOutlined />),
-  getItem("Profile", "6", <SolutionOutlined />)
 ];
 
 const studentitems = [

@@ -26,7 +26,7 @@ const PastAppointments = () => {
       </h1>
     </div>
 
-    <div className="w-[95%] bg-white h-[90%]  flex flex-col lg:flex-col overflow-y-auto items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
+    <div data-aos="fade-right" className="w-[95%] bg-white h-[90%]  flex flex-col lg:flex-col overflow-y-auto items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
       {
         pastAppointmentArray.length>0?(
         pastAppointmentArray.map((appintment)=>

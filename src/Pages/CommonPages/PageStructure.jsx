@@ -58,7 +58,7 @@ const PageStructure = () => {
     if (userValue=="teacher") {
       dispatch(get_classes_by_teacher(JSON.parse(localStorage.getItem("profile"))?.result?.UserID));
     }
-  },[JSON.parse(localStorage.getItem("profile"))?.result?.role])
+  },[JSON.parse(localStorage.getItem("profile"))?.result])
 
   const openMobilePanel = () => {
     setMobileMenu((pre) => !pre);

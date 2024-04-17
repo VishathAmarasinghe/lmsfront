@@ -10,7 +10,8 @@ const AppointmentTeacherCard = ({teacher,clickedTeacher,setClickedTeacher}) => {
     }
 
   return (
-    <Tag onClick={handleTeacherclicked} color='blue' className={`${clickedTeacher?.UserID==teacher?.UserID?"bg-blue-500 text-white":""} hover:bg-blue-500 hover:text-white p-2 m-2 flex flex-row justify-between`}>
+    <div data-aos="fade-up" >
+    <Tag  onClick={handleTeacherclicked} color='blue' className={`${clickedTeacher?.UserID==teacher?.UserID?"bg-blue-500 text-white":""} hover:bg-blue-500 hover:text-white p-2 m-2 flex flex-row justify-between`}>
         <div className='w-[30%] '>
         
             <img src={teacher.photo==null || teacher.photo==""?teacherSample:`http://localhost:5000/${teacher.photo}`} className='rounded-md'/>
@@ -21,6 +22,7 @@ const AppointmentTeacherCard = ({teacher,clickedTeacher,setClickedTeacher}) => {
             <p className='text-[13px] ml-2'>Phone No:{teacher.phoneNo}</p>
         </div>
     </Tag>
+    </div>
   )
 }
 

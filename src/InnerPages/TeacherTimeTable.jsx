@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { getAllClassesForCalender, getClassesByTeacherCalender } from "../API";
+import { getAllClassesForCalender, getClassesByStudentCalender, getClassesByTeacherCalender } from "../API";
 import { ConfigProvider, Segmented, message } from "antd";
 import InnerPageLoader from "../Pages/CommonPages/InnerPageLoader";
 import LoadingPage from "../Pages/CommonPages/LoadingPage";
@@ -19,18 +19,38 @@ function renderEventContent(eventInfo) {
 }
 
 const TeacherTimeTable = () => {
-  const teacherID = JSON.parse(localStorage.getItem("profile")).result.UserID;
+  const user = JSON.parse(localStorage.getItem("profile")).result;
   const [calenderEvent, setCalenderEvent] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchTeacherClassCalender();
+    if(user?.role=="teacher"){
+      fetchTeacherClassCalender();
+    }else if(user?.role=="student"){
+      fetchStudentClassCalender();
+    }
+    
   }, []);
 
   const fetchTeacherClassCalender = async () => {
     setLoading(true);
     try {
-      const classCalenderResult = await getClassesByTeacherCalender(teacherID);
+      const classCalenderResult = await getClassesByTeacherCalender(user.UserID);
+
+      console.log("calender Result ", classCalenderResult?.data);
+      setCalenderEvent(classCalenderResult?.data);
+    } catch (error) {
+      message.error("calender data fetching Error!");
+    }
+
+    setLoading(false);
+  };
+
+
+  const fetchStudentClassCalender = async () => {
+    setLoading(true);
+    try {
+      const classCalenderResult = await getClassesByStudentCalender(user.UserID);
 
       console.log("calender Result ", classCalenderResult?.data);
       setCalenderEvent(classCalenderResult?.data);
@@ -65,7 +85,11 @@ const TeacherTimeTable = () => {
     if(value=="All Classes"){
         fetchAllClassCalender();
     }else if(value=="My Classes"){
+      if(user?.role=="teacher"){
         fetchTeacherClassCalender();
+      }else if(user?.role=="student"){
+        fetchStudentClassCalender();
+      }
     }
   }
 
@@ -83,7 +107,7 @@ const TeacherTimeTable = () => {
         </h1>
       </div>
 
-      <div className="w-[95%] border-2 border-red-500 bg-white h-[90%] flex flex-col items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
+      <div data-aos="fade-right" className="w-[95%]  bg-white h-[90%] flex flex-col items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
         <div className="w-[95%]  mt-3">
           <ConfigProvider
             theme={{

@@ -18,6 +18,8 @@ import { useDispatch } from "react-redux";
 import { logout } from "../Actions/auth";
 import { useNavigate } from "react-router-dom";
 import TeacherDetaileditingDrawer from "./TeacherComp/TeacherDetaileditingDrawer";
+import ParentDetailEditingProfileDrawer from "./ParentProfile/ParentDetailEditingProfileDrawer";
+import StaffDetailEditingDrawer from "./Staff/StaffDetailEditingDrawer";
 
 const Header = ({
   openMobilePanel,
@@ -64,12 +66,22 @@ const Header = ({
   return (
     <div className="w-full h-full border-2 border-red-600 flex flex-row justify-between">
       <div className="flex flex-row items-center justify-center align-middle border-2 border-gray-600">
-        <TeacherDetaileditingDrawer
-        selectedTeacherData={[]}
-        teacherStatus={"other"}
-          openeditingDrawer={openprofileeditingDrawer}
-          setOpeneditingDrawer={setProfileOpeneditingDrawer}
-        />
+        {
+          userDetails.role=="teacher"? <TeacherDetaileditingDrawer
+          selectedTeacherData={[]}
+          teacherStatus={"other"}
+            openeditingDrawer={openprofileeditingDrawer}
+            setOpeneditingDrawer={setProfileOpeneditingDrawer}
+          />:userDetails.role=="parent"?
+          <ParentDetailEditingProfileDrawer
+          selectedTeacherData={[]}
+          teacherStatus={"other"}
+            openeditingDrawer={openprofileeditingDrawer}
+            setOpeneditingDrawer={setProfileOpeneditingDrawer}
+          />:userDetails.role=="staff"?
+          <StaffDetailEditingDrawer/>:<></>
+        }
+       
         {classMode ? (
           <div className="border-2 border-green-600 ">
             <img src={logo} alt="logo" className="w-[60%] md:w-[57%] ml-5" />

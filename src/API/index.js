@@ -133,6 +133,8 @@ export const deleteAnnouncement=(announcementID)=>axios.delete("http://localhost
 
 export const getClassesByTeacherCalender=(teacherID)=>axios.get(`http://localhost:5050/classService/teacherClassesCalender?teacherID=${teacherID}`);
 
+export const getClassesByStudentCalender=(studentID)=>axios.get(`http://localhost:5050/classService/studentClassesCalender?studentID=${studentID}`);
+
 export const getAllClassesForCalender=()=>axios.get(`http://localhost:5050/classService/allClassesCalender`);
 
 export const getFullUserInformation=(userID)=>axios.get(`http://localhost:5050/user/fullUserDetails?userID=${userID}`);
@@ -164,3 +166,10 @@ export const uploadResultWithExcel=(formData)=>axios.post("http://localhost:5050
 });
 
 export const getChartData=(chartData)=>axios.post("http://localhost:5050/classService/charts",chartData);
+
+export const getResultForSpecificStudent=(userID)=>axios.get(`http://localhost:5050/classService/resultForUserID?userID=${userID}`);
+
+export const getParentAnnouncements=(parentID)=>axios.get(`http://localhost:5050/notification/parentAnnouncements?parentID=${parentID}`)
+
+
+export const getStudentAnnouncements=(studentID)=>axios.get(`http://localhost:5050/notification/studentAnnouncements?studentID=${studentID}`)

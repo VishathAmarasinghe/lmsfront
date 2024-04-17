@@ -10,6 +10,7 @@ import NoteCard from "../UploadMaterials/NoteCard";
 import SubmissionPanalCard from "../UploadMaterials/SubmissionPanalCard";
 
 const Accordian = ({ accDetails, setSubAccID, openeditingDrawer, setOpeneditingDrawer }) => {
+  const user=JSON.parse(localStorage.getItem("profile")).result;
   const [notemodelOpen, setnotemodelOpen] = useState(false);
   const [submissionaddingpanelOpen, setSubmissionAddingPanelOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -47,12 +48,14 @@ const Accordian = ({ accDetails, setSubAccID, openeditingDrawer, setOpeneditingD
           {
             key: accDetails.accordianID,
             label: (
-              <div className="w-full border-2 border-red-500 flex flex-row justify-between items-center">
+              <div className="w-full  flex flex-row justify-between items-center">
                 <div>
                   <h1 className="text-[18px] font-inter font-semibold">
                     {accDetails.accName}
                   </h1>
                 </div>
+                {
+                  user?.role=="teacher"?
                 <div className="flex flex-row justify-center items-center">
                   <button onClick={handleaddbtnClick}>
                     <AddBoxRoundedIcon className="text-[#9C9C9C] text-[20px] scalar-cardlg hover:text-blue-700 mr-1" />
@@ -76,7 +79,8 @@ const Accordian = ({ accDetails, setSubAccID, openeditingDrawer, setOpeneditingD
                   <button>
                     <EditRoundedIcon className="text-[#9C9C9C] text-[20px] scalar-cardlg hover:text-blue-700" />
                   </button>
-                </div>
+                </div>:<></>
+          }
               </div>
             ),
             children: (

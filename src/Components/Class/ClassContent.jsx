@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 
 const ClassContent = () => {
     const [ openeditingDrawer,setOpeneditingDrawer ]=useState(false);
+    const user=JSON.parse(localStorage.getItem("profile")).result;
     const dispatch=useDispatch();
     const [subAccID,setSubAccID]=useState(null);
     const [selectedClass,setSelectedClass]=useState("");
@@ -45,6 +46,8 @@ const ClassContent = () => {
         <div className="w-[95%] border-2 border-yellow-500 p-3">
           <ClassContentDescription classDetails={selectedClass}/>
         </div>
+        {
+          user?.role=="teacher"?
         <div className="border-2 border-blue-600 w-[5%] flex flex-col justify-center items-center">
           <button onClick={handleClick} className="my-2">
             <AddBoxRoundedIcon className="text-[#bebebe] text-[20px] scalar-cardlg hover:text-black mb-1" />
@@ -66,7 +69,8 @@ const ClassContent = () => {
           <button className="my-2">
             <BorderColorRoundedIcon className="text-[#bebebe] text-[20px] scalar-cardlg hover:text-black" />
           </button>
-        </div>
+        </div>:<></>
+}
         </div>
         <ChangingclassInnerCards setSubAccID={setSubAccID}  openeditingDrawer={openeditingDrawer }setOpeneditingDrawer={setOpeneditingDrawer}/>
 

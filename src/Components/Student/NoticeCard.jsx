@@ -27,7 +27,7 @@ const NoticeCard = ({ announcement, userID,onAnnouncementDeleted }) => {
   }
 
   return (
-    <div className="w-[100%] bg-[#D6DCFF] shadow-md flex flex-col md:flex-row justify-around  items-center  p-2 hover:bg-blue-300  my-3 rounded-lg ">
+    <div data-aos="fade-up" className="w-[100%] bg-[#D6DCFF] shadow-md flex flex-col md:flex-row justify-around  items-center  p-2 hover:bg-blue-300  my-3 rounded-lg ">
       <div className="bg-[#1ED925] p-2 w-[90%] md:w-[5%] flex flex-col rounded-md justify-center items-center">
         <NotificationOutlined className="text-[30px] text-white " />
       </div>
@@ -41,7 +41,7 @@ const NoticeCard = ({ announcement, userID,onAnnouncementDeleted }) => {
         <div>
           <p className="text-[#ABABAB]">
             Audiance: {announcement?.audience}{" "}
-            {announcement?.classes.length > 0
+            {announcement?.classes?.length > 0
               ? ` - Classes: ${announcement?.classes}`
               : ""}
           </p>
