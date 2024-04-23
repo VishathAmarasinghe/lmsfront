@@ -6,6 +6,8 @@ export const htmlToImagetranslator = async (node) => {
   try {
     const dataUrl = await htmlToImage.toPng(node);
     download(dataUrl,"studentCard")
+
+    console.log("data url is ",dataUrl);
    
     return dataUrl;
   } catch (error) {

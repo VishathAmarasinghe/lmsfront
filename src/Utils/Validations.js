@@ -57,13 +57,12 @@ export const getMonthName = (monthNumber) => {
 
 export function formatBarcode(barcode) {
 
-  const numericPart = barcode.match(/\d+/);
+  const numericPart = barcode?.match(/\d+/);
 
   if (!numericPart) {
- 
+
     return undefined;
   }
-
 
   const formattedNumericPart = numericPart[0].padStart(5, '0');
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ClassPaymentBill from "../Components/Class/ClassPaymentBill";
 import { lecturer } from "../assets";
 import ClassPaymentCardSelection from "../Components/Class/ClassPaymentCardSelection";
@@ -10,28 +10,29 @@ import { classPaymentSelectedClasses } from "../Actions/payment";
 
 const ClassPayments = () => {
   const [selectedStudent, setSelectedStudent]=useState(null);
+  const studentScanOrSeachCardRef=useRef(null);
+  
   
   const [paymentProceedClicked,setPaymentProceedClicked]=useState(false);
-
-
-
 
 
   const dispatch=useDispatch();
 
   useEffect(()=>{
-    dispatch(classPaymentSelectedClasses([]))
-  },[])
+    if (paymentProceedClicked==false) {
+      dispatch(classPaymentSelectedClasses([]))
+      setSelectedStudent(null);
+    }
+  },[paymentProceedClicked])
 
 
   const handlePaymentProceed=()=>{
     console.log("paymend proceed button clicked");
-    setPaymentProceedClicked((pre)=>!pre);
+    setPaymentProceedClicked(true);
+    studentScanOrSeachCardRef.current.focus();
   }
 
 
-
-  
   return (
     <div className="w-full h-[100%] flex flex-col items-center shadow-2xl overflow-y-auto">
         
@@ -42,7 +43,7 @@ const ClassPayments = () => {
       </div>
       <div className="w-[95%] bg-white h-[90%] border-2 border-red-600 flex flex-row lg:flex-row justify-between rounded-xl  p-1 shadow-xl ring-1 ring-gray-300">
         <div className=' shadow-xl p-2 rounded-xl  w-[58%]'>
-          <StudentScanOrSearchCard selectedStudent={selectedStudent} setSelectedStudent={setSelectedStudent} />
+          <StudentScanOrSearchCard ref={studentScanOrSeachCardRef} selectedStudent={selectedStudent} setSelectedStudent={setSelectedStudent} />
         </div>
         <div className=' w-[40%] bg-white   shadow-xl border-l-2 border-slate-400 p-2 flex flex-col justify-between'>
         <div className='w-full  h-[100%] p-2  '>
@@ -50,7 +51,7 @@ const ClassPayments = () => {
 
       
           {/* <h1 className='text-gray-500 text-[16px]'>Bill</h1> */}
-          <ClassPaymentBillList paymentProceedClicked={paymentProceedClicked} setPaymentProceedClicked={setPaymentProceedClicked}   selectedStudent={selectedStudent}/>
+          <ClassPaymentBillList paymentProceedClicked={paymentProceedClicked} setPaymentProceedClicked={setPaymentProceedClicked}   selectedStudent={selectedStudent} setSelectedStudent={setSelectedStudent}/>
           </div>
           
           <div className='w-full h-[20%] mt-2'>

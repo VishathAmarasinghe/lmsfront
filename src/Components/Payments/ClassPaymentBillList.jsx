@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ClasspaymentDisplaycard from "./ClasspaymentDisplaycard";
-import { Input, Select } from "antd";
+import { Input, Select, message } from "antd";
 import { FileOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { addClassFeePayment, checkStudentClassFeePayment } from "../../API";
@@ -14,7 +14,7 @@ const monthSelections = [
   { value: 2, label: "Different Month" },
 ];
 
-const ClassPaymentBillList = ({ selectedStudent,paymentProceedClicked,setPaymentProceedClicked }) => {
+const ClassPaymentBillList = ({ selectedStudent,setSelectedStudent,paymentProceedClicked,setPaymentProceedClicked }) => {
   const paymentSelectedClass = useSelector((state) => state.payment.paymentSelectedClass);
   const dispatch = useDispatch();
   const paymentclassBillArray = useSelector((state) => state.payment.paymentclassBillArray);
@@ -37,10 +37,11 @@ const ClassPaymentBillList = ({ selectedStudent,paymentProceedClicked,setPayment
   useEffect(()=>{
     if (paymentProceedClicked==true) {
       const billData ={
-        total:totalPayment,
+        amountToPay:totalPayment,
         payedAmount:paiedAmount,
         balance:balance,
-        cashier:cashier,
+        issuer:cashier,
+        issueType:"Received",
         student:selectedStudent?.data?.UserID,
         classes:paymentFinalizedClasses
       }
@@ -94,8 +95,27 @@ const ClassPaymentBillList = ({ selectedStudent,paymentProceedClicked,setPayment
 
 
   const sendPaymentData = async(paymentData) => {
-    const paymentBillResult=await addClassFeePayment(paymentData);
-    console.log("paymentBill Result ",paymentBillResult.data);
+    
+    try {
+      const paymentBillResult=await addClassFeePayment(paymentData);
+      console.log("paymentBill Result ",paymentBillResult.data);
+      if (paymentBillResult.status==200) {
+        message.success("Class fees Payment Added!")
+        setPaymentProceedClicked(false);
+        setSelectedStudent(null);
+        setPaymentFinalizedClasses([]);
+        setPayedAmount(0);
+        
+
+      }
+
+    } catch (error) {
+      console.log("error in class fees payment ",error);
+      message.error("error in class fees payment")
+    }
+    
+  
+    
   }
 
 
@@ -212,7 +232,7 @@ const ClassPaymentBillList = ({ selectedStudent,paymentProceedClicked,setPayment
 
   return (
     <div className=" h-[97%] flex flex-col  justify-between ">
-      <ClassBillDrawer billPreviewDrawerOpen={billPreviewDrawerOpen} setBillPreviewDrawerOpen={setBillPreviewDrawerOpen} />
+      <ClassBillDrawer paymentInfo={{total:totalPayment,balance:balance}} selectedStudent={selectedStudent} paymentFinalizedClasses={paymentFinalizedClasses} billPreviewDrawerOpen={billPreviewDrawerOpen} setBillPreviewDrawerOpen={setBillPreviewDrawerOpen} />
       <FeesExistingPopup
         paymentFinalizedClasses={paymentFinalizedClasses}
         setPaymentFinalizedClasses={setPaymentFinalizedClasses}
@@ -276,7 +296,7 @@ const ClassPaymentBillList = ({ selectedStudent,paymentProceedClicked,setPayment
           <p className="w-[70%]  flex flex-row justify-center text-[15px] font-bold text-black">
             Payed Amount
           </p>
-          <input type="number" name="paymentReceived" onChange={(e)=>handleReceivedPayment(e)} className="w-[30%] text-center h-[25px] flex flex-col justify-center items-center font-bold text-[15px] text-black"/>
+          <input type="number" name="paymentReceived" value={paiedAmount} onChange={(e)=>handleReceivedPayment(e)} className="w-[30%] text-center h-[25px] flex flex-col justify-center items-center font-bold text-[15px] text-black"/>
         </div>
         <div className="flex flex-row justify-between">
           <p className="w-[70%]  flex flex-row justify-center text-[15px] font-bold text-black">

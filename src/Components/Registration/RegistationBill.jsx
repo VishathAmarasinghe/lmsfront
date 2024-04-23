@@ -1,8 +1,19 @@
-import React from 'react';
+import JsBarcode from 'jsbarcode';
+import React, { useEffect } from 'react';
 
-const RegistrationBill = ({ paymentData }) => {
+const RegistrationBill = ({ paymentData,barCode }) => {
   const currentDate = new Date().toLocaleDateString();
   const currentTime = new Date().toLocaleTimeString();
+
+
+  useEffect(()=>{
+    JsBarcode("#barcode2",barCode ,{
+      height:"30",
+      
+    });
+  },[barCode])
+
+
   return (
     <div id='registrationBillContainer' className='w-[360px] '>
       <div className='flex flex-col justify-center items-center w-full bg-black'>
@@ -32,6 +43,10 @@ const RegistrationBill = ({ paymentData }) => {
           <p> Rs:{paymentData.payment.balance}</p>
         </div>
       </div>
+      <div className="w-full   flex flex-col justify-center items-center">
+            
+            <img id="barcode2"/>
+          </div>
       <p className='text-center bg-[#D9D9D9]'>Generated at {`${currentDate} ${currentTime}`}</p>
       <div className='h-2 bg-black'></div>
     </div>

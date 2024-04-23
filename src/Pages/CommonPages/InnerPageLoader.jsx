@@ -24,6 +24,11 @@ import OwnerClassPanel from "../../InnerPages/OwnerClassPanel";
 import OwerClassTimeTable from "../../InnerPages/OwerClassTimeTable";
 import ParentPerformance from "../../InnerPages/ParentPerformance";
 import ParentNoticePanel from "../../InnerPages/ParentNoticePanel";
+import PastPaymentsStaff from "../../InnerPages/PastPaymentsStaff";
+import OwnerAndStaffTimeTable from "../../InnerPages/OwnerAndStaffTimeTable";
+import StaffOwnerAttendanceInfo from "../../InnerPages/StaffOwnerAttendanceInfo";
+import StaffAndOwnerStudentPanel from "../../InnerPages/StaffAndOwnerStudentPanel";
+import StudentCardProcess from "../../InnerPages/StudentCardProcess";
 
 
 
@@ -87,7 +92,7 @@ const pageChanger = (pageChanger) => {
       return <ClassPayments/>
 
     case "19":
-      return <RegistrationPaymentProceeder/>
+      return <PastPaymentsStaff/>
       break
 
     case "20":
@@ -97,10 +102,10 @@ const pageChanger = (pageChanger) => {
       return <AddStudentToClass/>
 
     case "22":
-      break
+      return <OwnerClassPanel/>
       
     case "23":
-      break
+      return <OwnerAndStaffTimeTable/>
 
     case "24":
       break
@@ -128,11 +133,15 @@ const pageChanger = (pageChanger) => {
     case "33":
       return <AttendanceMarkPage/>
     case "34":
-      break
+      return <StaffOwnerAttendanceInfo/>
     case "35":
       return <OwnerClassPanel/>
     case "36":
       return <OwerClassTimeTable/>
+    case "37":
+      return <StaffAndOwnerStudentPanel/>
+    case "38":
+      return <StudentCardProcess/>
     default:
       break;
   }

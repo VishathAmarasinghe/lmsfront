@@ -63,6 +63,11 @@ const staffitems = [
     getItem("Class Payment", "18", <TransactionOutlined />),
     getItem("Past Payments", "19", <ShoppingOutlined />)
   ]),
+  getItem("Students", "A3", <AppstoreOutlined/>,
+[
+  getItem("Student Info", "37", <TranslationOutlined />),
+  getItem("Student Cards", "38", <ScheduleOutlined />),
+]),
   getItem("Classes", "20", <TeamOutlined />,[
     getItem("Add Students", "21", <TranslationOutlined />),
     getItem("Classes", "22", <ScheduleOutlined />),

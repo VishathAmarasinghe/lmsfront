@@ -4,6 +4,9 @@ import ClassFeePaymentBill from "./ClassFeePaymentBill";
 const ClassBillDrawer = ({
   billPreviewDrawerOpen,
   setBillPreviewDrawerOpen,
+  selectedStudent,
+  paymentFinalizedClasses,
+  paymentInfo
 }) => {
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
@@ -14,14 +17,14 @@ const ClassBillDrawer = ({
   };
   return (
     <Drawer 
-    title="Basic Drawer" 
-    width={'40%'}
+    title="Class Bill" 
+    width={'30%'}
     onClose={onClose} 
     open={billPreviewDrawerOpen}
     >
 
-     <div className="flex flex-col justify-center items-center w-full h-[95%] border-2 border-red-500">
-            <ClassFeePaymentBill/>
+     <div className="flex flex-col justify-center items-center w-full h-[95%] ">
+            <ClassFeePaymentBill paymentInfo={paymentInfo} selectedStudent={selectedStudent} paymentFinalizedClasses={paymentFinalizedClasses}/>
      </div>
     </Drawer>
   );

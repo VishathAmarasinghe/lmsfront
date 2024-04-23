@@ -4,13 +4,21 @@ import StudentCard from "../Components/Registration/StudentCard";
 import RegistationBill from "../Components/Registration/RegistationBill";
 import { useSelector } from "react-redux";
 import { htmlToImagetranslator } from "../Utils/htmlCanvasToImage";
-import { registrationPayment } from "../API";
+import { activateStudentAndParent, registrationPayment } from "../API";
 import { useDispatch } from "react-redux";
 import { change_page_number } from "../Actions/PageNumbers";
+import { formatBarcode } from "../Utils/Validations";
 
 const RegistrationPaymentProceeder = () => {
   const [form] = Form.useForm();
   const issuerID = JSON.parse(localStorage.getItem("profile"))?.result?.UserID;
+  const [barCodeNumber,setBarcodeNumber]=useState(null);
+  const [studentData,setStudentData]=useState({
+    barcode:null,
+    studentCardPhoto:null,
+    studentID:null,
+    cardStatus:"pending"
+  })
   const { registrationBillInfo } = useSelector(
     (state) => state.registrationBillInfo
   );
@@ -24,9 +32,9 @@ const RegistrationPaymentProceeder = () => {
       balance: 500,
       issuer: "",
       issueType: "Received",
-      studentID:registrationBillInfo.studentID,
-      receiverID: registrationBillInfo.UserID,
-      receiverName:  registrationBillInfo.firstName +" " +registrationBillInfo.lastName,
+      studentID:registrationBillInfo?.studentID,
+      receiverID: registrationBillInfo?.UserID,
+      receiverName:  registrationBillInfo?.firstName +" " +registrationBillInfo?.lastName,
       additionalCharges: 500,
       description: "registration",
     },
@@ -52,35 +60,71 @@ const RegistrationPaymentProceeder = () => {
       setPaymentData(updatedPaymentData);
 
       form.setFieldValue("payment", updatedPaymentData.payment);
+      
     }
-
+    setBarcodeNumber(String(String(formatBarcode(registrationBillInfo?.UserID)) + String(formatBarcode(registrationBillInfo?.studentID))))
     console.log("payment Data ", paymentData);
   }, [registrationBillInfo, form]);
 
 
-  
-  const handleProceedPayment=async()=>{
-    const billImage=await htmlToImagetranslator(document.getElementById('registrationBillContainer'));
-    if (billImage!="") {
-      setPaymentData({...paymentData,receiptimage:billImage})
+  useEffect(()=>{
+    setStudentData({...studentData,barcode:barCodeNumber,...registrationBillInfo});
+  },[barCodeNumber])
+
+
+  useEffect(()=>{
+    if (paymentData.receiptimage!=null && studentData.studentCardPhoto!=null) {
+      handleProceedPayment();
+    }
+  },[studentData.studentCardPhoto,paymentData.receiptimage])
+
+
+  const createBillImageAndStudentCardImage=async()=>{
+    const billImage = await htmlToImagetranslator(document.getElementById('registrationBillContainer'));
+    if (billImage !== "" && billImage !== null) {
+       setPaymentData({ ...paymentData, receiptimage: billImage });
     }
 
-    const studentIDCardImage=await htmlToImagetranslator(document.getElementById("studentCard"));
-    if (studentIDCardImage!="") {
-      
+    const studentIDCardImage = await htmlToImagetranslator(document.getElementById("studentCard"));
+    if (studentIDCardImage !== "" && studentIDCardImage !== null) {
+       setStudentData({ ...studentData, studentCardPhoto: studentIDCardImage });
     }
-    
-    const paymentResult=await registrationPayment(paymentData);
-    console.log("data ",paymentResult.data);
-    if (paymentResult.status===200) {
-      message.success(paymentResult.data);
-      dispatch(change_page_number("17"));
-
-    }
-
-
-
   }
+
+
+ 
+
+
+  
+  const handleProceedPayment = async () => {
+    try {
+      const paymentResult = await registrationPayment(paymentData);
+      const studentActivationResult = await activateStudentAndParent(studentData);
+      console.log("data ", paymentResult.data);
+      if (paymentResult.status === 200) {
+        message.success("Payment Proceeded Successfully!");
+       
+      }
+  
+      console.log("ongoing student details ", studentData);
+     
+      if (studentActivationResult.status === 200) {
+        message.success("Student Activated!");
+        console.log("student activation Result ", studentActivationResult);
+        
+      }
+
+      if (studentActivationResult.status===200 &&  paymentResult.status===200) {
+        dispatch(change_page_number("17"));
+      }
+
+    } catch (error) {
+      console.error("Error in handleProceedPayment:", error);
+      message.error("Payment Updation Error!")
+
+    }
+  };
+  
 
 
   return (
@@ -204,10 +248,10 @@ const RegistrationPaymentProceeder = () => {
           </div>
 
           <div className="flex flex-col  w-full items-center mt-1">
-            <button className="bg-blue-500 p-2 w-[96%] mb-2 text-white font-semibold hover:bg-blue-600 rounded-lg scalar-card">
+            {/* <button className="bg-blue-500 p-2 w-[96%] mb-2 text-white font-semibold hover:bg-blue-600 rounded-lg scalar-card">
               Print Card
-            </button>
-            <button onClick={handleProceedPayment} className="bg-green-700 p-2 w-[96%] mb-2 text-white font-semibold hover:bg-green-800 rounded-lg scalar-card">
+            </button> */}
+            <button onClick={createBillImageAndStudentCardImage} className="bg-green-700 p-2 w-[96%] mb-2 text-white font-semibold hover:bg-green-800 rounded-lg scalar-card">
               Proceed Payment
             </button>
             <button className=" p-2 w-[96%] mb-2  text-red-700 border-2 border-red-700 font-bold hover:bg-red-700 hover:text-white rounded-lg scalar-card">
@@ -217,9 +261,9 @@ const RegistrationPaymentProceeder = () => {
         </div>
         <div className="w-[95%] lg:w-[40%]  mt-2 bg-white flex flex-col justify-center items-center p-2 rounded-xl">
           <div className="w-[90%] md:w-[75%] mt-4  flex ">
-            <StudentCard studentData={registrationBillInfo} />
+            <StudentCard barCode={barCodeNumber} studentData={registrationBillInfo} />
           </div>
-          <RegistationBill paymentData={paymentData} />
+          <RegistationBill barCode={barCodeNumber} paymentData={paymentData} />
         </div>
       </div>
     </div>

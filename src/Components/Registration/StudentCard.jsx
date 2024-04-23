@@ -5,24 +5,32 @@ import { getUserProfilePicture } from "../../Actions/user";
 import JsBarcode from "jsbarcode";
 import { formatBarcode } from "../../Utils/Validations";
 
-const StudentCard = ({ studentData }) => {
+const StudentCard = ({ studentData,barCode }) => {
   const [barcodeValue, setBarcodeValue] = useState("1");
   useEffect(() => {
+    console.log("student data is ",studentData);
     const date = new Date();
     const year = date.getFullYear();
-    setBarcodeValue(studentData.UserID + studentData.studentID + "D" + year);
+   
     
-    JsBarcode("#barcode",String(String(formatBarcode(studentData.UserID)) + String(formatBarcode(studentData.studentID))) ,{
-      height:"40",
-      
-    });
-    console.log("prifle pic ", studentData.photo);
+    
+    console.log("prifle pic ", studentData?.photo);
   }, []);
 
   useEffect(() => {
-    const result = getUserProfilePicture(studentData.photo);
+    const result = getUserProfilePicture(studentData?.photo);
     console.log("profile picture result ", result);
   }, []);
+
+
+  useEffect(()=>{
+    JsBarcode("#barcode",barCode ,{
+      height:"40",
+      
+    });
+  },[barCode])
+
+
   return (
     <div
       id="studentCard"
@@ -39,7 +47,7 @@ const StudentCard = ({ studentData }) => {
       <div className="flex flex-row h-full items-center justify-around bg-white">
         <div className="flex flex-col w-[35%] h-full justify-center items-center">
           <img
-            src={`http://localhost:5000/${studentData.photo}`}
+            src={`http://localhost:5000/${studentData?.photo}`}
             alt="student"
             className=""
           />
@@ -48,12 +56,12 @@ const StudentCard = ({ studentData }) => {
           <div className="flex flex-row w-full justify-around mt-2">
             <p className="font-inter font-semibold">Student No</p>
             <p className="font-inter">
-              {studentData.UserID + "/" + studentData.studentID}
+              {studentData?.UserID + "/" + studentData?.studentID}
             </p>
           </div>
           <div className="flex flex-row w-full justify-around mt-2">
             <p className="font-inter font-semibold">Student Name</p>
-            <p className="font-inter">{studentData.firstName}</p>
+            <p className="font-inter">{studentData?.firstName}</p>
           </div>
           <div className="w-full   flex flex-col justify-center items-center">
             

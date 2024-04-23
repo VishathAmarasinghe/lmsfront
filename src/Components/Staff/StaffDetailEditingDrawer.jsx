@@ -54,7 +54,7 @@ const StaffDetailEditingDrawer = ({
         newPassword: null,
         confirmPassword: null,
       }));
-    } else if (openeditingDrawer.status == true && staffStatus=="owner") {
+    } else if (openeditingDrawer?.status == true && staffStatus=="owner") {
       setEditing(false);
       if (openeditingDrawer.task=="Create") {
         setEditing(true)
@@ -72,7 +72,7 @@ const StaffDetailEditingDrawer = ({
       }
     }
     setProfilePicture(null);
-  }, [openeditingDrawer.status]);
+  }, [openeditingDrawer?.status]);
   
 
 
@@ -209,7 +209,7 @@ const StaffDetailEditingDrawer = ({
         title={`${openeditingDrawer?.task} Account`}
         width={720}
         onClose={onClose}
-        open={openeditingDrawer.status}
+        open={openeditingDrawer?.status}
         styles={{
           body: {
             paddingBottom: 80,
@@ -236,7 +236,7 @@ const StaffDetailEditingDrawer = ({
                 }}
               >
                 {
-                  openeditingDrawer.task!="Create"?<Switch
+                  openeditingDrawer?.task!="Create"?<Switch
                   checked={editing}
                   className={editing ? "bg-green-500" : "bg-slate-400"}
                   size="30px"
@@ -261,7 +261,7 @@ const StaffDetailEditingDrawer = ({
 
             }
             {
-              openeditingDrawer.task=="Verify"?
+              openeditingDrawer?.task=="Verify"?
               <button
               data-aos="fade-left"
               data-aos-duration="1000"
@@ -273,7 +273,7 @@ const StaffDetailEditingDrawer = ({
 
             }
             {
-              openeditingDrawer.task=="Create"?
+              openeditingDrawer?.task=="Create"?
               <button
               data-aos="fade-left"
               data-aos-duration="1000"

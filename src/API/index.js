@@ -173,3 +173,18 @@ export const getParentAnnouncements=(parentID)=>axios.get(`http://localhost:5050
 
 
 export const getStudentAnnouncements=(studentID)=>axios.get(`http://localhost:5050/notification/studentAnnouncements?studentID=${studentID}`)
+
+export const activateStudentAndParent=(studentData)=>axios.post("http://localhost:5050/user/studentAndParentActivate",studentData)
+
+
+export const getAllRegistrationPayments=()=>axios.get("http://localhost:5050/payment/registrationPayments")
+
+export const getAllClassPayments=()=>axios.get("http://localhost:5050/payment/classFeePaymentData")
+
+
+export const getBulkUserData=(userArray)=>axios.post("http://localhost:5050/user/bulkUserData",userArray);
+
+export const getOverallAttendanceVisualization=(startDate,endDate)=>axios.get(`http://localhost:5050/classService/attendanceOverview?startDate=${startDate}&endDate=${endDate}`)
+
+
+export const getAllStudents=()=>axios.get("http://localhost:5050/user/allStudents")
