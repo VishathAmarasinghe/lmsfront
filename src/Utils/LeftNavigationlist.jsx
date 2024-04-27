@@ -86,11 +86,15 @@ const owneritems = [
   getItem("Teachers", "26", <TeamOutlined />),
   getItem("Students", "27", <SolutionOutlined/>),
   getItem("Staff", "28", <UserOutlined />),
-  getItem("Payments", "29", <ShoppingOutlined/>),
+  getItem("Payments", "29", <ShoppingOutlined/>,[
+    getItem("Class Payments", "29", <TranslationOutlined />),
+    getItem("Teacher Payments", "40", <ScheduleOutlined />),
+  ]),
   getItem("Class Info", "30", <ScheduleOutlined />,[
     getItem("Classes", "35", <TranslationOutlined />),
     getItem("Time Table", "36", <ScheduleOutlined />),
   ]),
+  getItem("Hall Info", "39", <ShoppingOutlined/>),
   getItem("Reports", "31", <FileTextOutlined />),
   
 ];

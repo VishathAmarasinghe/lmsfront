@@ -188,3 +188,19 @@ export const getOverallAttendanceVisualization=(startDate,endDate)=>axios.get(`h
 
 
 export const getAllStudents=()=>axios.get("http://localhost:5050/user/allStudents")
+
+
+export const getNotHandoveredCards=()=>axios.get("http://localhost:5050/user/notReleasedCards")
+
+
+export const getHandoveredCards=()=>axios.get("http://localhost:5050/user/ReleasedCards")
+
+export const createNewHall=(hallData)=>axios.post("http://localhost:5050/classService/newHall",hallData);
+
+
+export const updateHallDetails=(hallData)=>axios.post("http://localhost:5050/classService/updateHall",hallData);
+
+
+export const getTotalFeePaymentStatistics=(month,year)=>axios.get(`http://localhost:5050/payment/totalClassFessStatistics?month=${month}&year=${year}`);
+
+export const getTotalFeePaymentStatisticsByTeacher=(month,year)=>axios.get(`http://localhost:5050/payment/totalClassFessStatisticsByTeacher?month=${month}&year=${year}`);
