@@ -204,3 +204,10 @@ export const updateHallDetails=(hallData)=>axios.post("http://localhost:5050/cla
 export const getTotalFeePaymentStatistics=(month,year)=>axios.get(`http://localhost:5050/payment/totalClassFessStatistics?month=${month}&year=${year}`);
 
 export const getTotalFeePaymentStatisticsByTeacher=(month,year)=>axios.get(`http://localhost:5050/payment/totalClassFessStatisticsByTeacher?month=${month}&year=${year}`);
+
+
+export const getTeacherPaymentReport=(teacherPaymentData)=>axios.post("http://localhost:5050/payment/teacherPaymentReport",teacherPaymentData,{ responseType: 'arraybuffer' } );
+
+
+
+export const getProgressReport=(selectedReportDate)=>axios.get(`http://localhost:5050/user/progressReport?reportDate=${selectedReportDate}`);

@@ -16,7 +16,8 @@ import scanImage from '../assets/scanImg.png';
 import correctSign from '../assets/accept.png';
 import wrongSign from '../assets/remove.png';
 import teacherSample from '../assets/teacherSample.png';
+import ownerDashboardImg from '../assets/ownerDashboardImage.png';
 
 
 
-export {logo,loginpic,logoicon,eduinstitute,lecturer,student,teacher,classicon,pastcomp1,pastcomp2,pastcomp3,pastcomp4,pastcomp5,pastcomp6,scanImage,correctSign,wrongSign,teacherSample};
+export {logo,loginpic,logoicon,eduinstitute,lecturer,student,teacher,classicon,pastcomp1,pastcomp2,pastcomp3,pastcomp4,pastcomp5,pastcomp6,scanImage,correctSign,wrongSign,teacherSample,ownerDashboardImg};

@@ -1,10 +1,22 @@
 import React from "react";
 import { Button, Modal } from "antd";
 import TeacherPaymentCard from "./TeacherPaymentCard";
+import { useNavigate } from "react-router-dom";
+
 
 const TeacherPaymentModel = ({ teacherModelOpen, setTeacherModelOpen,teacherPaymentData }) => {
+    const navigate=useNavigate();
+
+
   const handleOk = () => {
-    setTeacherModelOpen(false);
+    // setTeacherModelOpen(false);
+    console.log("teacher  payyment  data is  ",teacherPaymentData);
+    const serializedData = encodeURIComponent(JSON.stringify(teacherPaymentData));
+
+    // Navigate to the report page with the serialized object as a parameter
+    navigate(`/report/teacher?data=${serializedData}`);
+    console.log("use navation to the page");
+
   };
 
   const handleCancel = () => {

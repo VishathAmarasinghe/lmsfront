@@ -36,7 +36,7 @@ const OwnerTeacherPaymentOverallDescription = ({statData }) => {
     ));
 
     return (
-        <Descriptions title="Overall Payment Information"labelStyle={{fontWeight:"bold"}} bordered column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}>
+        <Descriptions title="Overall Payment Information" labelStyle={{fontWeight:"bold"}} bordered column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}>
             {descriptions}
         </Descriptions>
     );

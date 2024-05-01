@@ -6,6 +6,7 @@ import PageStructure from "./Pages/CommonPages/PageStructure";
 import ClassPageStructure from "./Pages/CommonPages/ClassPageStructure";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import LoadingPage from "./Pages/CommonPages/LoadingPage";
+import TeacherPaymentDetailReport from "./Pages/CommonPages/ReportTemplates/TeacherPaymentDetailReport";
 
 
 
@@ -32,6 +33,7 @@ function App() {
       <Route path="/" Component={()=>(!user?<LoginRegistration actionType="login"/>:<PageStructure/>)}/>
       <Route path="/class/:classID" Component={()=>(!user?<LoginRegistration actionType="login"/>:<ClassPageStructure/>)}/>
       <Route path="/" Component={()=>(!user?<LoginRegistration actionType="login"/>:<Navigate to="/"/>)}/>
+      <Route path="/report/teacher" Component={TeacherPaymentDetailReport}/>
     </Routes>
 
   )

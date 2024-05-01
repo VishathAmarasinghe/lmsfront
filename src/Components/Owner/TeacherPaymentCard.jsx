@@ -109,17 +109,22 @@ const TeacherPaymentCard = ({teacherData}) => {
           <Descriptions
           className="shadow-md bg-slate-50 p-2"
             labelStyle={{ fontWeight: "bold" }}
-            title="User Info"
+            // title="User Info"
             layout="horizontal"
             bordered
             items={items}
           />
           </ConfigProvider>
-          <div className='w-full border-2 border-gray-200 rounded-lg flex flex-row '>
-            <div className='w-[80%] '>
+          {
+                teacherData?.classes?.length>0?
+          <div className='w-full border-2 border-gray-200 rounded-lg flex  flex-col-reverse '>
+         
+            
+            <div className='w-full '>
             {
+                
                 teacherData?.classes?.map((classData)=>
-                <div className='w-full border-b-2  pl-2
+                <div className='w-full border-b-2  pl-2 text-[13px]
                  border-dashed bg-[#EBEEFF] border-gray-400 flex flex-row justify-between'>
                    <div className='flex flex-col  w-[25%]'>
                     <div className='w-full flex flex-row justify-between p-1'>
@@ -147,22 +152,24 @@ const TeacherPaymentCard = ({teacherData}) => {
                    
                 </div>
             )
-
             }
             </div>
-            <div className='w-[20%] border-l-2 border-dashed border-gray-200 '>
-                <div className='w-full h-[50%]'>
+           
+            <div className='w-full flex flex-row border-l-2 border-dashed border-gray-200 h-[200px] '>
+                <div className='w-[50%] '>
                     <OverallPaymentPieChart chartData={pieChartDataOverall}/>
                    
                 </div>
-                <div className='w-full h-[50%]'>
+                <div className='w-[50%] '>
                     <OverallPaymentPieChart chartData={pieChartDataOverallTeacher}/>
                    
                 </div>
-                
-                
             </div>
-          </div>
+          </div>:
+           <div className='w-full p-2'>
+           <Empty description="No teacher payment data"/>
+       </div>
+}
          
         </div>
       );

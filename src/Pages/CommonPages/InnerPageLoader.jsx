@@ -31,6 +31,7 @@ import StaffAndOwnerStudentPanel from "../../InnerPages/StaffAndOwnerStudentPane
 import StudentCardProcess from "../../InnerPages/StudentCardProcess";
 import OwnerHallInfoPage from "../../InnerPages/OwnerHallInfoPage";
 import TeacherPayments from "../../InnerPages/TeacherPayments";
+import OwnerReportShowingPage from "../../InnerPages/OwnerReportShowingPage";
 
 
 
@@ -40,7 +41,7 @@ const pageChanger = (pageChanger) => {
   switch (pageChanger) {
     case "1":
       return <ParentDashboard/>
-
+      
     case "2":
       return <ParentPerformance/>
 
@@ -129,7 +130,7 @@ const pageChanger = (pageChanger) => {
     case "30":
       return <RegistrationPaymentProceeder/>
     case "31":
-      break
+      return <OwnerReportShowingPage/>
     case "32":
       break
     case "33":

@@ -1,16 +1,17 @@
 import { Col, DatePicker, Form, Row, message } from "antd";
 import React, { useEffect, useState } from "react";
 import OwnerTeacherPaymentOverallDescription from "../Components/Owner/OwnerTeacherPaymentOverallDescription";
-import { getTotalFeePaymentStatistics, getTotalFeePaymentStatisticsByTeacher } from "../API";
+import { getTeacherPaymentReport, getTotalFeePaymentStatistics, getTotalFeePaymentStatisticsByTeacher } from "../API";
 import OverallPaymentPieChart from "../Components/Charts/OverallPaymentPieChart";
 import LoadingInnerPage from "./LoadingInnerPage";
 import TeacherPaymentModel from "../Components/Owner/TeacherPaymentModel";
+
 
 const TeacherPayments = () => {
   const [statData, setStatData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [teacherPaymentData,setTeacherPaymentData]=useState([]);
-  const [teacherModelOpen,setTeacherModelOpen]=useState(false);
+  const [teacherModelOpen,setTeacherModelOpen]=useState(false);                              
 
   const dateChanger = (date, dateString) => {
     console.log("data string ", dateString);
@@ -22,9 +23,18 @@ const TeacherPayments = () => {
   }, []);
 
 
+  useEffect(()=>{
+    if (teacherPaymentData!=null) {
+        fetchReport();
+    }
+   
+  },[teacherPaymentData])
+
+
   const handleModelOpen=()=>{
     setTeacherModelOpen(true);
   }
+
 
   const fetchTotalPaymentData = async () => {
     try {
@@ -39,6 +49,34 @@ const TeacherPayments = () => {
     }
   };
 
+
+
+  const fetchReport = async () => {
+    try {
+      const result = await getTeacherPaymentReport(teacherPaymentData);
+      console.log("result od payment stat is ", result);
+  
+      const blob = new Blob([result.data], { type: 'application/pdf' }); 
+  
+      const url = window.URL.createObjectURL(blob);
+  
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'payment_report.pdf');
+  
+      document.body.appendChild(link);
+      link.click();
+  
+      window.URL.revokeObjectURL(url);
+  
+    } catch (error) {
+      console.log("error fetching totalPayment statistics", error);
+      message.error("class Fees statistics getting error!");
+    }
+  };
+  
+
+  
 
 
   const fetchTotalPaymentDataForAllTeachers = async () => {
