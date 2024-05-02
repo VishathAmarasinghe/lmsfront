@@ -211,3 +211,5 @@ export const getTeacherPaymentReport=(teacherPaymentData)=>axios.post("http://lo
 
 
 export const getProgressReport=(selectedReportDate)=>axios.get(`http://localhost:5050/user/progressReport?reportDate=${selectedReportDate}`);
+
+export const getLastThirtyDaysclassPayment=()=>axios.get(`http://localhost:5050/payment/last30DaysClassFees`);

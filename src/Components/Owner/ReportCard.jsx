@@ -3,8 +3,9 @@ import { Tag } from 'antd'
 import React, { useState } from 'react'
 import ProgressReportModel from './ProgressReportModel'
 
-const ReportCard = ({titleName,index,progressReportData}) => {
+const ReportCard = ({titleName,index,progressReportData,classStatDetails}) => {
     const [progressReportModelOpen,  setProgressReportModelOpen]=useState(false);
+    console.log("class stat Details ",classStatDetails );
 
 
     const handleOpenReportModel=()=>{
@@ -13,7 +14,7 @@ const ReportCard = ({titleName,index,progressReportData}) => {
 
   return (
     <div className='w-full flex flex-row bg-gray-200 p-2 rounded-lg mb-2'>
-         <ProgressReportModel progressReportData={progressReportData} progressReportModelOpen={progressReportModelOpen} setProgressReportModelOpen={setProgressReportModelOpen}/>
+         <ProgressReportModel classStatDetails={classStatDetails} progressReportData={progressReportData} progressReportModelOpen={progressReportModelOpen} setProgressReportModelOpen={setProgressReportModelOpen}/>
                 <div className='w-[5%] '>
                     <FileOutlined className='text-[18px] hover:bg-slate-500 bg-slate-400 rounded-md text-white p-2' />
                 </div>

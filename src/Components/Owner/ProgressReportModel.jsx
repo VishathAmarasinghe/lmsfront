@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ProgressReport from "../../Pages/CommonPages/ReportTemplates/ProgressReport";
 
 
-const ProgressReportModel = ({ progressReportModelOpen,  setProgressReportModelOpen, progressReportData }) => {
+const ProgressReportModel = ({ progressReportModelOpen,  setProgressReportModelOpen, progressReportData,classStatDetails }) => {
     const navigate=useNavigate();
     console.log("progress report data is ",progressReportData);
 
@@ -43,7 +43,7 @@ const ProgressReportModel = ({ progressReportModelOpen,  setProgressReportModelO
       ]}
     >
         <div className="w-full">
-            <ProgressReport  progressReportData={ progressReportData}/>
+            <ProgressReport classStatDetails={classStatDetails}  progressReportData={ progressReportData}/>
 
         </div>
         

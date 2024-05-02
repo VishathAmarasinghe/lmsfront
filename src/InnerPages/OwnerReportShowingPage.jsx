@@ -4,11 +4,12 @@ import React, { useEffect, useState } from 'react'
 import ProgressReportModel from '../Components/Owner/ProgressReportModel';
 import ReportCard from '../Components/Owner/ReportCard';
 import dayjs from 'dayjs';
-import { getProgressReport } from '../API';
+import { getProgressReport, getTotalFeePaymentStatistics } from '../API';
 
 const OwnerReportShowingPage = () => {
     const [selectedReportDate,setSelectedReportDate]=useState(dayjs().format("YYYY-MM"));
     const [progressReportData,setProgressReportData]=useState(null);
+    const [classStatDetails,setClassStatDetails]=useState(null);
 
     const dateChanger = (date, dateString) => {
         console.log("data string ", dateString);
@@ -18,9 +19,25 @@ const OwnerReportShowingPage = () => {
     useEffect(()=>{
         if (selectedReportDate!=null) {
             fetchProgressReportData();
+            fetchTotalClassPaymentData();
         }
         
     },[selectedReportDate])
+
+
+    const fetchTotalClassPaymentData = async () => {
+      try {
+        
+        const selectedDate=selectedReportDate.split("-");
+        const result = await getTotalFeePaymentStatistics(selectedDate[1],selectedDate[0]);
+        console.log("result od payment stat is ", result);
+        setClassStatDetails(result.data);
+       
+      } catch (error) {
+        console.log("error fetching totalPayment statistics", error);
+        message.error("class Fees statistics getting error!");
+      }
+    };
 
 
     const fetchProgressReportData=async()=>{
@@ -54,7 +71,7 @@ const OwnerReportShowingPage = () => {
         </div>
        
         <div className=" overflow-y-auto h-[90%] w-[95%] flex flex-col items-center ">
-            <ReportCard progressReportData={progressReportData} titleName={"Progress Report"}/>
+            <ReportCard classStatDetails={classStatDetails} progressReportData={progressReportData} titleName={"Progress Report"}/>
             <ReportCard titleName={"Progress Report"}/>
 
         </div>

@@ -1,8 +1,9 @@
 import { ConfigProvider, Descriptions } from 'antd'
 import React from 'react'
 import OverallPaymentPieChart from '../../../Components/Charts/OverallPaymentPieChart'
+import RegistrationPaymentLineChart from '../../../Components/Charts/RegistrationPaymentLineChart'
 
-const ProgressReport = ({ progressReportData}) => {
+const ProgressReport = ({ progressReportData,classStatDetails}) => {
     const genderChartValues=[
         {
             name:"Male",
@@ -35,36 +36,60 @@ const ProgressReport = ({ progressReportData}) => {
         {
           key: '3',
           label: 'Current Registration Fee',
-          children: 'YES',
+          children:<p>Rs:{progressReportData?.registrationFee}</p>,
         },
         {
           key: '4',
           label: 'Total Registrations in period',
-          children: '2018-04-24 18:00:00',
+          children: progressReportData?.registrationFeeDetails?.totalRegistrations,
         },
         {
           key: '5',
           label: 'Income from total Registrations',
-          children: '2019-04-24 18:00:00',
+          children: progressReportData?.registrationFeeDetails?.totalMonthlyRegFeeIncome  ,
           span: 2,
         },
-        {
-          key: '7',
-          label: 'Total Teacher payment to do',
-          children: '$80.00',
-        }
+       
+    ]
+
+    const itemsArrayTwo = [
+      {
+        key: '1',
+        label: 'Current Class Fee Total',
+        children: classStatDetails?.currentTotalFee,
+      },
+      {
+        key: '2',
+        label: 'Total fee To Have',
+        children: classStatDetails?.TotalFeeToHave,
+      },
+      {
+        key: '3',
+        label: 'Current total teacher fee',
+        children: classStatDetails?.TotalCurrentTeachersFee,
+      },
+      {
+        key: '4',
+        label: 'Total teacher fee To Have',
+        children: classStatDetails?.TotalFeeToHaveTeachers,
+      },
+      {
+        key: '5',
+        label: 'Currnet total fee institution having',
+        children: classStatDetails?.TotalCurrentFeeInstitute ,
+      },
+      {
+        key: '6',
+        label: 'Total fee institution to have',
+        children: classStatDetails?.TotalFeeToHaveInstitute,
+      },
+      
     ]
 
 
 
   return (
-    <div className="w-full border-2 flex flex-col items-center border-red-600">
-        <div className="w-full  bg-slate-300">
-            <h1 className="font-bold text-[17px] text-center">Progress Report</h1>
-            <p className="text-center text-[15px]">Savitha Education Institute</p>
-        </div>
-        <div className='w-[90%] mt-3'>
-        <ConfigProvider
+    <ConfigProvider
   theme={{
     components: {
       Descriptions: {
@@ -77,6 +102,13 @@ const ProgressReport = ({ progressReportData}) => {
     },
   }}
 >
+    <div className="w-full border-2 flex flex-col items-center border-red-600">
+        <div className="w-full  bg-slate-300">
+            <h1 className="font-bold text-[17px] text-center">Progress Report</h1>
+            <p className="text-center text-[15px]">Savitha Education Institute</p>
+        </div>
+        <div className='w-[90%] mt-3'>
+        
       <Descriptions
       className="shadow-md bg-slate-50 p-2"
         labelStyle={{ fontWeight: "bold" }}
@@ -85,12 +117,33 @@ const ProgressReport = ({ progressReportData}) => {
         items={items}
         column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
       />
-      </ConfigProvider>
+      
 
         </div>
-        
+        <div className='w-[90%] h-[250px]'>
+          <p>Registration Payment Variation by date</p>
+          <div className='w-full h-full' >
+            <RegistrationPaymentLineChart  chartData={progressReportData?.registrationFeeDetails?.chartData[0]}/>
+          </div>
+        </div>
+        <div className='w-[90%]'>
+        <Descriptions
+      className="shadow-md bg-slate-50 p-2"
+        labelStyle={{ fontWeight: "bold" }}
+        layout="horizontal"
+        bordered
+        items={itemsArrayTwo}
+        column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
+      />
+        </div>
+        <div>
+          
+        </div>
+
+       
 
     </div>
+    </ConfigProvider>
   )
 }
 

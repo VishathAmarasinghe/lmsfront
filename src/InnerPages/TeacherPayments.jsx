@@ -115,7 +115,7 @@ const TeacherPayments = () => {
           <LoadingInnerPage />
         ) : (
           <div className="w-[95%] mt-4 overflow-y-hidden  ">
-            <div className="w-full flex flex-row border-2 border-red-600 items-center justify-between">
+            <div className="w-full flex flex-row  items-center justify-between">
               <Form layout="vertical" hideRequiredMark>
                 <Form.Item label="Select Month to check Teachers Payments">
                   <DatePicker onChange={dateChanger} picker="month" />
@@ -127,11 +127,11 @@ const TeacherPayments = () => {
                 </button>
               </div>
             </div>
-            <div className="w-full h-[85%] overflow-x-hidden border-2 border-green-600 flex flex-row">
+            <div className="w-full h-[85%] overflow-x-hidden  flex flex-row">
               <div className="flex flex-col w-[40%]">
                 <OwnerTeacherPaymentOverallDescription statData={statData} />
               </div>
-              <div className="w-[60%] h-[95%] border-2 border-red-500 flex flex-col">
+              <div className="w-[60%] h-[95%]  flex flex-col">
                 <div className="w-full h-[50%] ">
                   <OverallPaymentPieChart
                     key={1}
