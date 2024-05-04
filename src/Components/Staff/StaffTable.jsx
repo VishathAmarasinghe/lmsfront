@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Avatar, Button, Input, Space, Table, Tag } from "antd";
+import { Avatar, Button, Input, Popconfirm, Space, Table, Tag, notification } from "antd";
 import Highlighter from "react-highlight-words";
 import lecturerAvatar from "../../assets/lecturer.jpg";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
@@ -8,6 +8,7 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 import StaffDetailEditingDrawer from "./StaffDetailEditingDrawer";
+import { activateDeactivateUser } from "../../API";
 const data = [
   {
     key: "1",
@@ -47,7 +48,7 @@ const data = [
   },
 ];
 
-const StaffTable = ({ StaffData, setStaffData,openeditingDrawer, setOpeneditingDrawer }) => {
+const StaffTable = ({fetchStaffInfo, StaffData, setStaffData,openeditingDrawer, setOpeneditingDrawer }) => {
   const [opendeleteModel, setOpendeleteModel] = useState(false);
   
   const [selectedStaffMember,setSelectedTeacher]=useState(null);
@@ -65,15 +66,65 @@ const StaffTable = ({ StaffData, setStaffData,openeditingDrawer, setOpeneditingD
     }
     
   };
+
+
+  const userActivationAndDeactivation = async (user, activateStatus) => {
+    try {
+      console.log("user cativatiosfas ", user, "ac  ", activateStatus);
+      const userData = {
+        UserID: user?.UserID,
+        activateStatus: activateStatus,
+      };
+      const updationResult = await activateDeactivateUser(userData);
+      if (updationResult.status == 200) {
+        notification.success({
+          description:
+            activateStatus == "activated"
+              ? "User Credentials send to the user"
+              : "Access Restricted to the system.",
+          message: `User ${activateStatus}`,
+        });
+      }
+      fetchStaffInfo();
+    } catch (error) {
+      console.log("error ", error);
+      message.error("User updation Failed");
+    }
+  };
+
+  const deactivationConfirm = (rowData,activatedStatus) => {
+    // message.success("Click on Yes");
+    console.log("clicked");
+    userActivationAndDeactivation(rowData, activatedStatus);
+  };
+
+  const popConfirmcancel = (e) => {
+    console.log(e);
+    
+  };
+
+
+
+
+
+
+
+
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
+
+
   const handleReset = (clearFilters) => {
     clearFilters();
     setSearchText("");
   };
+
+
+
+
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -234,30 +285,65 @@ const StaffTable = ({ StaffData, setStaffData,openeditingDrawer, setOpeneditingD
       dataIndex: "userStatus",
       
       key: "userStatus",
-      render: (pic,rowData) => {
+      render: (pic, rowData) => {
         return pic == "activated" ? (
           <div className="border-2 border-red-400 w-full flex flex-row justify-between">
             <Tag
-             
               className="scalar-card flex flex-row w-[50%] text-center  bg-yellow-600 text-white font-medium hover:bg-yellow-700 "
-              onClick={() => drawerConfigOpening(rowData,"Updated")}
+              onClick={() => drawerConfigOpening(rowData, "Updated")}
             >
               <EditRoundedIcon className="text-[20px] text-white scalar-card" />
-              <p className="ml-2">Edit</p>
+              <p className="ml-2">Edit Info</p>
             </Tag>
-            <Tag
-              
-              className="scalar-card flex flex-row w-[50%] justify-around bg-red-600 hover:bg-red-700  text-white font-medium"
-              onClick={() => setOpendeleteModel(true)}
+            <Popconfirm
+              title="Reactivate User"
+              description="Are you sure to reactivate this user?"
+              onConfirm={() => deactivationConfirm(rowData,"deactivated")}
+              onCancel={popConfirmcancel}
+              okType="default"
+              okButtonProps={{
+                className: "bg-blue-500 hover:bg-blue-600 text-white",
+              }}
+              placement="left"
+              okText="Yes"
+              cancelText="No"
             >
-              <DeleteOutlineRoundedIcon className="text-[20px] scalar-card" />
-              <p >Delete</p>
-            </Tag>
+              <Tag
+                className="scalar-card flex flex-row w-[50%] justify-around bg-red-600 hover:bg-red-700  text-white font-medium"
+                
+              >
+                <DeleteOutlineRoundedIcon className="text-[20px] scalar-card" />
+                <p>Deactivate</p>
+              </Tag>
+            </Popconfirm>
+          </div>
+        ) : pic == "deactivated" ? (
+          <div className="border-2 border-red-400 w-full items-center justify-center">
+            <Popconfirm
+              title="Reactivate User"
+              description="Are you sure to reactivate this user?"
+              onConfirm={() => deactivationConfirm(rowData,"activated")}
+              onCancel={popConfirmcancel}
+              okType="default"
+              okButtonProps={{
+                className: "bg-blue-500 hover:bg-blue-600 text-white",
+              }}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Tag
+                color="green"
+                // onClick={userActivationAndDeactivation}
+                className="scalar-card w-[100%] font-medium text-center bg-purple-700 hover:bg-purple-800 text-white"
+              >
+                Reactivate Now
+              </Tag>
+            </Popconfirm>
           </div>
         ) : (
           <div className="border-2 border-red-400 w-full items-center justify-center">
             <Tag
-              onClick={() => drawerConfigOpening(rowData,"Verify")}
+              onClick={() => drawerConfigOpening(rowData, "Verify")}
               color="green"
               className="scalar-card w-[100%] font-medium text-center bg-green-700 hover:bg-green-800 text-white"
             >
@@ -278,6 +364,10 @@ const StaffTable = ({ StaffData, setStaffData,openeditingDrawer, setOpeneditingD
       staffStatus={"owner"}
         openeditingDrawer={openeditingDrawer}
         setOpeneditingDrawer={setOpeneditingDrawer}
+
+
+        // () => drawerConfigOpening(rowData,"Verify")
+        // () => drawerConfigOpening(rowData,"Updated")
       />
     </>
   );

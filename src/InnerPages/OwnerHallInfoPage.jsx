@@ -66,7 +66,7 @@ const OwnerHallInfoPage = () => {
           <button onClick={handleNewHallCreation} className='bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 p-2'>+ Add New Hall</button>
         </div>
           {
-            loading?<LoadingInnerPage/>:<HallTable selectedHall={selectedHall} setSelectedHall={setSelectedHall} hallDrawerOpen={hallDrawerOpen} setHallDrawerOpen={setHallDrawerOpen} hallData={hallData}/>
+            loading?<LoadingInnerPage/>:<HallTable fetchHallInfomation={fetchHallInfomation} selectedHall={selectedHall} setSelectedHall={setSelectedHall} hallDrawerOpen={hallDrawerOpen} setHallDrawerOpen={setHallDrawerOpen} hallData={hallData}/>
           }
       </div>
       <HallDataEditingDrawer fetchHallInfomation={fetchHallInfomation} selectedHall={selectedHall} setSelectedHall={setSelectedHall}  hallDrawerOpen={hallDrawerOpen} setHallDrawerOpen={setHallDrawerOpen}/>

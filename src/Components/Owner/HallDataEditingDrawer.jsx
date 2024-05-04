@@ -11,9 +11,11 @@ import {
   Select,
   Space,
   Switch,
+  message,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { createNewHall, updateHallDetails } from "../../API";
+import { hallNameValidation, salaryValidation } from "../../Utils/Validations";
 
 const HallDataEditingDrawer = ({
   hallDrawerOpen,
@@ -23,6 +25,7 @@ const HallDataEditingDrawer = ({
 }) => {
   const [hallData, setHallData] = useState(null);
   const [editing, setEditing] = useState(false);
+  const [overallValidateError,setOverallValidateError]=useState({});
 
   useEffect(() => {
     if (selectedHall != null) {
@@ -34,34 +37,87 @@ const HallDataEditingDrawer = ({
     }
   }, [selectedHall]);
 
+
+  
   useEffect(() => {
     if (hallDrawerOpen?.task == "New") {
       setEditing(true);
     }
-
-    
   }, [hallDrawerOpen]);
+
+
 
   const handleSwitchChange = (checked) => {
     setEditing(checked);
   };
 
+
+
+  const handleValidations=(e)=>{
+    if (e.target.name=="hallName") {
+      setOverallValidateError({...overallValidateError,hallName:hallNameValidation(e.target.value)})
+    }else if(e.target.name=="seatCount"){
+      setOverallValidateError({...overallValidateError,seatCount:salaryValidation(e.target.value)})
+    }
+  }
+
+
+
+  const checkValidationStatusToSubmit=()=>{
+    let errorStatus=true;
+    for (const key in overallValidateError) {
+      if (overallValidateError[key] !== "") {
+        return false;
+      }
+    }
+    const requiredcolumns=["hallName","seatCount","ACtype"]
+    for(const value of requiredcolumns){
+      if (userDetails[value]=="" || userDetails[value]==null || userDetails[value]==undefined) {
+        message.error("please fill mandatory columns")
+        errorStatus=false;
+      }
+    }
+    return errorStatus;
+  }
+
+
+
+
   const handleUpdateProfile = async () => {
     console.log("added ", hallData);
-    if (hallDrawerOpen?.task == "New") {
-      console.log("creation came here");
-      const creationResult = await createNewHall(hallData);
-      console.log("Hall Creation Result ", creationResult);
-    } else if (hallDrawerOpen?.task == "Update") {
-      const updationResult = await updateHallDetails(hallData);
-      console.log("updation result ", updationResult);
+    try {
+      if (checkValidationStatusToSubmit()) {
+        if (hallDrawerOpen?.task == "New") {
+          console.log("creation came here");
+          const creationResult = await createNewHall(hallData);
+          if (creationResult.status==200) {
+            message.success("New Hall created successfully!")
+          }
+          console.log("Hall Creation Result ", creationResult);
+        } else if (hallDrawerOpen?.task == "Update") {
+          const updationResult = await updateHallDetails(hallData);
+          if (updationResult.status==200) {
+            message.success("Hall updated successfully!")
+          }
+          console.log("updation result ", updationResult);
+        }
+      }else{
+        message.error("check user inputs and try again!")
+      }
+      fetchHallInfomation();
+      setHallDrawerOpen({ ...hallDrawerOpen, openState: false, task: "new" });
+
+
+    } catch (error) {
+      message.error("Hall data updating error!")
+      console.log("error ",error);
     }
-    fetchHallInfomation();
-    setHallDrawerOpen({ ...hallDrawerOpen, openState: false, task: "new" });
+    
   };
 
   const handleChangeInputs = (e) => {
     setHallData({ ...hallData, [e.target.name]: e.target.value });
+    handleValidations(e)
   };
 
   const handleSelectChange = (value) => {
@@ -70,6 +126,9 @@ const HallDataEditingDrawer = ({
 
   const handleSeatNumber = (value) => {
     setHallData({ ...hallData, seatCount: value });
+    
+    
+
   };
 
   const showDrawer = () => {
@@ -138,10 +197,13 @@ const HallDataEditingDrawer = ({
           <Col span={24}>
             <Form.Item
               label="Hall Name"
+              validateStatus={
+                overallValidateError?.hallName? "error" : "success"
+              }
+              help={overallValidateError?.hallName || ""}
               rules={[
                 {
                   required: true,
-                  message: "Please enter hall name",
                 },
               ]}
             >
@@ -155,17 +217,20 @@ const HallDataEditingDrawer = ({
             </Form.Item>
             <Form.Item
               label="Seat Count"
+              validateStatus={
+                overallValidateError?.seatCount? "error" : "success"
+              }
+              help={overallValidateError?.seatCount || ""}
               rules={[
                 {
                   required: true,
-                  message: "Please enter seat Count",
                 },
               ]}
             >
-              <InputNumber
+              <Input
                 readOnly={!editing}
                 className="w-full"
-                onChange={handleSeatNumber}
+                onChange={handleChangeInputs}
                 name="seatCount"
                 value={hallData?.seatCount}
                 placeholder="Please enter seat Count"

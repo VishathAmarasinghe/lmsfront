@@ -150,5 +150,129 @@ function PerformValidations(
   return errorStatus;
 }
 
-export { PerformValidations,loginValidation};
+
+const firstNameLastNameValidation = (name) => {
+
+  const nameRegex = /^[a-zA-Z.\s]+$/;
+
+  if (!nameRegex.test(name) || name?.length > 20) {
+  
+    return "Name must contain only letters and be characters <=20";
+  }
+
+  return ""; 
+};
+
+
+const addressValidation = (address) => {
+  const addressRegex = /^[a-zA-Z0-9\s\.,#\-:]+$/;
+
+
+  if (!addressRegex.test(address)) {
+    return "Address is not valid or exceeds 100 characters";
+  }
+
+  return "";
+};
+
+
+
+const emailValidation = (email) => {
+  console.log("email value is  ",email);
+ 
+  if (email!="" && email!=undefined) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+  if (!emailRegex.test(email) || email?.length > 254) {
+    return "Email is not valid or exceeds 254 characters";
+  }
+  }
+  
+
+
+  return "";
+};
+
+
+
+
+const stringValidation = (inputString) => {
+  const stringRegex = /^[a-zA-Z\s]*$/;
+
+  if (!stringRegex.test(inputString)) {
+    
+    return "Cannot contain numbers or symbols";
+  }
+
+  return "";
+};
+
+
+const hallNameValidation=(hallname)=>{
+  if (hallname!="" && hallname!=undefined) {
+
+  if (hallname?.length > 40) {
+    return "Hall name can have maximum 40 characters";
+  }
+  }
+  return "";
+}
+
+
+
+
+const phoneNumberValidation = (phoneNumber) => {
+
+  const phoneRegex = /^0\d{9}$/;
+  console.log("incoming phone no ",phoneNumber);
+
+  if (phoneNumber!="" && phoneNumber!=undefined) {
+    if (!phoneRegex.test(phoneNumber)) {
+      return "Phone number must contain 10 digits";
+    }
+  }
+  return "";
+};
+
+
+
+const salaryValidation = (salary) => {
+  if (salary != undefined || salary != "") {
+    if (isNaN(salary)) {
+      return "Input must be a number";
+    }
+    if (salary < 0) {
+      return "Input cannot be negative";
+    }
+  }
+  return "";
+};
+
+
+
+
+
+
+
+
+
+const validateNIC = (nic) => {
+
+  const nicRegex = /^(([5,6,7,8,9]{1})([0-9]{1})([0,1,2,3,5,6,7,8]{1})([0-9]{6})([vVxX]))|(([1,2]{1})([0-9]{2})([0,1,2,3,5,6,7,8]{1})([0-9]{7}))$/;
+  
+
+  if (nic!="" && nic!=undefined) {
+    if (!nicRegex.test(nic)) {
+      return "NIC must in the correct format";
+    }
+  }
+  
+ 
+  return "";
+};
+
+
+
+export {hallNameValidation,salaryValidation, PerformValidations,loginValidation,firstNameLastNameValidation,addressValidation,emailValidation,stringValidation,phoneNumberValidation,validateNIC};
 

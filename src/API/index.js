@@ -213,3 +213,17 @@ export const getTeacherPaymentReport=(teacherPaymentData)=>axios.post("http://lo
 export const getProgressReport=(selectedReportDate)=>axios.get(`http://localhost:5050/user/progressReport?reportDate=${selectedReportDate}`);
 
 export const getLastThirtyDaysclassPayment=()=>axios.get(`http://localhost:5050/payment/last30DaysClassFees`);
+
+export const getLastSevenDaysAttendance=()=>axios.get("http://localhost:5050/classService/last7DaysAttendance")
+
+export const activateDeactivateUser=(userData)=>axios.post("http://localhost:5050/user/activateDeactivateUser",userData)
+
+export const activateDeactivateHall=(hallData)=>axios.post("http://localhost:5050/classService/activateDeactivateHall",hallData)
+
+
+export const getAllRegistrationfees=()=>axios.get(`http://localhost:5050/payment/allRegFees`);
+
+export const getLatestRegistrationFee=()=>axios.get(`http://localhost:5050/payment/latestRegFee`);
+
+
+export const createNewRegistrationFee=(regFeeData)=>axios.post(`http://localhost:5050/payment/newRegFee`,regFeeData);

@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import TeacherDetaileditingDrawer from "./TeacherComp/TeacherDetaileditingDrawer";
 import ParentDetailEditingProfileDrawer from "./ParentProfile/ParentDetailEditingProfileDrawer";
 import StaffDetailEditingDrawer from "./Staff/StaffDetailEditingDrawer";
+import OwnerProfileEditingDrawer from "./Owner/OwnerProfileEditingDrawer";
 
 const Header = ({
   openMobilePanel,
@@ -32,7 +33,7 @@ const Header = ({
   );
   const navigation = useNavigate();
 
-  const settings = ["Profile", "Settings", "Logout"];
+  const settings = ["Profile", "Logout"];
   const [anchorElUser, setAnchorElUser] = useState(null);
   const open = Boolean(anchorElUser);
   const dispatch = useDispatch();
@@ -79,7 +80,9 @@ const Header = ({
             openeditingDrawer={openprofileeditingDrawer}
             setOpeneditingDrawer={setProfileOpeneditingDrawer}
           />:userDetails.role=="staff"?
-          <StaffDetailEditingDrawer/>:<></>
+          <StaffDetailEditingDrawer/>:
+          userDetails.role=="owner"?<OwnerProfileEditingDrawer openeditingDrawer={openprofileeditingDrawer} setOpeneditingDrawer={setProfileOpeneditingDrawer} ownerStatus={"other"}/>
+          :<></>
         }
        
         {classMode ? (

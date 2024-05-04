@@ -51,7 +51,7 @@ const StaffAndOwnerStudentPanel = () => {
     <div data-aos="fade-right" className="w-[95%] bg-white h-[90%]  flex flex-col lg:flex-col items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
       <div className='w-[95%] mt-2 overflow-y-auto '>
         {
-            loading?<LoadingInnerPage/>:<OwnerAndStaffStudentDetailTable selectedStudent={selectedStudent} setSelectedStudent={setSelectedStudent} studentProfileOpener={studentProfileOpener} setStudentProfileOpener={setStudentProfileOpener} studentDetails={studentData} />
+            loading?<LoadingInnerPage/>:<OwnerAndStaffStudentDetailTable fetchAllStudents={fetchAllStudents} selectedStudent={selectedStudent} setSelectedStudent={setSelectedStudent} studentProfileOpener={studentProfileOpener} setStudentProfileOpener={setStudentProfileOpener} studentDetails={studentData} />
         }
       </div>
       

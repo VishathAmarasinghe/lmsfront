@@ -16,13 +16,13 @@ const OwnerPageStaffPanel = () => {
 
   useEffect(()=>{
     if(openeditingDrawer.status==false){
-      fetchTeacherInfo();
+      fetchStaffInfo();
     }
    
   },[openeditingDrawer])
 
 
-  const fetchTeacherInfo=async()=>{
+  const fetchStaffInfo=async()=>{
     setLoading(true);
     try {
 
@@ -67,7 +67,7 @@ const OwnerPageStaffPanel = () => {
       </div>
       <div className=" overflow-y-auto h-[90%] w-[95%]">
         {
-          loading?<LoadingInnerPage/>:<StaffTable openeditingDrawer={openeditingDrawer} setOpeneditingDrawer={setOpeneditingDrawer}  StaffData={staffData} setStaffData={setStaffData}/>
+          loading?<LoadingInnerPage/>:<StaffTable fetchStaffInfo={fetchStaffInfo} openeditingDrawer={openeditingDrawer} setOpeneditingDrawer={setOpeneditingDrawer}  StaffData={staffData} setStaffData={setStaffData}/>
           
         }
           

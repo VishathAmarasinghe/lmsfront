@@ -16,7 +16,6 @@ import {
   message,
   notification,
 } from "antd";
-import ProfilePicUploading from "./ProfilePicUploading";
 import {
   createNewUser,
   getFullUserInformation,
@@ -24,19 +23,21 @@ import {
 } from "../../API";
 import LoadingPage from "../../Pages/CommonPages/LoadingPage";
 import TextArea from "antd/es/input/TextArea";
-import TeacherProfilePicUploading from "./TeacherProfilePicUploading";
+import TeacherProfilePicUploading from "../TeacherComp/TeacherProfilePicUploading";
 import { addressValidation, emailValidation, firstNameLastNameValidation, phoneNumberValidation, stringValidation, validateNIC } from "../../Utils/Validations";
+import { useDispatch } from "react-redux";
+import { updateLoginUser } from "../../Actions/auth";
 
 const { Option } = Select;
 const { Panel } = Collapse;
 
-const TeacherDetaileditingDrawer = ({
+const OwnerProfileEditingDrawer = ({
   openeditingDrawer,
   setOpeneditingDrawer,
-  teacherStatus,
+  ownerStatus,
   selectedTeacherData,
 }) => {
-  const teacherID = JSON.parse(localStorage.getItem("profile")).result.UserID;
+  const ownerID = JSON.parse(localStorage.getItem("profile")).result.UserID;
   const [newpasswordVisible, setnewPasswordVisible] = useState(false);
   const [editing, setEditing] = useState(false);
   const [newConfirmPasswordVisible, setNewConfirmPasswordVisible] =
@@ -45,11 +46,12 @@ const TeacherDetaileditingDrawer = ({
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [overallValidateError,setOverallValidateError]=useState({});
+  const dispatch=useDispatch();
   
 
   useEffect(() => {
-    if (openeditingDrawer?.status == true && teacherStatus != "owner") {
-      fetchUserInformation(teacherID);
+    if (openeditingDrawer?.status == true && ownerStatus != "owner") {
+      fetchUserInformation(ownerID);
       setEditing(false);
       setUserDetails((prevUserDetails) => ({
         ...prevUserDetails,
@@ -58,7 +60,7 @@ const TeacherDetaileditingDrawer = ({
         newPassword: null,
         confirmPassword: null,
       }));
-    } else if (openeditingDrawer.status == true && teacherStatus == "owner") {
+    } else if (openeditingDrawer.status == true && ownerStatus == "owner") {
       setEditing(false);
       if (openeditingDrawer.task == "Create") {
         setEditing(true);
@@ -68,7 +70,7 @@ const TeacherDetaileditingDrawer = ({
           oldpassword: null,
           newPassword: null,
           confirmPassword: null,
-          role: "teacher",
+          role: "owner",
         }));
       } else {
         setUserDetails({
@@ -190,8 +192,6 @@ const TeacherDetaileditingDrawer = ({
       setOverallValidateError({...overallValidateError,phoneNo:phoneNumberValidation(e.target.value)})
     }else if(e.target.name=="NIC"){
       setOverallValidateError({...overallValidateError,NIC:validateNIC(e.target.value)})
-    }else if(e.target.name=="teacherSchool"){
-      setOverallValidateError({...overallValidateError,teacherSchool:stringValidation(e.target.value)})
     }
   }
 
@@ -227,10 +227,12 @@ const TeacherDetaileditingDrawer = ({
       if (updationResult.status == 200) {
         message.success("User Successfully Updated!");
         setEditing(false);
-        if (teacherStatus == "owner") {
+        if (ownerStatus == "owner") {
           fetchUserInformation(selectedTeacherData.UserID);
         } else {
-          fetchUserInformation(teacherID);
+          fetchUserInformation(ownerID);
+          dispatch(updateLoginUser(ownerID));
+
         }
         onClose();
       } else {
@@ -476,20 +478,20 @@ const TeacherDetaileditingDrawer = ({
               </Col>
             </Row>
             <Row gutter={16}>
-              <Col span={12}>
+            <Col span={12}>
                 <Form.Item
-                  label="Lecturing School"
-                  validateStatus={overallValidateError?.teacherSchool?"error":"success"}
-                  help={overallValidateError?.teacherSchool || ""}
+                  label="NIC Number"
+                  validateStatus={overallValidateError?.NIC?"error":"success"}
+                  help={overallValidateError?.NIC || ""}
                  
                 >
                   <Input
                     className="bg-[#EBEEFF]"
                     readOnly={!editing}
-                    name="teacherSchool"
-                    onChange={handleAdditionalInputChange}
-                    value={userDetails?.additionalInfo?.teacherSchool}
-                    placeholder="Please enter your school"
+                    name="NIC"
+                    onChange={handleInputChange}
+                    value={userDetails?.NIC}
+                    placeholder="Please enter your NIC"
                   />
                 </Form.Item>
               </Col>
@@ -511,23 +513,7 @@ const TeacherDetaileditingDrawer = ({
               </Col>
             </Row>
             <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  label="NIC Number"
-                  validateStatus={overallValidateError?.NIC?"error":"success"}
-                  help={overallValidateError?.NIC || ""}
-                 
-                >
-                  <Input
-                    className="bg-[#EBEEFF]"
-                    readOnly={!editing}
-                    name="NIC"
-                    onChange={handleInputChange}
-                    value={userDetails?.NIC}
-                    placeholder="Please enter your NIC"
-                  />
-                </Form.Item>
-              </Col>
+              
               <Col span={12}>
                 <Form.Item
                   label="Gender"
@@ -563,29 +549,8 @@ const TeacherDetaileditingDrawer = ({
               </Col>
             </Row>
 
-            <Row>
-              <Col span={24}>
-                <Form.Item
-                  label="Additional Info"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please enter additional information",
-                    },
-                  ]}
-                >
-                  <TextArea
-                    className="bg-[#EBEEFF]"
-                    readOnly={!editing}
-                    name="teacherDescription"
-                    onChange={handleAdditionalInputChange}
-                    value={userDetails?.additionalInfo?.teacherDescription}
-                    placeholder="Please enter your additional information"
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            {teacherStatus != "owner" ? (
+            
+            {ownerStatus != "owner" ? (
               <Row gutter={16}>
                 <div className="w-full ">
                   <Collapse>
@@ -680,4 +645,6 @@ const TeacherDetaileditingDrawer = ({
   );
 };
 
-export default TeacherDetaileditingDrawer;
+
+
+export default OwnerProfileEditingDrawer

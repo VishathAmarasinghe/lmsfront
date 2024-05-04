@@ -32,6 +32,7 @@ import StudentCardProcess from "../../InnerPages/StudentCardProcess";
 import OwnerHallInfoPage from "../../InnerPages/OwnerHallInfoPage";
 import TeacherPayments from "../../InnerPages/TeacherPayments";
 import OwnerReportShowingPage from "../../InnerPages/OwnerReportShowingPage";
+import OwnerConfigurationPage from "../../InnerPages/OwnerConfigurationPage";
 
 
 
@@ -149,6 +150,8 @@ const pageChanger = (pageChanger) => {
       return <OwnerHallInfoPage/>
     case "40":
       return <TeacherPayments/>
+    case "41":
+      return <OwnerConfigurationPage/>
     default:
       break;
   }

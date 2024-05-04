@@ -96,6 +96,7 @@ const owneritems = [
   ]),
   getItem("Hall Info", "39", <ShoppingOutlined/>),
   getItem("Reports", "31", <FileTextOutlined />),
+  getItem("Settings", "41", <FileTextOutlined />),
   
 ];
 

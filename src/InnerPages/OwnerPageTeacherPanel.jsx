@@ -67,7 +67,7 @@ const OwnerPageTeacherPanel = () => {
       </div>
       <div className=" overflow-y-auto h-[90%] w-[95%]">
         {
-          loading?<LoadingInnerPage/>:<TeacherTable openeditingDrawer={openeditingDrawer} setOpeneditingDrawer={setOpeneditingDrawer}  teacherData={teacherData} setTeacherData={setTeacherData}/>
+          loading?<LoadingInnerPage/>:<TeacherTable fetchTeacherInfo={fetchTeacherInfo} openeditingDrawer={openeditingDrawer} setOpeneditingDrawer={setOpeneditingDrawer}  teacherData={teacherData} setTeacherData={setTeacherData}/>
           
         }
           

@@ -18,7 +18,18 @@ import {
   message,
 } from "antd";
 import TeacherProfilePicUploading from "../TeacherComp/TeacherProfilePicUploading";
-import { getClassesForSelectedStudent, updateFullUserInformation } from "../../API";
+import {
+  getClassesForSelectedStudent,
+  updateFullUserInformation,
+} from "../../API";
+import {
+  addressValidation,
+  emailValidation,
+  firstNameLastNameValidation,
+  phoneNumberValidation,
+  stringValidation,
+  validateNIC,
+} from "../../Utils/Validations";
 
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -36,6 +47,8 @@ const StudentProfileDrawer = ({
   const [classList, setClassList] = useState([]);
   const [editing, setEditing] = useState(false);
   const [ProfilePic, setProfilePicture] = useState(null);
+  const [overallValidateError, setOverallValidateError] = useState({});
+
   const showDrawer = () => {
     setProfileOpeneditingDrawer(true);
   };
@@ -49,10 +62,15 @@ const StudentProfileDrawer = ({
     console.log("selected student is ", selectedStudent);
   }, [selectedStudent]);
 
-
-  useEffect(()=>{
-    setUserDetails({...userDetails,profilePicture:ProfilePic, oldpassword: null,newPassword: null,confirmPassword: null})
-  },[editing])
+  useEffect(() => {
+    setUserDetails({
+      ...userDetails,
+      profilePicture: ProfilePic,
+      oldpassword: null,
+      newPassword: null,
+      confirmPassword: null,
+    });
+  }, [editing]);
 
   const fetchStudentClasses = async (studentID) => {
     try {
@@ -67,6 +85,7 @@ const StudentProfileDrawer = ({
 
   const handleChangeInputs = (e) => {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
+    handleValidations(e);
   };
 
   const handleChangeAdditionalInfo = (e) => {
@@ -77,32 +96,105 @@ const StudentProfileDrawer = ({
         [e.target.name]: e.target.value,
       },
     });
+    handleValidations(e);
   };
 
   const handleSwitchChange = (checked) => {
     setEditing(checked);
   };
 
-  const handleUpdateProfile =async () => {
+  const handleUpdateProfile = async () => {
     try {
-      const updationResult=await updateFullUserInformation(userDetails);
-      console.log("user updation Result ",updationResult);
-      if (updationResult.status==200) {
-        message.success("User Successfully Updated!")
-        setEditing(false);
-        setUserDetails(null);
-        setProfileOpeneditingDrawer(false)
-        
-        
-        
+      if (checkValidationStatusToSubmit()) {
+        const updationResult = await updateFullUserInformation(userDetails);
+        console.log("user updation Result ", updationResult);
+        if (updationResult.status == 200) {
+          message.success("User Successfully Updated!");
+          setEditing(false);
+          setUserDetails(null);
+          setProfileOpeneditingDrawer(false);
+        } else {
+          message.error(updationResult.data);
+        }
       }else{
-        message.error(updationResult.data);
+        message.error("please check input errors andn empty columns!")
       }
     } catch (error) {
-      console.log("error ",error);
-      message.error("User Details Updation Error!")
-      
+      console.log("error ", error);
+      message.error("User Details Updation Error!");
     }
+  };
+
+  const handleValidations = (e) => {
+    if (e.target.name == "firstName") {
+      setOverallValidateError({
+        ...overallValidateError,
+        firstName: firstNameLastNameValidation(e.target.value),
+      });
+    } else if (e.target.name == "lastName") {
+      setOverallValidateError({
+        ...overallValidateError,
+        lastName: firstNameLastNameValidation(e.target.value),
+      });
+    } else if (e.target.name == "address") {
+      setOverallValidateError({
+        ...overallValidateError,
+        address: addressValidation(e.target.value),
+      });
+    } else if (e.target.name == "email") {
+      setOverallValidateError({
+        ...overallValidateError,
+        email: emailValidation(e.target.value),
+      });
+    } else if (e.target.name == "phoneNo") {
+      setOverallValidateError({
+        ...overallValidateError,
+        phoneNo: phoneNumberValidation(e.target.value),
+      });
+    } else if (e.target.name == "NIC") {
+      setOverallValidateError({
+        ...overallValidateError,
+        NIC: validateNIC(e.target.value),
+      });
+    } else if (e.target.name == "school") {
+      setOverallValidateError({
+        ...overallValidateError,
+        school: stringValidation(e.target.value),
+      });
+    }
+  };
+
+  const checkValidationStatusToSubmit = () => {
+    let errorStatus = true;
+    for (const key in overallValidateError) {
+      if (overallValidateError[key] !== "") {
+        return false;
+      }
+    }
+    const requiredcolumns = [
+      "firstName",
+      "lastName",
+      "address",
+      "email",
+      "phoneNo",
+      "gender",
+    ];
+    for (const value of requiredcolumns) {
+      if (
+        userDetails[value] == "" ||
+        userDetails[value] == null ||
+        userDetails[value] == undefined
+      ) {
+        message.error("please fill mandatory columns");
+        errorStatus = false;
+      }
+    }
+    return errorStatus;
+  };
+
+  const genderSelectionChange = (value) => {
+    setUserDetails({ ...userDetails, gender: value });
+
   };
 
   return (
@@ -191,15 +283,18 @@ const StudentProfileDrawer = ({
             <Col span={12}>
               <Form.Item
                 label="First Name"
+                validateStatus={
+                  overallValidateError?.firstName ? "error" : "success"
+                }
+                help={overallValidateError?.firstName || ""}
                 rules={[
                   {
                     required: true,
-                    message: "Please enter First Name",
                   },
                 ]}
               >
                 <Input
-                readOnly={!editing}
+                  readOnly={!editing}
                   onChange={handleChangeInputs}
                   name="firstName"
                   value={userDetails?.firstName}
@@ -210,15 +305,18 @@ const StudentProfileDrawer = ({
             <Col span={12}>
               <Form.Item
                 label="Last Name"
+                validateStatus={
+                  overallValidateError?.lastName ? "error" : "success"
+                }
+                help={overallValidateError?.lastName || ""}
                 rules={[
                   {
                     required: true,
-                    message: "Please enter last name",
                   },
                 ]}
               >
                 <Input
-                readOnly={!editing}
+                  readOnly={!editing}
                   onChange={handleChangeInputs}
                   name="lastName"
                   value={userDetails?.lastName}
@@ -231,15 +329,18 @@ const StudentProfileDrawer = ({
             <Col span={12}>
               <Form.Item
                 label="Address"
+                validateStatus={
+                  overallValidateError?.address ? "error" : "success"
+                }
+                help={overallValidateError?.address || ""}
                 rules={[
                   {
                     required: true,
-                    message: "Please enter Address",
                   },
                 ]}
               >
                 <Input
-                readOnly={!editing}
+                  readOnly={!editing}
                   onChange={handleChangeInputs}
                   name="address"
                   value={userDetails?.address}
@@ -250,15 +351,18 @@ const StudentProfileDrawer = ({
             <Col span={12}>
               <Form.Item
                 label="Email"
+                validateStatus={
+                  overallValidateError?.email ? "error" : "success"
+                }
+                help={overallValidateError?.email || ""}
                 rules={[
                   {
                     required: true,
-                    message: "Please enter Email",
                   },
                 ]}
               >
                 <Input
-                readOnly={!editing}
+                  readOnly={!editing}
                   onChange={handleChangeInputs}
                   name="email"
                   value={userDetails?.email}
@@ -271,15 +375,20 @@ const StudentProfileDrawer = ({
             <Col span={12}>
               <Form.Item
                 label="Phone No"
+                validateStatus={
+                  overallValidateError?.phoneNo
+                    ? "error"
+                    : "success"
+                }
+                help={overallValidateError?.phoneNo || ""}
                 rules={[
                   {
                     required: true,
-                    message: "Please enter Phone No",
                   },
                 ]}
               >
                 <Input
-                readOnly={!editing}
+                  readOnly={!editing}
                   onChange={handleChangeInputs}
                   name="phoneNo"
                   value={userDetails?.phoneNo}
@@ -290,15 +399,16 @@ const StudentProfileDrawer = ({
             <Col span={12}>
               <Form.Item
                 label="NIC"
+                validateStatus={overallValidateError?.NIC ? "error" : "success"}
+                help={overallValidateError?.NIC || ""}
                 rules={[
                   {
                     required: true,
-                    message: "Please enter NIC",
                   },
                 ]}
               >
                 <Input
-                readOnly={!editing}
+                  readOnly={!editing}
                   onChange={handleChangeInputs}
                   name="NIC"
                   value={userDetails?.NIC}
@@ -311,6 +421,10 @@ const StudentProfileDrawer = ({
             <Col span={12}>
               <Form.Item
                 label="School"
+                validateStatus={
+                  overallValidateError?.school ? "error" : "success"
+                }
+                help={overallValidateError?.school || ""}
                 rules={[
                   {
                     required: true,
@@ -319,7 +433,7 @@ const StudentProfileDrawer = ({
                 ]}
               >
                 <Input
-                readOnly={!editing}
+                  readOnly={!editing}
                   onChange={handleChangeAdditionalInfo}
                   name="school"
                   value={userDetails?.additionalInfo?.school}
@@ -339,13 +453,46 @@ const StudentProfileDrawer = ({
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={24}>
+            <Col span={12}>
               <Form.Item label="card Status">
                 <Input
                   readOnly
                   name="cardStatus"
                   value={userDetails?.additionalInfo?.cardStatus}
                 />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Gender"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter your Gender",
+                  },
+                ]}
+              >
+                <ConfigProvider
+                  theme={{
+                    components: {
+                      Select: {
+                        selectorBg: "bg-[#EBEEFF]",
+                      },
+                    },
+                  }}
+                >
+                  <Select
+                    disabled={!editing}
+                    onChange={genderSelectionChange}
+                    className="bg-[#EBEEFF]"
+                    placeholder="Please select gender"
+                    value={userDetails?.gender}
+                    options={[
+                      { label: "Male", value: "Male" },
+                      { label: "Female", value: "Female" },
+                    ]}
+                  />
+                </ConfigProvider>
               </Form.Item>
             </Col>
           </Row>
@@ -356,7 +503,7 @@ const StudentProfileDrawer = ({
                   {userDetails?.additionalInfo?.studentcard != null &&
                   userDetails?.additionalInfo?.studentcard != "" ? (
                     <img
-                    className="w-[60%]"
+                      className="w-[60%]"
                       src={`http://localhost:5000/${userDetails?.additionalInfo?.studentcard}`}
                     />
                   ) : (
@@ -399,15 +546,15 @@ const StudentProfileDrawer = ({
               <Collapse>
                 <Panel header="Change Password" key="1">
                   <Col span={24}>
-                  <Form.Item
-                     
-                     label="User Name"
-
-                   >
-                     <Input readOnly name="username" value={userDetails?.username} placeholder="Please enter your Old Password" />
-                   </Form.Item>
+                    <Form.Item label="User Name">
+                      <Input
+                        readOnly
+                        name="username"
+                        value={userDetails?.username}
+                        placeholder="Please enter your Old Password"
+                      />
+                    </Form.Item>
                     <Form.Item
-                     
                       label="Old Password"
                       rules={[
                         {
@@ -416,11 +563,15 @@ const StudentProfileDrawer = ({
                         },
                       ]}
                     >
-                      <Input readOnly={!editing} value={userDetails?.oldpassword}  name="oldpassword" placeholder="Please enter your Old Password" />
+                      <Input
+                        readOnly={!editing}
+                        value={userDetails?.oldpassword}
+                        name="oldpassword"
+                        placeholder="Please enter your Old Password"
+                      />
                     </Form.Item>
 
                     <Form.Item
-                     
                       label="New Password"
                       rules={[
                         {
@@ -430,9 +581,9 @@ const StudentProfileDrawer = ({
                       ]}
                     >
                       <Input.Password
-                       name="newPassword"
-                       value={userDetails?.newPassword}
-                      readOnly={!editing}
+                        name="newPassword"
+                        value={userDetails?.newPassword}
+                        readOnly={!editing}
                         placeholder="Please enter New Password"
                         visibilityToggle={{
                           visible: newpasswordVisible,
@@ -441,7 +592,6 @@ const StudentProfileDrawer = ({
                       />
                     </Form.Item>
                     <Form.Item
-                      
                       label="Confirm New Password"
                       rules={[
                         {
@@ -451,9 +601,9 @@ const StudentProfileDrawer = ({
                       ]}
                     >
                       <Input.Password
-                      name="confirmPassword"
-                      value={userDetails?.confirmPassword}
-                      readOnly={!editing}
+                        name="confirmPassword"
+                        value={userDetails?.confirmPassword}
+                        readOnly={!editing}
                         placeholder="Please enter New Password"
                         visibilityToggle={{
                           visible: newConfirmPasswordVisible,
