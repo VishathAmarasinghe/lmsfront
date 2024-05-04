@@ -227,3 +227,5 @@ export const getLatestRegistrationFee=()=>axios.get(`http://localhost:5050/payme
 
 
 export const createNewRegistrationFee=(regFeeData)=>axios.post(`http://localhost:5050/payment/newRegFee`,regFeeData);
+
+export const getProgressReportDownload=(date)=>axios.get(`http://localhost:5050/classService/progressReport?date=${date}`,{ responseType: 'arraybuffer' })

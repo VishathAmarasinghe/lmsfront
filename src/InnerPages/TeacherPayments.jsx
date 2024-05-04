@@ -25,7 +25,7 @@ const TeacherPayments = () => {
 
   useEffect(()=>{
     if (teacherPaymentData!=null) {
-        fetchReport();
+        // fetchReport();
     }
    
   },[teacherPaymentData])

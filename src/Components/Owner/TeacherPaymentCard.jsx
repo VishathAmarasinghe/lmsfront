@@ -69,6 +69,10 @@ const TeacherPaymentCard = ({teacherData}) => {
         return total + current.fullPayment;
     }, 0);
 
+    console.log('====================================');
+    console.log("sum current payment ",sumCurrentTotalPayment);
+    console.log('====================================');
+
       const pieChartDataOverall=[
         {
             name:"Current payedAmount",
@@ -90,6 +94,8 @@ const TeacherPaymentCard = ({teacherData}) => {
             value:sumCurrentTotalPayment*0.3
         }
       ]
+
+      
       
       return (
 
