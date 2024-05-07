@@ -1,0 +1,226 @@
+import React, { useRef, useState } from "react";
+import { SearchOutlined } from "@ant-design/icons";
+import { Avatar, Button, Input, Popconfirm, Space, Table, Tag, message } from "antd";
+import Highlighter from "react-highlight-words";
+import lecturerAvatar from "../../assets/lecturer.jpg";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import { activateDeactivateHall } from "../../API";
+import DeactivateHallConfirmClassmodel from "./DeactivateHallConfirmClassmodel";
+import SMSTempEditingModel from "./SMSTempEditingModel";
+
+
+
+
+
+const SMSTemplateTable = ({SMSTempData }) => {
+  
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef(null);
+  const [smsTempEditingModelOpen,setSmsTempEditingModelOpen]=useState(false);
+  const [selectedSMSTemplate,setSelectedSMSTemplate]=useState(null);
+
+
+
+  const handleOpenSMSEditingModel=(rowdata)=>{
+    setSmsTempEditingModelOpen(true);
+    setSelectedSMSTemplate(rowdata);
+  }
+
+
+
+
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: "block",
+          }}
+        />
+        <Space>
+          <Button
+            className="bg-blue-500 hover:bg-blue-600 text-white"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: "#ffc069",
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+  const columns = [
+   
+    {
+      title: "SMS temp ID",
+      dataIndex: "SMStempID",
+      key: "SMStempID",
+      width: "13%",
+      ...getColumnSearchProps("SMStempID"),
+      sorter: (a, b) => a.SMStempID.length - b.SMStempID.length,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      width: "15%",
+      ...getColumnSearchProps("name"),
+      sorter: (a, b) => a.name.length - b.name.length,
+      sortDirections: ["descend", "ascend"],
+    },
+    
+    {
+      title: "Message",
+      dataIndex: "message",
+      key: "message",
+      width: "35%",
+      ...getColumnSearchProps("message"),
+      sorter: (a, b) => a.message.length - b.message.length,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+        title: "Update Date",
+        dataIndex: "updateDate",
+        key:"updateDate",
+        width:"12%",
+        ...getColumnSearchProps("updateDate"),
+      },
+      {
+        title: "Update Time",
+        dataIndex: "updateTime",
+        key: "updateTime",
+        width: "10%",
+      },
+    {
+      title: "Action",
+      dataIndex: "SMStempID",
+      key: "SMStempID",
+      render: (pic,rowData) => {
+        return (
+            <Tag
+           onClick={()=>handleOpenSMSEditingModel(rowData)}
+            color="green"
+              className=" flex flex-col w-full text-center   font-medium bg-green-600 text-white hover:bg-green-700 scalar-card"
+            >
+              <p className="ml-2">Edit Message</p>
+            </Tag>
+        ) 
+      },
+    },
+  ];
+
+
+  
+  return (
+    <>
+    
+      <Table columns={columns} dataSource={SMSTempData} pagination={{pageSize:5}} />
+      <SMSTempEditingModel  selectedSMSTemplate={selectedSMSTemplate} setSelectedSMSTemplate={setSelectedSMSTemplate} smsTempEditingModelOpen={smsTempEditingModelOpen} setSmsTempEditingModelOpen={setSmsTempEditingModelOpen}/>
+      
+    </>
+  );
+};
+
+
+
+export default SMSTemplateTable

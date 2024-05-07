@@ -221,12 +221,14 @@ const TeacherDetaileditingDrawer = ({
 
   const handleUpdateProfile = async () => {
     try {
+      setLoading(true);
       if (checkValidationStatusToSubmit()) {
         const updationResult = await updateFullUserInformation(userDetails);
       console.log("user updation Result ", updationResult);
       if (updationResult.status == 200) {
         message.success("User Successfully Updated!");
         setEditing(false);
+        setLoading(false);
         if (teacherStatus == "owner") {
           fetchUserInformation(selectedTeacherData.UserID);
         } else {
@@ -234,13 +236,16 @@ const TeacherDetaileditingDrawer = ({
         }
         onClose();
       } else {
+        setLoading(false);
         message.error(updationResult.data);
       }
       }else{
+        setLoading(false);
         message.error("please check input errors andn empty columns!")
       }
       
     } catch (error) {
+      setLoading(false);
       console.log("error ", error);
       message.error("User Details Updation Error!");
     }
@@ -248,22 +253,27 @@ const TeacherDetaileditingDrawer = ({
 
   const createNewProfile = async () => {
     try {
+      setLoading(true);
       console.log("user Details ", userDetails);
       if (checkValidationStatusToSubmit()) {
         const createResult = await createNewUser(userDetails);
       console.log("user creation Result ", createResult);
       if (createResult.status == 200) {
+        setLoading(false);
         message.success("User Successfully Created!");
         setEditing(false);
         onClose();
       } else {
+        setLoading(false);
         message.error(createResult.data);
       }
       }else{
+        setLoading(false);
         message.error("please check input errors andn empty columns!")
       }
       
     } catch (error) {
+      setLoading(false);
       console.log("error ", error);
       message.error("New User Creation Error!");
     }
@@ -331,14 +341,15 @@ const TeacherDetaileditingDrawer = ({
               <></>
             )}
             {openeditingDrawer.task == "Verify" ? (
-              <button
+              <Button
+              loading={loading}
                 data-aos="fade-left"
                 data-aos-duration="1000"
                 onClick={handleUpdateProfile}
                 className="bg-blue-700 px-3  py-1 ml-2 hover:bg-blue-800 text-white font-medium rounded-lg"
               >
                 Verify Profile
-              </button>
+              </Button>
             ) : (
               <></>
             )}

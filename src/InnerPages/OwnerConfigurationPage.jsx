@@ -2,6 +2,8 @@ import { ConfigProvider, Segmented } from 'antd'
 import React, { useState } from 'react'
 import LoadingInnerPage from './LoadingInnerPage'
 import RegistrationConfigPage from '../Components/Configurations/RegistrationConfigPage';
+import EmailTemplate from '../Components/Owner/EmailTemplate';
+import SMSTemplate from '../Components/Owner/SMSTemplate';
 
 const OwnerConfigurationPage = () => {
     const [selectedSegment,setSelectedSegment]=useState("Registration fee");
@@ -38,14 +40,16 @@ const OwnerConfigurationPage = () => {
             }}
           >
             <Segmented
-              options={["Registration fee","Issued Cards"]}
+              options={["Registration fee","Email Templates","SMS Templates"]}
               defaultChecked="Registration fee"
               onChange={handleSegmentChange}
             />
           </ConfigProvider>
           {
             loading?<LoadingInnerPage/>:
-            selectedSegment=="Registration fee"?<RegistrationConfigPage/>:<></>
+            selectedSegment=="Registration fee"?<RegistrationConfigPage/>:
+            selectedSegment=="Email Templates"?<EmailTemplate/>:
+            selectedSegment=="SMS Templates"?<SMSTemplate/>:<></>
           }
       
 

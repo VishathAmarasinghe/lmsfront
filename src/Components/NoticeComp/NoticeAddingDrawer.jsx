@@ -15,18 +15,18 @@ import {
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import TextArea from "antd/es/input/TextArea";
-import { createNewAnnouncement, getClassesByTeacher } from "../../API";
+import { createNewAnnouncement, getAllClassesFullInfo, getClassesByTeacher } from "../../API";
 import { TeamOutlined } from "@ant-design/icons";
 
 const NoticeAddingDrawer = ({noticeAddingDrawerOpen, setNoticeAddingDrawerOpen}) => {
-  const teacherID = JSON.parse(localStorage.getItem("profile")).result.UserID;
+  const userData = JSON.parse(localStorage.getItem("profile")).result;
   const [teacherClasses, setTeacherClasses] = useState([]);
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [classShower, setClassShower] = useState(false);
   const [selectedModes,setSelectedModes]=useState([]);
   const [submitLoading,setSubmitloading]=useState(false);
   const [announcementData,setAnnouncementData]=useState({
-    userID:teacherID,
+    userID:userData?.UserID,
     title:"",
     description:"",
     audience:"",
@@ -37,8 +37,13 @@ const NoticeAddingDrawer = ({noticeAddingDrawerOpen, setNoticeAddingDrawerOpen})
 
   useEffect(() => {
     if (noticeAddingDrawerOpen == true) {
-      setAnnouncementData({...announcementData,userID:teacherID});
-      fetchClassesRelatedToTeacher();
+      setAnnouncementData({...announcementData,userID:userData?.UserID});
+      if (userData?.role=="teacher") {
+        fetchClassesRelatedToTeacher();
+      }else{
+        fetchAllClassesInInstitute();
+      }
+      
       setClassShower(false);
     }
   }, [noticeAddingDrawerOpen]);
@@ -61,7 +66,7 @@ const NoticeAddingDrawer = ({noticeAddingDrawerOpen, setNoticeAddingDrawerOpen})
 
   const fetchClassesRelatedToTeacher = async () => {
     try {
-      const classResult = await getClassesByTeacher(teacherID);
+      const classResult = await getClassesByTeacher(userData?.UserID);
       console.log("claases ", classResult.data[0]);
       setTeacherClasses(classResult.data[0]);
     } catch (error) {
@@ -71,6 +76,24 @@ const NoticeAddingDrawer = ({noticeAddingDrawerOpen, setNoticeAddingDrawerOpen})
    
   };
 
+
+
+  const fetchAllClassesInInstitute = async () => {
+    try {
+      const classResult = await getAllClassesFullInfo();
+      console.log("claases ", classResult.data);
+      setTeacherClasses(classResult.data);
+    } catch (error) {
+      console.log("error",error);
+      message.error("classes fetching Error!")
+    }
+   
+  };
+
+
+
+
+
   const showDrawer = () => {
     setNoticeAddingDrawerOpen(true);
   };
@@ -79,7 +102,7 @@ const NoticeAddingDrawer = ({noticeAddingDrawerOpen, setNoticeAddingDrawerOpen})
     setNoticeAddingDrawerOpen(false);
     setAnnouncementData({
 
-    userID:teacherID,
+    userID:userData?.UserID,
     title:"",
     description:"",
     audience:"",
@@ -233,7 +256,7 @@ const NoticeAddingDrawer = ({noticeAddingDrawerOpen, setNoticeAddingDrawerOpen})
       open={noticeAddingDrawerOpen}
       extra={
         <Space>
-          <Button onClick={onClose}>Cancel</Button>
+          {/* <Button onClick={onClose}>Cancel</Button> */}
           <Button
           loading={submitLoading}
             onClick={handleSubmitAnnouncement}

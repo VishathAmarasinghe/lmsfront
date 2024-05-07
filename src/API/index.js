@@ -229,3 +229,16 @@ export const getLatestRegistrationFee=()=>axios.get(`http://localhost:5050/payme
 export const createNewRegistrationFee=(regFeeData)=>axios.post(`http://localhost:5050/payment/newRegFee`,regFeeData);
 
 export const getProgressReportDownload=(date)=>axios.get(`http://localhost:5050/classService/progressReport?date=${date}`,{ responseType: 'arraybuffer' })
+
+export const getAllOwners=()=>axios.get("http://localhost:5050/user/AllownerInfo")
+
+
+export const getAllEmailTemplates=()=>axios.get("http://localhost:5050/notification/allEmailTemplates")
+
+export const getAllSMSTemplates=()=>axios.get("http://localhost:5050/notification/allSmsTemplates")
+
+export const updateSMSTemplate=(SMStemplateData)=>axios.patch("http://localhost:5050/notification/updateSmsTemp",SMStemplateData)
+
+export const updateEmailTemplate=(EmailtemplateData)=>axios.patch("http://localhost:5050/notification/updateEmailTemp",EmailtemplateData)
+
+export const getAllAnnoucements=()=>axios.get("http://localhost:5050/notification/AllAnnoucements")

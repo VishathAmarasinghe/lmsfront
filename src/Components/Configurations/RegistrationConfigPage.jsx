@@ -38,7 +38,7 @@ const RegistrationConfigPage = () => {
 
 
   return (
-    <div className='w-full border-2 border-red-500'>
+    <div className='w-full'>
         
         <div className='w-full mt-3'>
             <button onClick={handleOpenRegFeeModel} className='bg-blue-500 text-white font-medium p-2 rounded-md'>+ Add New Registration Fee</button>

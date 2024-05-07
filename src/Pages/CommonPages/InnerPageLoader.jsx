@@ -33,6 +33,7 @@ import OwnerHallInfoPage from "../../InnerPages/OwnerHallInfoPage";
 import TeacherPayments from "../../InnerPages/TeacherPayments";
 import OwnerReportShowingPage from "../../InnerPages/OwnerReportShowingPage";
 import OwnerConfigurationPage from "../../InnerPages/OwnerConfigurationPage";
+import OwnerAddingPage from "../../InnerPages/OwnerAddingPage";
 
 
 
@@ -112,7 +113,7 @@ const pageChanger = (pageChanger) => {
       return <OwnerAndStaffTimeTable/>
 
     case "24":
-      break
+      return <TeacherNoticePanel/>
 
     case "25":
       return <OwnerDashboard/>
@@ -152,6 +153,8 @@ const pageChanger = (pageChanger) => {
       return <TeacherPayments/>
     case "41":
       return <OwnerConfigurationPage/>
+    case "42":
+      return <OwnerAddingPage/>
     default:
       break;
   }

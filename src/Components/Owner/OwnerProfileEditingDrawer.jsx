@@ -36,6 +36,7 @@ const OwnerProfileEditingDrawer = ({
   setOpeneditingDrawer,
   ownerStatus,
   selectedTeacherData,
+  fetchOwnerInfo
 }) => {
   const ownerID = JSON.parse(localStorage.getItem("profile")).result.UserID;
   const [newpasswordVisible, setnewPasswordVisible] = useState(false);
@@ -258,6 +259,7 @@ const OwnerProfileEditingDrawer = ({
         message.success("User Successfully Created!");
         setEditing(false);
         onClose();
+        fetchOwnerInfo();
       } else {
         message.error(createResult.data);
       }
