@@ -120,7 +120,7 @@ const TeacherTimeTable = () => {
             }}
           >
             <Segmented
-              options={["My Classes", "All Classes", "Monthly", "Quarterly", "Yearly"]}
+              options={["My Classes", "All Classes"]}
               defaultChecked="My Classes"
               onChange={handleSegmentChange}
             />

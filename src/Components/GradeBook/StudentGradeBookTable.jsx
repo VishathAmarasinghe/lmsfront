@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Avatar, Button, Input, Space, Table } from "antd";
+import { Avatar, Button, Input, Space, Table, Tag } from "antd";
 import Highlighter from "react-highlight-words";
 import lecturerAvatar from "../../assets/lecturer.jpg";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
@@ -8,18 +8,24 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import GradeDeleteButtonPopUp from "./GradeDeleteBtnPopUp";
 import GradeDetailedEditingDrawer from "./GradeDetailedEditingDrawer";
+import StudentGradeShowingModel from "./StudentGradeShowingModel";
 
 
-const GradeBookTable = () => {
-  const [opendeleteModel, setOpendeleteModel] = useState(false);
-  const [openeditingDrawer, setOpeneditingDrawer] = useState(false);
+const StudentGradeBookTable = ({studentResult}) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+  const [openGradeShower, setOpenGradeShower]=useState(false);
+  const [selectedMarks,setSelectedMarks]=useState(null);
 
-  const drawerConfigOpening = () => {
-    setOpeneditingDrawer(true);
-  };
+
+
+  const handleOpenModel=(result)=>{
+    setSelectedMarks(result);
+    setOpenGradeShower(true);
+  }
+
+
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -133,88 +139,64 @@ const GradeBookTable = () => {
   });
   const columns = [
     {
-      title: "First Name",
-      dataIndex: "fname",
-      key: "fname",
-      width: "20%",
-      ...getColumnSearchProps("fname"),
-      sorter: (a, b) => a.fname.length - b.fname.length,
+      title: "Result ID",
+      dataIndex: "resultID",
+      key: "resultID",
+      width: "15%",
+      ...getColumnSearchProps("resultID"),
+      sorter: (a, b) => a.resultID.length - b.resultID.length,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Last Name",
-      dataIndex: "lname",
-      key: "lname",
+      title: "Result Title",
+      dataIndex: "resultTitle",
+      key: "resultTitle",
       width: "20%",
-      ...getColumnSearchProps("lname"),
-      sorter: (a, b) => a.lname.length - b.lname.length,
+      ...getColumnSearchProps("resultTitle"),
+      sorter: (a, b) => a.resultTitle.length - b.resultTitle.length,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Subject",
-      dataIndex: "subject",
-      key: "subject",
+      title: "Publish Date",
+      dataIndex: "publishDate",
+      key: "publishDate",
+      width: "15%",
+      ...getColumnSearchProps("publishDate"),
+    },
+    {
+      title: "Mark",
+      dataIndex: "mark",
+      key: "mark",
       width: "10%",
-      ...getColumnSearchProps("subject"),
+      ...getColumnSearchProps("mark"),
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      width: "30%",
-      ...getColumnSearchProps("email"),
-    },
-    {
-      title: "Phone No",
-      dataIndex: "phoneNo",
-      key: "phoneno",
-      ...getColumnSearchProps("phoneno"),
+      title: "FeedBack",
+      dataIndex: "markfeedback",
+      key: "markfeedback",
+      ...getColumnSearchProps("markfeedback"),
     },
     {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: (pic) => {
-        return pic !== "new" ? (
-          <div className="border-2 border-red-400 w-full items-center justify-center">
-            <button className="mr-2 " onClick={() => drawerConfigOpening()}>
-              <EditRoundedIcon className="text-[20px] text-green-600 hover:bg-green-500 hover:rounded-xl hover:text-white scalar-card" />
-            </button>
-            <button
-              className="text-[20px] text-red-600  "
-              onClick={() => setOpendeleteModel(true)}
-            >
-              <DeleteOutlineRoundedIcon className="text-[20px] scalar-card hover:bg-red-500 hover:text-white rounded-full" />
-            </button>
-          </div>
-        ) : (
-          <div className="border-2 border-red-400 w-full items-center justify-center">
-            <button
-              className="bg-blue-700 text-white p-1 rounded-md hover:bg-blue-800"
-              onClick={() => drawerConfigOpening()}
-            >
-              <AddRoundedIcon className="text-[15px]" />
-              add
-            </button>
-          </div>
-        );
+      render: (pic,resultData) => {
+       return (
+            <Tag  onClick={()=>handleOpenModel(resultData)}  className="mr-2 bg-green-500 hover:bg-green-600 text-white w-full text-center scalar-card " >
+              View
+            </Tag>
+        )
       },
     },
     // ...getColumnSearchProps('action'),
   ];
   return (
     <>
-      <Table columns={columns} dataSource={data} />
-      <GradeDeleteButtonPopUp
-        opendeleteModel={opendeleteModel}
-        setOpendeleteModel={setOpendeleteModel}
-      />
-      <GradeDetailedEditingDrawer
-        openeditingDrawer={openeditingDrawer}
-        setOpeneditingDrawer={setOpeneditingDrawer}
-      />
+      <Table columns={columns} dataSource={studentResult} />
+      <StudentGradeShowingModel selectedMarks={selectedMarks} openGradeShower={openGradeShower} setOpenGradeShower={setOpenGradeShower} />
     </>
   );
 };
 
-export default GradeBookTable;
+
+export default StudentGradeBookTable

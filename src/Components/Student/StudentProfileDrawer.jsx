@@ -20,6 +20,7 @@ import {
 import TeacherProfilePicUploading from "../TeacherComp/TeacherProfilePicUploading";
 import {
   getClassesForSelectedStudent,
+  getFullUserInformation,
   updateFullUserInformation,
 } from "../../API";
 import {
@@ -30,6 +31,8 @@ import {
   stringValidation,
   validateNIC,
 } from "../../Utils/Validations";
+import { useDispatch } from "react-redux";
+import { updateLoginUser } from "../../Actions/auth";
 
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -48,6 +51,8 @@ const StudentProfileDrawer = ({
   const [editing, setEditing] = useState(false);
   const [ProfilePic, setProfilePicture] = useState(null);
   const [overallValidateError, setOverallValidateError] = useState({});
+  const defaultStudent=JSON.parse(localStorage.getItem("profile"))?.result;
+  const dispatch=useDispatch();
 
   const showDrawer = () => {
     setProfileOpeneditingDrawer(true);
@@ -57,10 +62,20 @@ const StudentProfileDrawer = ({
   };
 
   useEffect(() => {
-    setUserDetails(selectedStudent);
-    fetchStudentClasses(selectedStudent?.UserID);
-    console.log("selected student is ", selectedStudent);
-  }, [selectedStudent]);
+    if (openprofileeditingDrawer?.status==true) {
+      if (selectedStudent==null) {
+        fetchStudentDetails();
+     }else{
+       setUserDetails(selectedStudent);
+       fetchStudentClasses(selectedStudent?.UserID);
+       console.log("selected student is ", selectedStudent);
+     }
+    }
+   
+   
+  }, [selectedStudent,openprofileeditingDrawer?.status]);
+
+
 
   useEffect(() => {
     setUserDetails({
@@ -71,6 +86,21 @@ const StudentProfileDrawer = ({
       confirmPassword: null,
     });
   }, [editing]);
+
+
+  const fetchStudentDetails=async()=>{
+    try {
+      const studentDetails=await getFullUserInformation(defaultStudent?.UserID);
+      console.log("incomng student result ",studentDetails);
+      setUserDetails(studentDetails.data);
+
+      fetchStudentClasses(defaultStudent?.UserID);
+    } catch (error) {
+      console.log("error!");
+      message.error("Student Details Fetching Error!")
+    }
+  }
+
 
   const fetchStudentClasses = async (studentID) => {
     try {
@@ -113,6 +143,9 @@ const StudentProfileDrawer = ({
           setEditing(false);
           setUserDetails(null);
           setProfileOpeneditingDrawer(false);
+          if (selectedStudent==null) {
+            dispatch(updateLoginUser(defaultStudent?.UserID));
+          }
         } else {
           message.error(updationResult.data);
         }
@@ -204,7 +237,7 @@ const StudentProfileDrawer = ({
         title="Update Account"
         width={720}
         onClose={onClose}
-        open={openprofileeditingDrawer}
+        open={openprofileeditingDrawer?.status}
         styles={{
           body: {
             paddingBottom: 80,
@@ -518,7 +551,7 @@ const StudentProfileDrawer = ({
             <Col span={24}>
               <Form.Item label="Student Classes">
                 {classList.length != 0 ? (
-                  <div className="w-full border-2 border-red-500 grid grid-cols-3">
+                  <div className="w-full  grid grid-cols-3">
                     {classList?.map((classData) => (
                       <Tag
                         key={classData?.classID}

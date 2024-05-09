@@ -36,6 +36,9 @@ import {
   stringValidation,
   validateNIC,
 } from "../../Utils/Validations";
+import { useDispatch } from "react-redux";
+import { logout, updateLoginUser } from "../../Actions/auth";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -49,12 +52,13 @@ const StaffDetailEditingDrawer = ({
   const teacherID = JSON.parse(localStorage.getItem("profile")).result.UserID;
   const [newpasswordVisible, setnewPasswordVisible] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [newConfirmPasswordVisible, setNewConfirmPasswordVisible] =
-    useState(false);
+  const [newConfirmPasswordVisible, setNewConfirmPasswordVisible] =useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [overallValidateError, setOverallValidateError] = useState({});
+  const dispatch=useDispatch();
+  const navigation=useNavigate();
 
   useEffect(() => {
     if (openeditingDrawer?.status == true && staffStatus != "owner") {
@@ -102,6 +106,8 @@ const StaffDetailEditingDrawer = ({
       setUserDetails({ ...userDetails, role: "staff" });
     }
   }, [userDetails]);
+
+
 
   const fetchUserInformation = async (teacherIDNo) => {
     try {
@@ -194,8 +200,13 @@ const StaffDetailEditingDrawer = ({
         userDetails[value] == null ||
         userDetails[value] == undefined
       ) {
-        message.error("please fill mandatory columns");
-        errorStatus = false;
+        if (userDetails?.additionalInfo[value] == "" ||
+        userDetails?.additionalInfo[value] == null ||
+        userDetails?.additionalInfo[value] == undefined) {
+          message.error("please fill mandatory columns ");
+          errorStatus = false;
+        }
+        
       }
     }
     return errorStatus;
@@ -223,6 +234,9 @@ const StaffDetailEditingDrawer = ({
 
   const handleInputChange = (e) => {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
+    if (staffStatus=="") {
+      
+    }
     handleValidations(e);
   };
 
@@ -265,13 +279,21 @@ const StaffDetailEditingDrawer = ({
         console.log("user updation Result ", updationResult);
         if (updationResult.status == 200) {
           message.success("User Successfully Updated!");
-          setEditing(false);
-          if (staffStatus == "owner") {
-            fetchUserInformation(selectedTeacherData.UserID);
-          } else {
-            fetchUserInformation(teacherID);
+          if (updationResult?.data?.passwordStatus==true) {
+            dispatch(logout(navigation));
+          }else{
+            setEditing(false);
+            if (staffStatus == "owner") {
+              fetchUserInformation(selectedTeacherData.UserID);
+            } else {
+              fetchUserInformation(teacherID);
+              dispatch(updateLoginUser(teacherID))
+            }
           }
+          
+
           onClose();
+          
         } else {
           message.error(updationResult.data);
         }
@@ -283,6 +305,9 @@ const StaffDetailEditingDrawer = ({
       message.error("User Details Updation Error!");
     }
   };
+
+
+
 
   const createNewProfile = async () => {
     try {
@@ -608,14 +633,15 @@ const StaffDetailEditingDrawer = ({
                 >
                   <DatePicker
                     className="bg-[#EBEEFF]"
-                    readOnly={!editing}
+                    // readOnly={!editing}
+                    disabled={!editing}
                     name="hireDate"
                     onChange={handleDataChange}
                     value={
-                      userDetails?.hireDate == "" ||
-                      userDetails?.hireDate == null
+                      userDetails?.additionalInfo?.hireDate == "" ||
+                      userDetails?.additionalInfo?.hireDate == null
                         ? dayjs()
-                        : dayjs(userDetails?.hireDate)
+                        : dayjs(userDetails?.additionalInfo?.hireDate)
                     }
                     placeholder="Please enter Hire Date"
                   />

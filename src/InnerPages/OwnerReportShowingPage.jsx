@@ -17,6 +17,8 @@ const OwnerReportShowingPage = () => {
     const [teacherPaymentData,setTeacherPaymentData]=useState([]);
     const [teacherPaymentReportPDF,setTeacherPaymentReportPDF]=useState(null);
     const [loading,setLoading]=useState(true);
+    const [teacherReportLoading,setTeacherReportLoading]=useState(false);
+    const [progressReportLoading,setProgressReportLoading]=useState(false);
 
     
 
@@ -66,6 +68,20 @@ const OwnerReportShowingPage = () => {
     },[selectedReportDate,teacherPaymentData])
 
 
+
+    useEffect(()=>{
+      if (progressReportPDF!=null && progressReportLoading) {
+        downloadprogressReport();
+      }
+    },[progressReportPDF])
+
+
+    
+  useEffect(()=>{
+      if (teacherPaymentReportPDF!=null && teacherReportLoading) {
+        downloadTeacherReport();
+      }
+    },[teacherPaymentReportPDF])
 
 
     const fetchTotalClassPaymentData = async (selectedReportDate) => {
@@ -121,8 +137,9 @@ const OwnerReportShowingPage = () => {
     
   const downloadTeacherReport = async () => {
     try {
-  
-      const blob = new Blob([teacherPaymentReportPDF], { type: 'application/pdf' }); 
+      setTeacherReportLoading(true);
+      if (teacherPaymentReportPDF!=null && teacherReportLoading) {
+        const blob = new Blob([teacherPaymentReportPDF], { type: 'application/pdf' }); 
   
       const url = window.URL.createObjectURL(blob);
   
@@ -134,6 +151,12 @@ const OwnerReportShowingPage = () => {
       link.click();
   
       window.URL.revokeObjectURL(url);
+      setTeacherReportLoading(false);
+      }else{
+        message.loading("Report is generating, It will download automatically!")
+        setTeacherReportLoading(true);
+      }
+      
   
     } catch (error) {
       console.log("error fetching totalPayment statistics", error);
@@ -166,18 +189,26 @@ const OwnerReportShowingPage = () => {
   const downloadprogressReport = async () => {
     try {
 
-      const blob = new Blob([progressReportPDF], { type: 'application/pdf' }); 
+      setProgressReportLoading(true);
+      if (progressReportPDF!=null && progressReportLoading) {
+        const blob = new Blob([progressReportPDF], { type: 'application/pdf' }); 
   
-      const url = window.URL.createObjectURL(blob);
+        const url = window.URL.createObjectURL(blob);
   
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'Progress_report.pdf');
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Progress_report.pdf');
   
-      document.body.appendChild(link);
-      link.click();
+        document.body.appendChild(link);
+        link.click();
   
-      window.URL.revokeObjectURL(url);
+        window.URL.revokeObjectURL(url);
+        setProgressReportLoading(false);
+      }else{
+        message.loading("Report is generating, It will download automatically!")
+        setProgressReportLoading(true);
+      }
+      
   
     } catch (error) {
       console.log("error downloading repor", error);

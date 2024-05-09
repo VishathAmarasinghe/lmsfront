@@ -1,4 +1,4 @@
-import { Collapse } from "antd";
+import { Collapse, ConfigProvider } from "antd";
 import React, { useState } from "react";
 import AddBoxRoundedIcon from "@mui/icons-material/AddBoxRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
@@ -43,7 +43,19 @@ const Accordian = ({ accDetails, setSubAccID, openeditingDrawer, setOpeneditingD
     <div>
       <NoteAddingPanel accID={accDetails.accordianID} notemodelOpen={notemodelOpen} setnotemodelOpen={setnotemodelOpen} />
       <SubmissionAddingPanel accID={accDetails.accordianID} submissionaddingpanelOpen={submissionaddingpanelOpen} setSubmissionAddingPanelOpen={setSubmissionAddingPanelOpen} />
+      <ConfigProvider
+  theme={{
+    components: {
+      Collapse: {
+        contentBg:"#EBEEFF",
+        headerBg:"#C9D1FF"
+      },
+    },
+  }}
+>
+
       <Collapse
+      className="my-1"
         items={[
           {
             key: accDetails.accordianID,
@@ -116,6 +128,8 @@ const Accordian = ({ accDetails, setSubAccID, openeditingDrawer, setOpeneditingD
           },
         ]}
       />
+
+</ConfigProvider>
     </div>
   );
 };

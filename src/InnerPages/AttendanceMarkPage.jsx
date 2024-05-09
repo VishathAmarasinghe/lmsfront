@@ -1,4 +1,4 @@
-import { Empty, Form, Input, Tag } from "antd";
+import { Checkbox, Empty, Form, Input, Tag } from "antd";
 import React, { useEffect, useState } from "react";
 import { getClassesForNotSelectedStudent } from "../API";
 import AttendanceScanningPage from "../Components/Attendance/AttendanceScanningPage";
@@ -8,6 +8,7 @@ const AttendanceMarkPage = () => {
   const [filteredClasses, setFilteredClasses] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [selectedClass,setSelectedClass]=useState(null);
+  const [smsNotificationStatus,setSMSNotificationStatus]=useState(false);
 
   useEffect(() => {
     fetchAllClasses();
@@ -44,6 +45,12 @@ const AttendanceMarkPage = () => {
   };
 
 
+  const handleChangeCheckBox=(e)=>{
+    console.log("handle checkbox changing ",e.target.checked);
+    setSMSNotificationStatus(e.target.checked);
+  }
+
+
   return (
     <div className="w-full h-[100%] flex flex-col items-center shadow-2xl overflow-y-auto">
       <div className="w-full">
@@ -66,7 +73,12 @@ const AttendanceMarkPage = () => {
               />
             </Form.Item>
           </Form>
+          <div className="flex flex-col w-full p-2 rounded-md bg-blue-200">
+              <Checkbox onChange={handleChangeCheckBox} >Select if you want to send notification SMS to parents</Checkbox>
+              <p className="text-gray-600">Click finish button at the end of the attendance marking to check attendance data and to send sms notifications</p>
         </div>
+        </div>
+        
         <div className="w-full border-2 border-green-500 h-full flex flex-col  items-center">
           {filteredClasses.length > 0 ? (
             <div className="w-[98%] grid grid-cols-1 lg:grid-cols-4">
@@ -92,7 +104,7 @@ const AttendanceMarkPage = () => {
           )}
         </div>
       </div>:
-      <AttendanceScanningPage selectedClass={selectedClass} setSelectedClass={setSelectedClass}/>
+      <AttendanceScanningPage smsNotificationStatus={smsNotificationStatus}  selectedClass={selectedClass} setSelectedClass={setSelectedClass}/>
     }
     </div>
   );

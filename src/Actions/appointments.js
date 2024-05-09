@@ -9,7 +9,7 @@ export const setPendingAppointments=(teacherID)=>async(dispatch)=>{
             appointments:appointmentResult.data
         })
     } catch (error) {
-        console.log("created Appointments fetching Error");
+        console.log("created Appointments fetching Error",error);
     }
     
 }

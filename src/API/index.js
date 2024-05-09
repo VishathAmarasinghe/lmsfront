@@ -23,6 +23,11 @@ export const getAllGrades=()=>axios.get("http://localhost:5050/classService/grad
 export const getAllHalls=()=>axios.get("http://localhost:5050/classService/halls");
 
 
+export const getActivatedAllHalls=()=>axios.get("http://localhost:5050/classService/activatedHalls");
+
+export const updateClass=(classData)=>axios.patch("http://localhost:5050/classService/updateClass",classData);
+
+
 export const getclasswithHalls=(day,hall)=>axios.get(`http://localhost:5050/classService/classwithhall?day=${day}&hall=${hall}`);
 
 export const newclassCreating=(classData)=>axios.post("http://localhost:5050/classService/newclass",classData);
@@ -128,6 +133,8 @@ export const createNewAnnouncement=(announcementData)=>axios.post("http://localh
 
 export const getAnnouncementsCreatedByTeacher=(teacherID)=>axios.get(`http://localhost:5050/notification/teacherAnnouncement?teacherID=${teacherID}`);
 
+export const getAnnoucementSpecifcToStudentsAndClass=(classID)=>axios.get(`http://localhost:5050/notification/annoucementsSpecifcToClassAndStudent?classID=${classID}`)
+
 export const deleteAnnouncement=(announcementID)=>axios.delete("http://localhost:5050/notification/announcement",{data:{announcementID}})
 
 
@@ -169,6 +176,8 @@ export const getChartData=(chartData)=>axios.post("http://localhost:5050/classSe
 
 export const getResultForSpecificStudent=(userID)=>axios.get(`http://localhost:5050/classService/resultForUserID?userID=${userID}`);
 
+export const getResultForSpecificStudentByClass=(userID,classID)=>axios.get(`http://localhost:5050/classService/resultForClassAndStudent?userID=${userID}&classID=${classID}`);
+
 export const getParentAnnouncements=(parentID)=>axios.get(`http://localhost:5050/notification/parentAnnouncements?parentID=${parentID}`)
 
 
@@ -206,6 +215,8 @@ export const getTotalFeePaymentStatistics=(month,year)=>axios.get(`http://localh
 export const getTotalFeePaymentStatisticsByTeacher=(month,year)=>axios.get(`http://localhost:5050/payment/totalClassFessStatisticsByTeacher?month=${month}&year=${year}`);
 
 
+export const getClassFeePaymentForLastThirtyDaysByTeacher=(teacherID)=>axios.get(`http://localhost:5050/payment/last30DaysClassFeesByTeacher?teacherID=${teacherID}`);
+
 export const getTeacherPaymentReport=(teacherPaymentData)=>axios.post("http://localhost:5050/payment/teacherPaymentReport",teacherPaymentData,{ responseType: 'arraybuffer' } );
 
 
@@ -214,7 +225,11 @@ export const getProgressReport=(selectedReportDate)=>axios.get(`http://localhost
 
 export const getLastThirtyDaysclassPayment=()=>axios.get(`http://localhost:5050/payment/last30DaysClassFees`);
 
+
+
 export const getLastSevenDaysAttendance=()=>axios.get("http://localhost:5050/classService/last7DaysAttendance")
+
+export const getLastTwoWeeksTeacherClassAttendance=(teacherID)=>axios.get(`http://localhost:5050/classService/last7DaysAttendance?teacherID=${teacherID}`)
 
 export const activateDeactivateUser=(userData)=>axios.post("http://localhost:5050/user/activateDeactivateUser",userData)
 
@@ -242,3 +257,9 @@ export const updateSMSTemplate=(SMStemplateData)=>axios.patch("http://localhost:
 export const updateEmailTemplate=(EmailtemplateData)=>axios.patch("http://localhost:5050/notification/updateEmailTemp",EmailtemplateData)
 
 export const getAllAnnoucements=()=>axios.get("http://localhost:5050/notification/AllAnnoucements")
+
+
+export const getSMSAccountStatus=()=>axios.get("http://localhost:5050/notification/smsAccountStatus")
+
+
+export const sendAttendanceSMSNotification=(attendanceList)=>axios.post("http://localhost:5050/notification/attendanceSMSNotification",attendanceList)

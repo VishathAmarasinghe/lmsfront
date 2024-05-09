@@ -60,6 +60,21 @@ const PageStructure = () => {
     }
   },[JSON.parse(localStorage.getItem("profile"))?.result])
 
+
+  useEffect(()=>{
+    if (currentUser=="parent") {
+      dispatch(change_page_number("1"))
+    }else if(currentUser=="student"){
+      dispatch(change_page_number("7"))
+    }else  if(currentUser=="teacher"){
+      dispatch(change_page_number("11"))
+    }else if(currentUser=="staff"){
+      dispatch(change_page_number("16"))
+    }else if(currentUser=="owner"){
+      dispatch(change_page_number("25"))
+    }
+  },[])
+
   const openMobilePanel = () => {
     setMobileMenu((pre) => !pre);
 
@@ -74,8 +89,8 @@ const PageStructure = () => {
 
  
   return (
-    <div  className="flex flex-row border-2 border-red-700 h-screen overflow-hidden ">
-      <div className="h-[40px] mt-5 flex md:hidden z-50  border-2 border-black">
+    <div   className="flex flex-row  h-screen overflow-hidden ">
+      <div className="h-[40px] mt-5 flex md:hidden z-50  border-2 ">
         {/* <div className=" border-2 border-green-800 h-[40px]">
           <MenuRoundedIcon onClick={openMobilePanel} />
         </div> */}
@@ -83,7 +98,7 @@ const PageStructure = () => {
         
           className={`${
             mobilemenu ? "flex" : "hidden"
-          } md:hidden absolute w-1/2 h-screen border-2 border-yellow-700 mt-12`}
+          } md:hidden absolute w-1/2 h-screen  mt-12`}
         >
           <Menu
           onClick={handleMenuclick}
@@ -97,7 +112,7 @@ const PageStructure = () => {
       <Layout
         style={{
           minHeight: "100vh",
-          border:"2px solid yellow"
+          // border:"2px solid yellow"
         }}
       >
         <div className={`hidden md:flex`}>
@@ -162,7 +177,7 @@ const PageStructure = () => {
             }}
           >
             <div
-            className="h-[100%] border-2 border-black"
+            className="h-[100%] border-t-2 border-l-2 border-[#4551A1]"
               style={{
                 padding: 4,
                 // minHeight: "100%",

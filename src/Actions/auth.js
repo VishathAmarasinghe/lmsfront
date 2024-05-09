@@ -52,9 +52,10 @@ export const signIn=(loginDetails,notification,navigation,setloading)=>async(dis
             }
           )
           setloading(false);
-
     }
 }
+
+
 
 export const logout=(navigation)=>async(dispatch)=>{
     try {

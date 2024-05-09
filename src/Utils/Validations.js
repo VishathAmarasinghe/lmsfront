@@ -258,7 +258,7 @@ const email_SMS_CredentialtemplateValidation = (templateString) => {
 
 const stringEmptyValidation = (stringValue) => {
   if (!stringValue || stringValue.trim().length === 0) {
-    return "String is empty or contains only whitespace";
+    return "Input field is empty or contains only whitespace";
   } else {
     return "";
   }

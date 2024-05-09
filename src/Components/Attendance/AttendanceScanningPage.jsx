@@ -3,16 +3,18 @@ import FormItem from "antd/es/form/FormItem";
 import React, { useState, useEffect } from "react";
 import useScanDetection from "use-scan-detection-react18";
 import { validateBarcode } from "../../Utils/Validations";
-import { attendanceVerfiicationOfStudentsInclass, getActivatedStudents, markAttendance } from "../../API";
+import { attendanceVerfiicationOfStudentsInclass, getActivatedStudents, markAttendance, sendAttendanceSMSNotification } from "../../API";
 import { correctSign, scanImage, wrongSign } from "../../assets";
 import AttendanceMarkingStats from "./AttendanceMarkingStats";
+import dayjs from "dayjs";
 
-const AttendanceScanningPage = ({selectedClass, setSelectedClass }) => {
+const AttendanceScanningPage = ({selectedClass, setSelectedClass,smsNotificationStatus }) => {
   const [optionStudentArray, setOptionStudentArray] = useState([]);
   const [selectedStudent,setSelectedStudent]=useState(null);
   const staffMember=JSON.parse(localStorage.getItem("profile")).result.UserID;
   const [barcode, setBarcode] = useState("");
   const [finalStatOpen,setFinalStatOpen]=useState(false);
+  const [attendanceList,setAttendanceList]=useState([]);
   const [viewStudent,setViewStudent]=useState({
     attendanceStatus:"",
     studentID:"",
@@ -24,8 +26,6 @@ const AttendanceScanningPage = ({selectedClass, setSelectedClass }) => {
   useScanDetection({
     onComplete: setBarcode,
   });
-
-
 
 
 
@@ -178,12 +178,15 @@ const AttendanceScanningPage = ({selectedClass, setSelectedClass }) => {
   };
 
 
-  const handleNext=async()=>{
+  const handleNext=async(buttonType)=>{
     setSelectedStudent(null);
     if (viewStudent.attendanceStatus) {
         markStudentAttendance();
     }else{
+      if (buttonType!="finish") {
         message.warning("attendance not marked for student!");
+      }
+        
     }
     setViewStudent({
         attendanceStatus:"",
@@ -201,6 +204,19 @@ const AttendanceScanningPage = ({selectedClass, setSelectedClass }) => {
         staffID:staffMember,
         classID:selectedClass.classID
     }
+    const attendanceMsgInfo={
+      studentID:selectedStudent?.data?.profileData?.UserID,
+      studentInfo:selectedStudent?.data?.profileData,
+      classData:selectedClass,
+      date:dayjs().format("YYYY-MM-DD"),
+      staffMember:staffMember
+    }
+
+    const findStudent=attendanceList?.find((student)=>student?.studentID===attendanceMsgInfo.studentID);
+    if (!findStudent) {
+      setAttendanceList([...attendanceList, attendanceMsgInfo]);
+    }
+
     const attendanceResult=await markAttendance(attendanceData);
     if (attendanceResult.status==200) {
         message.success(attendanceResult.data.message);
@@ -209,14 +225,23 @@ const AttendanceScanningPage = ({selectedClass, setSelectedClass }) => {
     }
   }
 
-  const handleFinishedMarkingAttendance=()=>{
-    handleNext();
+  const handleFinishedMarkingAttendance=async()=>{
+    handleNext("finish");
+    console.log("finalized sttendance array ",attendanceList);
     setFinalStatOpen(true);
+    if (smsNotificationStatus) {
+      const smsSendingNotificationResult=await sendAttendanceSMSNotification(attendanceList);
+      console.log("sms send Notifiation  ",smsSendingNotificationResult);
+      if (smsSendingNotificationResult.status==200) {
+        message.success("SMSs sent to parents!")
+      }
+    }
+    
   }
 
 
   const handleBackButton = () => {
-    handleNext();
+    handleNext("finish");
     setSelectedClass(null);
   };
 
@@ -277,7 +302,7 @@ const AttendanceScanningPage = ({selectedClass, setSelectedClass }) => {
         </div>
         <div className=" w-full flex flex-col justify-center items-center lg:items-end border-dashed p-2 border-t-2 border-slate-400 ">
           <div className=" w-full lg:w-[40%] flex flex-col lg:flex-row justify-between items-center">
-          <button onClick={()=>handleNext()} className="border-2 border-blue-600 my-2 hover:bg-blue-700 text-white text-[15px] font-medium bg-blue-600 rounded-md p-1 w-[90%] lg:w-[30%]">
+          <button onClick={()=>handleNext("middle")} className="border-2 border-blue-600 my-2 hover:bg-blue-700 text-white text-[15px] font-medium bg-blue-600 rounded-md p-1 w-[90%] lg:w-[30%]">
               Next
             </button>
             <button onClick={()=>handleFinishedMarkingAttendance()} className="border-2 border-green-600 hover:bg-green-700 text-white text-[15px] font-medium bg-green-600 rounded-md p-1 w-[90%] lg:w-[30%]">

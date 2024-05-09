@@ -12,6 +12,8 @@ import ClassContent from "../../Components/Class/ClassContent";
 import ClassParticipants from "../../InnerPages/ClassParticipants";
 import TeacherResultAddingPage from "../../InnerPages/TeacherResultAddingPage";
 import TeacherMarkAnalysis from "../../InnerPages/TeacherMarkAnalysis";
+import ClassGradeBook from "../../Components/Class/ClassGradeBook";
+import ClassAnnouncement from "../../Components/Class/ClassAnnouncement";
 
 
 const pageChanger = (pageChanger) => {
@@ -24,10 +26,10 @@ const pageChanger = (pageChanger) => {
       return <ClassParticipants/>
 
     case "A3":
-      break
+      return <ClassGradeBook/>
 
     case "A4":
-      break
+      return <ClassAnnouncement/>
 
     case "A5":
         return <ClassContent/>

@@ -14,6 +14,7 @@ import { selectedClass } from '../../Actions/class';
 const ClassCard = ({classinfo}) => {
     const navigate=useNavigate();
     const dispatch=useDispatch();
+    console.log("selected class is ",classinfo);
 
 
   const classOnclickHandle=()=>{
@@ -22,28 +23,33 @@ const ClassCard = ({classinfo}) => {
     navigate(`/class/${classinfo?.classID}`);
     }
   return (
-    <div onClick={classOnclickHandle} className=' w-full md:w-[90%]  shadow-lg hover:shadow-2xl rounded-xl relative scalar-cardsm'>
+    <div data-aos="zoom-out-right" onClick={classOnclickHandle} className=' w-full md:w-[90%]  shadow-lg hover:shadow-2xl rounded-xl relative scalar-cardsm'>
         <div className='w-full  rounded-xl rounded-bl-none rounded-br-none'>
             <img src={classCardImage} className='bg-cover  w-full h-[120px] rounded-xl rounded-bl-none rounded-br-none' />
         </div>
         <div className='w-full  bg-white '>
-            <p className='ml-2 text-[17px] font-semibold font-inter mt-1'>{`${classinfo?.gradeName} ${classinfo?.subjectName} ${classinfo?.medium} Medium`}</p>
-            <div className='flex flex-row justify-start items-center ml-2'>
+            <p className='ml-2 text-[17px] font-semibold font-inter mt-1'>{`${classinfo?.ClassName}`}</p>
+            <div className='w-full flex flex-row justify-between '>
+            <p className='ml-2 text-[14px] font-semibold font-inter mt-1'>{classinfo?.subjectName}</p>
+            <p className='ml-2 text-[11px] font-semibold font-inter mt-1'>{classinfo?.medium} Medium</p>
+            </div>
+          
+            {/* <div className='flex flex-row justify-start items-center ml-2'>
                 <Avatar icon={<img src={classOwnerAvatar}/>}/>
                 <p className='text-[#ABABAB] my-2 ml-2'>Tutor: <span className='font-semibold'>P.K Rajapajsha</span></p>
-            </div>
+            </div> */}
 
         </div>
         <Divider orientation='horizontal'/>
         <div className='w-full  bg-white flex flex-row'>
             <div className=' w-[50%] flex flex-row justify-center items-center p-2 hover:bg-slate-300'>
                 <StarBorderRoundedIcon className='text-[#ABABAB]'/>
-                <p className='text-[12px] text-[#ABABAB]'>Grade 9</p>
+                <p className='text-[12px] text-[#ABABAB]'>{classinfo?.gradeName}</p>
             </div>
             <Divider orientation='vertical'/>
             <div className='w-[50%] flex flex-row justify-center items-center hover:bg-slate-300 border-l-2 border-gray-300 p-2'>
                 <CalendarMonthRoundedIcon className='text-[#ABABAB]'/>
-                <p className='text-[12px] text-[#ABABAB]'>Sunday 10A.M</p>
+                <p className='text-[12px] text-[#ABABAB]'>{classinfo?.ClassDay} {classinfo?.StartTime?.substring(0,5)}</p>
             </div>
 
         </div>

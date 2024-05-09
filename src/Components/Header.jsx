@@ -60,33 +60,32 @@ const Header = ({
 
 
 
-
-
-
-
+  
   return (
-    <div className="w-full h-full border-2 border-red-600 flex flex-row justify-between">
-      <div className="flex flex-row items-center justify-center align-middle border-2 border-gray-600">
+    <div className="w-full h-full shadow-lg flex flex-row  justify-between">
+      <div className="flex flex-row items-center justify-center align-middle ">
         {
-          userDetails.role=="teacher"? <TeacherDetaileditingDrawer
+          userDetails?.role=="teacher"? <TeacherDetaileditingDrawer
           selectedTeacherData={[]}
           teacherStatus={"other"}
             openeditingDrawer={openprofileeditingDrawer}
             setOpeneditingDrawer={setProfileOpeneditingDrawer}
-          />:userDetails.role=="parent"?
+          />:userDetails?.role=="parent"?
           <ParentDetailEditingProfileDrawer
           selectedTeacherData={[]}
           teacherStatus={"other"}
             openeditingDrawer={openprofileeditingDrawer}
             setOpeneditingDrawer={setProfileOpeneditingDrawer}
-          />:userDetails.role=="staff"?
-          <StaffDetailEditingDrawer/>:
-          userDetails.role=="owner"?<OwnerProfileEditingDrawer openeditingDrawer={openprofileeditingDrawer} setOpeneditingDrawer={setProfileOpeneditingDrawer} ownerStatus={"other"}/>
-          :<></>
+          />:userDetails?.role=="staff"?
+          <StaffDetailEditingDrawer openeditingDrawer={openprofileeditingDrawer} setOpeneditingDrawer={setProfileOpeneditingDrawer} staffStatus={"other"} />:
+          userDetails?.role=="owner"?
+          <OwnerProfileEditingDrawer openeditingDrawer={openprofileeditingDrawer} setOpeneditingDrawer={setProfileOpeneditingDrawer} ownerStatus={"other"}/>
+          :userDetails?.role=="student"?
+          <StudentProfileDrawer openprofileeditingDrawer={openprofileeditingDrawer} setProfileOpeneditingDrawer={setProfileOpeneditingDrawer} />:<></>
         }
        
         {classMode ? (
-          <div className="border-2 border-green-600 ">
+          <div className="">
             <img src={logo} alt="logo" className="w-[60%] md:w-[57%] ml-5" />
           </div>
         ) : (
@@ -117,14 +116,14 @@ const Header = ({
         )}
       </div>
 
-      <div className="flex flex-row h-full border-2 border-green-300 items-center mr-4">
+      <div className="flex flex-row h-full  items-center mr-4">
         <div className="hidden md:flex">
           <Badge count={10} overflowCount={20} size="5px">
             {/* <NotificationsRoundedIcon style={{ fontSize: "27px" }} /> */}
             <BellOutlined className="text-[20px] text-gray-500" />
           </Badge>
         </div>
-        <Space className="border-2 border-red-500 h-full mx-5 flex flex-col justify-center  items-center">
+        <Space className=" h-full mx-5 flex flex-col justify-center  items-center">
           <p className="font-semibold text-[15px] font-inter ">
             {userDetails.firstName}
           </p>

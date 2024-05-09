@@ -47,10 +47,11 @@ const ClassPageStructure = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+  const activeUser=JSON.parse(localStorage.getItem("profile"))?.result?.role;
 
   useEffect(()=>{
     
-    const activeUser=JSON.parse(localStorage.getItem("profile"))?.result?.role;
+    
     console.log("defualt menu selector ",defaultmenuSelector);
     setNavigationList(classNavigationPanel(activeUser));
     if (activeUser=="teacher") {
@@ -68,6 +69,15 @@ const ClassPageStructure = () => {
     // setSelectedClassDetails(classData);
   },[classID])
 
+
+  useEffect(()=>{
+    if (activeUser=="teacher") {
+      dispatch(change_classsPage("A5"))
+    }else if(activeUser=="student"){
+      dispatch(change_classsPage("A1"))
+    }
+  },[])
+
  
   const openMobilePanel = () => {
     setMobileMenu((pre) => !pre);
@@ -84,7 +94,7 @@ const ClassPageStructure = () => {
     dispatch(change_classsPage(e.key));
   }
   return (
-    <Layout className="w-full h-screen z-40">
+    <Layout data-aos="zoom-in" className="w-full h-screen z-40">
       <StudentProfileDrawer openprofileeditingDrawer={openeditingDrawer} setProfileOpeneditingDrawer={setOpeneditingDrawer} />
       <Header
         style={{
@@ -98,9 +108,9 @@ const ClassPageStructure = () => {
       >
         <HeaderBar classMode={true} openprofileeditingDrawer={openeditingDrawer} setProfileOpeneditingDrawer={setOpeneditingDrawer} openMobilePanel={openMobilePanel} />
       </Header>
-      <Content className="flex flex-col justify-center items-center bg-[#EBEEFF] border-2 border-black z-30">
-        <Layout className="w-[96%] mt-3   h-[95%] bg-gray-500 rounded-xl border-2 border-black">
-        <div className="bg-[#4551A1] p-1  rounded-tl-xl rounded-tr-xl">
+      <Content className="flex flex-col justify-center items-center bg-[#EBEEFF]  z-30">
+        <Layout className="w-full  h-[95%] bg-gray-500  ">
+        <div className="bg-[#4551A1] p-1  ">
           <button onClick={closeClassPanel}>
             <CloseRoundedIcon  className="text-white scalar-card hover:text-black"/>
           </button>
@@ -156,8 +166,8 @@ const ClassPageStructure = () => {
           </ConfigProvider>
         </div>
         <Layout>
-          <Content className="w-full border-2 border-red-600 mt-2">
-            <div className="w-full flex flex-col  h-full border-2 border-yellow-500 overflow-y-auto">
+          <Content className="w-full  mt-2">
+            <div className="w-full flex flex-col items-center justify-center bg-[#EBEEFF]  h-full  overflow-y-auto">
 
                 <ClassPageLoader innerPageKey={classPageIndex}/>
             </div>

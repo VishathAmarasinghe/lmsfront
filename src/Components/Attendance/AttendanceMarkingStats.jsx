@@ -2,11 +2,19 @@ import { Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { getAttendanceDataByDateAndClass } from '../../API';
 import { getCurrentDateInSQLFormat } from '../../Utils/defaultValues';
+import { useDispatch } from 'react-redux';
+import { change_page_number } from '../../Actions/PageNumbers';
 
 const AttendanceMarkingStats = ({classData, totalNumber, finalStatOpen, setFinalStatOpen }) => {
     const [numberOfAttendance,setNumberOFAttendance]=useState(0);
+    const dispatch=useDispatch();
+
+
+
+
     const handleCancel = () => {
         setFinalStatOpen(false);
+        dispatch(change_page_number("34"))
     };
 
 

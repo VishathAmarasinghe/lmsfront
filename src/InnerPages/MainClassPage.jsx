@@ -35,8 +35,8 @@ const MainClassPage = () => {
 
 
   return (
-    <div className="w-full h-[100%] flex flex-col items-center border-2 border-pink-700  shadow-2xl  overflow-y-auto  ">
-      <div className="w-[95%] mt-3 border-2 border-red-500 h-[95%] overflow-y-auto  ">
+    <div className="w-full h-[100%] flex flex-col items-center   shadow-2xl  overflow-y-auto  ">
+      <div className="w-[95%] mt-3  h-[95%] overflow-y-auto  ">
         {
           user?.role=="teacher"?<div className="w-full my-3 border-2 border-green-600 h-10 ">
           <button  className="bg-blue-700 p-2 text-white rounded-md" onClick={()=>setAddingCompOpen(true)} >
@@ -49,7 +49,7 @@ const MainClassPage = () => {
       </div>:<></>
         }
         
-        <div className="w-full border-2 border-yellow-500 grid grid-cols-1 md:grid-cols-4 gap-4 mt-5 my-2" >
+        <div className="w-full  grid grid-cols-1 md:grid-cols-4 gap-4 mt-5 my-2" >
         {
             classes.map((classItem) => (
               <ClassCard  key={classItem.classID} classinfo={classItem} />

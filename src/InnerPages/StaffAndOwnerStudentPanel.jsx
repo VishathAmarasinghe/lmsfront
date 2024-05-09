@@ -8,11 +8,11 @@ import StudentProfileDrawer from '../Components/Student/StudentProfileDrawer';
 const StaffAndOwnerStudentPanel = () => {
     const [studentData,setStudentData]=useState([]);
     const [loading,setLoading]=useState(true);
-    const [studentProfileOpener,setStudentProfileOpener]=useState(false);
+    const [studentProfileOpener,setStudentProfileOpener]=useState({status:false,task:""});;
     const [selectedStudent,setSelectedStudent]=useState(null);
 
     useEffect(()=>{
-        if (studentProfileOpener==false) {
+        if (studentProfileOpener?.status==false) {
             fetchAllStudents();
         }
        

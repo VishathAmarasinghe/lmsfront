@@ -52,7 +52,7 @@ const StudentMiniProfile = ({ selectedStudent }) => {
     SetAssignedClasses(classes);
   };
 
-  console.log(selectedStudent.data);
+
 
   const innerItems = [
     {
@@ -65,13 +65,13 @@ const StudentMiniProfile = ({ selectedStudent }) => {
       key: "3",
       label: "Student ID",
       span: 2,
-      children: `${selectedStudent?.data?.studentID}`,
+      children: `${selectedStudent?.data?.studentID ||  selectedStudent?.data?.additionalInfo?.studentID}`,
     },
     {
       key: "4",
       label: "First Name",
       span: 2,
-      children: `${selectedStudent?.data?.firstName}`,
+      children: `${selectedStudent?.data?.firstName }`,
     },
     {
       key: "5",

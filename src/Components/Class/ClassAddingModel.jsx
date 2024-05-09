@@ -25,8 +25,9 @@ import {
 } from "../../Actions/class";
 import { useForm } from "antd/es/form/Form";
 import ClassTimeSlotcard from "./ClassTimeSlotcard";
+import { getActivatedAllHalls, updateClass } from "../../API";
 
-const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
+const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }) => {
   const teacherID = JSON.parse(localStorage.getItem("profile"))?.result?.UserID;
   const [form] = Form.useForm();
   const [onlineMode, setOnlineMode] = useState(false);
@@ -37,54 +38,64 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
   const [loading, setloading] = useState(true);
   const [classAvailability, setClassAvailability] = useState([]);
   const [selectedtimeSlots, setSelectedTimeSlots] = useState(["", ""]);
-  const [classData, setClassData] = useState({
-    className: "",
-    startTime: "",
-    endTime: "",
-    classMode: "physical",
-    classDay: "monday",
-    gradeID: "",
-    subjectID: "",
-    hallID: "",
-    teacherID: "",
-  });
+  const [classData, setClassData] = useState(null);
+    // className: "",
+    // startTime: "",
+    // endTime: "",
+    // classMode: "physical",
+    // classDay: "monday",
+    // gradeID: "",
+    // subjectID: "",
+    // hallID: "",
+    // teacherID: "",
+ 
   const [classtimeslot, setClassTimeSlot] = useState({
-    startTime: "",
+    StartTime: "",
     endTime: "",
     timeArray: [],
   });
 
+
+  useEffect(()=>{
+    if (addingCompOpen==true) {
+      if (classEditingData!=null) {
+        const {ClassDay,ClassMode,ClassName, StartTime,classFee,classID,endTime,gradeID,hallID,medium,subjectID}=classEditingData;
+        setClassData({
+          ClassDay,ClassMode,ClassName, StartTime,classFee,classID,endTime,gradeID,hallID,medium,subjectID
+        })
+        // handleOnlinePhysicalMode(classEditingData?.classMode=="physical"?true:false);
+      }
+    }
+   
+  },[addingCompOpen,classEditingData])
+
   const handleCleaningSelectedTimeslots = () => {
     setClassTimeSlot({
-      startTime: "",
+      StartTime: "",
       endTime: "",
       timeArray: [],
     });
   };
 
   useEffect(() => {
-    console.log(
-      "time slot is ",
-      classtimeslot.startTime,
-      "  + ",
-      classtimeslot.endTime,
-      "   ",
-      classtimeslot.timeArray
-    );
-    setClassData({
-      ...classData,
-      startTime: classtimeslot.startTime + ":00",
-      endTime: classtimeslot.endTime + ":00",
-      teacherID: teacherID,
-    });
-  }, [classtimeslot]);
+   if (classtimeslot.StartTime!="") {
+      setClassData({
+        ...classData,
+        StartTime: classtimeslot.StartTime + ":00",
+        endTime: classtimeslot.endTime + ":00",
+        teacherID: teacherID,
+      });
+   }
+   
+
+  }, [classtimeslot,addingCompOpen]);
 
   useEffect(() => {
     console.log("class data", classData);
   }, [classData]);
 
-  const handleFormValuesChange = (changedValues, allValues) => {
-    setClassData({ ...classData, ...changedValues });
+  const handleFormValuesChange = (e) => {
+    setClassData({ ...classData, [e.target.name]:e.target.value});
   };
 
   const handleAddingNewSubject = () => {
@@ -99,12 +110,22 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
     setloading(true);
     fetch_avalableTimes();
     setloading(false);
-  }, [classData.hallID, classData.classDay]);
+  }, [classData?.hallID, classData?.ClassDay]);
+
+
+  const handleSubmitClassDetails=()=>{
+   
+    if (classEditingData!=null) {
+      handleSubmitUpdateClass();
+    }else{
+      handleSubmitNewClassAccount();
+    }
+  }
 
   const handleSubmitNewClassAccount = async () => {
     console.log("final class ", classData);
     if (
-      classtimeslot.startTime != "" &&
+      classtimeslot.StartTime != "" &&
       classtimeslot.endTime != "" &&
       classData.className != "" &&
       classData.gradeID != ""
@@ -117,39 +138,70 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
         notification.error("Class Creation Error")
       }
       handleClose();
-      form.resetFields();
+
     } else {
       message.error("please complete all relevent details");
     }
   };
 
+
+
+
+  const handleSubmitUpdateClass = async () => {
+    console.log("final class ", classData);
+    if (
+      classtimeslot.StartTime != "" &&
+      classtimeslot.endTime != "" &&
+      classData.className != "" &&
+      classData.gradeID != ""
+    ) {
+      const updateResult = await updateClass(classData);
+      console.log("class creation result ", updateResult);
+      if (updateResult.status==200) {
+        message.success("class updated successfully")
+      }else{
+        message.error("Class Creation Error")
+      }
+      handleClose();
+
+    } else {
+      message.error("please complete all relevent details");
+    }
+  };
+
+
+
+
+
   const handleClose = () => {
     setAddingCompOpen(false);
-    
-    form.resetFields();
     resetClassData();
   };
 
   const resetClassData = () => {
-    setClassData({
-      className: "",
-      startTime: "",
-      endTime: "",
-      classMode: "physical",
-      classDay: "monday",
-      gradeID: "",
-      subjectID: "",
-      hallID: "",
-    });
+    setClassData(null);
+    setClassTimeSlot({...classtimeslot,endTime:"",StartTime:"",timeArray:[]})
   };
 
 
   const fetch_avalableTimes = async () => {
+    console.log("fetch comming here");
     const avalableData = await get_classs_with_halls_and_days(
-      classData.classDay,
-      classData.hallID
+      classData?.ClassDay,
+      classData?.hallID
     );
-    setClassAvailability(avalableData);
+    if (classEditingData!=null) {
+      const updatedAvailability = avalableData.map(item => {
+        if (item.class && item.class.classID === classData?.classID) {
+          return { ...item, availability: false };
+        }
+        return item;
+      });
+      setClassAvailability(updatedAvailability);
+    }else{
+      setClassAvailability(avalableData);
+    }
+    
   };
 
   const fetch_grades_subjects_halls = async () => {
@@ -169,8 +221,9 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
     }));
     setSubjects(subjectWithOptions);
 
-    const halls = await get_all_halls();
-    setHalls(halls);
+    const halls = await getActivatedAllHalls();
+    console.log("hall data  ",halls);
+    setHalls(halls.data);
   };
 
   const handleOnlinePhysicalMode = (mode) => {
@@ -196,9 +249,9 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
         <button
           key="ok"
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-          onClick={handleSubmitNewClassAccount}
+          onClick={handleSubmitClassDetails}
         >
-          OK
+          {classEditingData?"Update":"Create New"}
         </button>,
       ]}
     >
@@ -208,10 +261,6 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
           setSubjectAddingDrawerOpen={setSubjectAddingDrawerOpen}
         />
         <Form
-            
-          onValuesChange={handleFormValuesChange}
-          form={form}
-          initialValues={classData}
           layout="vertical"
           //   onFinish={handleSubmitNewClassAccount}
           hideRequiredMark
@@ -219,7 +268,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
           <Row gutter={16} >
             <Col span={12} >
               <Form.Item
-                name="className"
+                
                 label="Class Name"
                 rules={[
                   {
@@ -228,14 +277,16 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
                   },
                 ]}
               >
-                <Input placeholder="Please enter a Class Name" />
+                <Input name="ClassName" onChange={handleFormValuesChange} value={classData?.ClassName}  placeholder="Please enter a Class Name" />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="subjectID" label="Subject">
+              <Form.Item  label="Subject">
                 <Row gutter={24}>
                   <Col span={16}>
                     <Select
+                    name="subjectID"
+                    value={classData?.subjectID}
                       onChange={(value) =>
                         setClassData({ ...classData, subjectID: value })
                       }
@@ -258,7 +309,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="gradeID"
+                
                 label="Select Grade"
                 rules={[
                   {
@@ -268,6 +319,8 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
                 ]}
               >
                 <Select
+                name="gradeID"
+                value={classData?.gradeID}
                   onChange={(value) =>
                     setClassData({ ...classData, gradeID: value })
                   }
@@ -277,7 +330,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="classMode"
+                // name="classMode"
                 label="Class Mode"
                 rules={[
                   {
@@ -312,7 +365,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="classDay"
+                
                 label="Select Day"
                 rules={[
                   {
@@ -321,7 +374,26 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
                   },
                 ]}
               >
-                <Select options={daysOfTheWeek} />
+                <Select name="classDay"
+                 onChange={(value) =>
+                  setClassData({ ...classData, ClassDay: value })
+                }
+                value={classData?.ClassDay}
+                options={daysOfTheWeek} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                
+                label="Class Fee"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter class Fee",
+                  },
+                ]}
+              >
+               <Input name="ClassFee" onChange={handleFormValuesChange} value={classData?.classFee}  placeholder="Please enter class fee" />
               </Form.Item>
             </Col>
           </Row>
@@ -339,9 +411,9 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
                   ]}
                 >
                   <div className="grid grid-cols-2 md:grid-cols-6 place-content-center">
-                    {halls.map((hall) => (
+                    {halls?.map((hall) => (
                       <HallCard
-                        key={hall.hallID}
+                        key={hall?.hallID}
                         classData={classData}
                         setClassData={setClassData}
                         hall={hall}
@@ -374,6 +446,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen }) => {
                   ) : (
                     classAvailability.map((timeslot) => (
                       <ClassTimeSlotcard
+                      classID={classData?.classID}
                         key={timeslot.startTime}
                         timeslot={classtimeslot}
                         setTimeSlot={setClassTimeSlot}

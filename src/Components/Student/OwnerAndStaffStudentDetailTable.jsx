@@ -19,7 +19,7 @@ const OwnerAndStaffStudentDetailTable = ({fetchAllStudents, studentDetails,stude
 
   const handleEditStudent=(studentData)=>{
     setSelectedStudent(studentData);
-    setStudentProfileOpener(true);
+    setStudentProfileOpener({...studentProfileOpener,status:true,task:""});
   }
 
 

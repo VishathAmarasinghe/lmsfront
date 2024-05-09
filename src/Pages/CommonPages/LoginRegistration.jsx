@@ -14,7 +14,7 @@ const LoginRegistration = ({actionType}) => {
 
         
         <div className='w-full flex flex-col h-[100%]  md:flex-row md:justify-around'>
-          <div  className='w-full md:w-[45%] mt-16 md:mt-6  flex items-center justify-center'>
+          <div data-aos="fade-right"  className='w-full md:w-[45%] mt-16 md:mt-6  flex items-center justify-center'>
             {actionType==="login"?<LoginForm/>:<RegistrationFom/>}
           </div>
           <div  className='w-full md:w-[40%] shrink  flex items-center justify-center '>

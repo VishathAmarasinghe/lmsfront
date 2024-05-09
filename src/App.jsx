@@ -37,7 +37,6 @@ function App() {
       <Route path="/report/teacher" Component={TeacherPaymentDetailReport}/>
       <Route path="/report/progressReport" Component={ProgressReport}/>
     </Routes>
-
   )
 }
 
