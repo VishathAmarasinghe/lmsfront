@@ -23,6 +23,7 @@ const NoteAddingPanel = ({ accID,notemodelOpen, setnotemodelOpen }) => {
     const uploadResult=await uploadNotes(formData);
     if (uploadResult.status==200) {
       message.success("Files uploaded successfully!");
+
     }else{
       message.error("uploading Error!")
     }
@@ -38,7 +39,7 @@ const NoteAddingPanel = ({ accID,notemodelOpen, setnotemodelOpen }) => {
       setConfirmLoading(false);
       setnotemodelOpen(false);
       setFileList([]); 
-    }, 2000);
+    }, 1000);
   };
 
   const handleCancel = () => {
@@ -54,7 +55,7 @@ const NoteAddingPanel = ({ accID,notemodelOpen, setnotemodelOpen }) => {
     <Modal
       title="Upload Notes"
       centered
-      visible={notemodelOpen}
+      open={notemodelOpen}
       onCancel={handleCancel}
       width={"50%"}
       maskClosable={false}

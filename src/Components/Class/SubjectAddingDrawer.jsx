@@ -1,84 +1,113 @@
-import { Drawer, Space, Button, Row, Col, Form,Input, Modal, Select } from "antd";
+import { Modal, Button, Row, Col, Form, Input, Select, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import React from "react";
+import React, { useState } from "react";
 import { subjectMedium } from "../../Utils/defaultValues";
+import { stringValidation, stringValidationWithLenght } from "../../Utils/Validations";
 
-const SubjectAddingDrawer = ({subjectAddingDrawerOpen,setSubjectAddingDrawerOpen}) => {
-    const handleCloseDrawer=()=>{
-        setSubjectAddingDrawerOpen(false)
+const SubjectAddingDrawer = ({ subjectAddingDrawerOpen, setSubjectAddingDrawerOpen }) => {
+  const [validationChecker,setValidationChecker]=useState(null);
+  const [subjectData,setSubjectData]=useState(null);
+  const handleCloseDrawer = () => {
+    setSubjectAddingDrawerOpen(false);
+  };
+
+  const handleSaveSubject=async()=>{
+    try {
+      
+    } catch (error) {
+      console.log("error ",error);
+      message.error("New Subject adding error!")
     }
+  }
 
-   
+
+  const handleInputChange=(e)=>{
+    setSubjectData({...subjectData,[e.target.name]:e.target.value});
+    handleValidationError(e);
+  }
+
+
+  const handleValidationError=(e)=>{
+    if (e.target.name=="subjectDescription") {
+      setValidationChecker({...validationChecker,subjectDescription:stringValidation(e.target.value)})
+    }else if(e.target.name=="subjectName"){
+      setValidationChecker({...validationChecker,subjectName:stringValidationWithLenght(e.target.value,39)});
+    }
+  }
+
+  const handleMediumSelect=(value)=>{
+    setSubjectData({...subjectData,medium:value})
+  }
+
   return (
     <Modal
-    open={subjectAddingDrawerOpen}
-    onOk={handleCloseDrawer}
-    onCancel={handleCloseDrawer}
-   
+      open={subjectAddingDrawerOpen}
+      onCancel={handleCloseDrawer}
       title="Add New Subject"
-      extra={
-        <Space>
-          <Button onClick={handleCloseDrawer}>Cancel</Button>
-          <Button type="primary" onClick={handleCloseDrawer}>
-            OK
-          </Button>
-        </Space>
-      }
+      footer={[
+        <Button key="cancel" onClick={handleCloseDrawer}>
+          Cancel
+        </Button>,
+        <Button key="submit" className="bg-blue-500 hover:bg-blue-600 text-white" onClick={handleCloseDrawer}>
+          OK
+        </Button>,
+      ]}
     >
+      <Form layout="vertical" hideRequiredMark>
       <Row gutter={16}>
         <Col span={24}>
-          <Form layout="vertical" hideRequiredMark>
+          
             <Form.Item
-              name="subjectname"
               label="Subject Name"
+              validateStatus={validationChecker?.subjectName?"error":"success"}
+              help={validationChecker?.subjectName || ""}
               rules={[
                 {
                   required: true,
-                  message: "Please enter Class Name",
                 },
               ]}
             >
-              <Input  placeholder="Please enter a Subject Name" />
+              <Input name="subjectName" onChange={handleInputChange} value={subjectData?.subjectName} placeholder="Please enter a Subject Name" />
             </Form.Item>
-          </Form>
+
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={24}>
-          <Form  layout="vertical" hideRequiredMark>
+
             <Form.Item
-              name="media"
-              label="Subject Media"
+             
+              label="Subject Medium"
               rules={[
                 {
                   required: true,
-                  message: "Please enter subject Media",
                 },
               ]}
             >
-              <Select defaultValue="sinhala" options={subjectMedium}/>
+              <Select  name="medium" onChange={handleMediumSelect} value={subjectData?.medium}  options={subjectMedium} />
             </Form.Item>
-          </Form>
+
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={24}>
-          <Form  layout="vertical" hideRequiredMark>
+
             <Form.Item
-              name="subdesc"
+              validateStatus={validationChecker?.subjectDescription?"error":"success"}
+              help={validationChecker?.subjectDescription || ""}
               label="Subject Description"
               rules={[
                 {
                   required: true,
-                  message: "Please enter subject Description",
                 },
               ]}
             >
-              <TextArea placeholder="Please enter subject description" />
+              <TextArea   name="subjectDescription" placeholder="Please enter subject description" />
             </Form.Item>
-          </Form>
+
         </Col>
       </Row>
+      </Form>
     </Modal>
   );
 };

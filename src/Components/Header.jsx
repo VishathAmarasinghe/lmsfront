@@ -142,7 +142,7 @@ const Header = ({
                 className="bg-[#5B6BD4] text-white border-2 border-[#5B6BD4]"
                 icon={
                   userDetails.photo == null || userDetails.photo == ""
-                    ? userDetails.firstName.substring(0, 1).toUpperCase()
+                    ? userDetails?.firstName?.substring(0, 1)?.toUpperCase()
                     : <img alt={userDetails.firstName.substring(0, 1).toUpperCase()} src={`http://localhost:5000/${userDetails.photo}`}/>
                 }
               />

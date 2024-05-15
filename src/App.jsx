@@ -8,12 +8,27 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import LoadingPage from "./Pages/CommonPages/LoadingPage";
 import TeacherPaymentDetailReport from "./Pages/CommonPages/ReportTemplates/TeacherPaymentDetailReport";
 import ProgressReport from "./Pages/CommonPages/ReportTemplates/ProgressReport";
+import { useDispatch } from "react-redux";
+import { logout } from "./Actions/auth";
+import { jwtDecode } from "jwt-decode";
 
 
 
 function App() {
   const user=JSON.parse(localStorage.getItem("profile"));
   const location=useLocation();
+  const dispatch=useDispatch();
+
+  useEffect(()=>{
+    const token=user?.token;
+
+    if (token) {
+      const decodedToken=jwtDecode(token);
+      if (decodedToken.exp*1000<new Date().getTime()) {
+        dispatch(logout())
+      }
+    }
+  },[location])
 
   useEffect(()=>{
     Aos.init();

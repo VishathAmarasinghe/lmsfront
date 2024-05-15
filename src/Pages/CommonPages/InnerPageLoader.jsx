@@ -36,6 +36,8 @@ import OwnerConfigurationPage from "../../InnerPages/OwnerConfigurationPage";
 import OwnerAddingPage from "../../InnerPages/OwnerAddingPage";
 import TeacherDashboard from "../../InnerPages/TeacherDashboard";
 import ParentStudentPanel from "../../InnerPages/ParentStudentPanel";
+import ParentAttendanceShower from "../../InnerPages/ParentAttendanceShower";
+import ParentPaymentshower from "../../InnerPages/ParentPaymentshower";
 
 
 
@@ -159,6 +161,10 @@ const pageChanger = (pageChanger) => {
       return <OwnerAddingPage/>
     case "43":
       return <ParentStudentPanel/>
+    case "44":
+      return <ParentAttendanceShower/>
+    case "45":
+      return <ParentPaymentshower/>
     default:
       break;
   }

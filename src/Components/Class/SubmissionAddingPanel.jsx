@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import ReactQuill from 'react-quill';
-import moment from 'moment';
-import dayjs from 'dayjs';
-import 'react-quill/dist/quill.snow.css';
+import ReactQuill from "react-quill";
+import moment from "moment";
+import dayjs from "dayjs";
+import "react-quill/dist/quill.snow.css";
 import {
   Button,
   Col,
@@ -16,99 +16,248 @@ import {
   Row,
   Select,
   Space,
+  Tag,
   TimePicker,
   Upload,
   message,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { uploadSubmissionPanel } from "../../API";
+import {
+  UpdateUploadSubmissionPanel,
+  getnotes,
+  uploadSubmissionPanel,
+} from "../../API";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getAllAccordianByClassID } from "../../Actions/class";
+import {
+  stringEmptyValidation,
+  stringValidationWithLenght,
+} from "../../Utils/Validations";
+import NoteCard from "../UploadMaterials/NoteCard";
+import SubmissionPanelUploadingCard from "../UploadMaterials/SubmissionPanelUploadingCard";
 const { Option } = Select;
 const { Panel } = Collapse;
-const SubmissionAddingPanel = ({ accID,submissionaddingpanelOpen, setSubmissionAddingPanelOpen}) => {
-  
-    useState(false);
+const SubmissionAddingPanel = ({
+  accID,
+  submissionaddingpanelOpen,
+  setSubmissionAddingPanelOpen,
+  submissionInfo,
+}) => {
   const showDrawer = () => {
     setSubmissionAddingPanelOpen(true);
   };
+
   const onClose = () => {
-    setSubmissionAddingPanelOpen(false)
+    setSubmissionAddingPanelOpen(false);
+    setSubmissionPanelData(null);
+    setDeleteActionedFiles([]);
+    setPreviousUploadedFiles([]);
+    setFileList([]);
+
     // form.resetFields();
     // form.
   };
 
-  const [form]=Form.useForm();
   const [fileList, setFileList] = useState([]);
-  const [additionalinfo,setAdditionalInfo]=useState("");
-  const dispatch=useDispatch();
-  const {classID}=useParams();
-  const [submissionPanelData,setSubmissionPanelData]=useState({
-    title:"",
-    startDate:"",
-    startTime:"",
-    closeDate:"",
-    closeTime:"",
-    accID:accID,
-    additionInfo:"",
 
-  });
+  const dispatch = useDispatch();
+  const { classID } = useParams();
+  const [submissionPanelData, setSubmissionPanelData] = useState({});
+  const [overallValidateError, setOverallValidateError] = useState(null);
+  const [previousUploadedFiles, setPreviousUploadedFiles] = useState(null);
+  const [deleteActionedFiles, setDeleteActionedFiles] = useState([]);
+
+  useEffect(() => {
+    if (submissionaddingpanelOpen == true && submissionInfo != null) {
+      console.log("submission data ", submissionInfo);
+      setSubmissionPanelData({ ...submissionInfo }, deleteActionedFiles);
+      setPreviousUploadedFiles(submissionInfo?.notes);
+    } else {
+      //put accordianID
+      setSubmissionPanelData({ ...submissionInfo, accordianID: accID });
+    }
+  }, [submissionaddingpanelOpen]);
+
+  useEffect(() => {
+    setSubmissionPanelData({
+      ...submissionPanelData,
+      deleteActionedFiles: deleteActionedFiles,
+    });
+  }, [deleteActionedFiles]);
 
   const handleFileChange = ({ fileList }) => {
     setFileList(fileList);
   };
 
-  const handleSubmissionPanelSubmit = async() => {
-    const formValues = form.getFieldsValue();
-
-    console.log("get selected data ",formValues);
-  
-    const formattedStartDate = formValues.startDate ? dayjs(formValues.startDate).format('YYYY-MM-DD') : null;
-    const formattedStartTime = formValues.startTime ? dayjs(formValues.startTime).format('HH:mm:ss') : null;
-    const formattedCloseDate = formValues.closeDate ? dayjs(formValues.closeDate).format('YYYY-MM-DD') : null;
-    const formattedCloseTime = formValues.closeTime ? dayjs(formValues.closeTime).format('HH:mm:ss') : null;
-
-  const formattedSubmissionPanelData = {
-    ...formValues,
-    accID: accID,
-    additionInfo: String(additionalinfo),
-    startDate: formattedStartDate,
-    startTime: formattedStartTime,
-    closeDate: formattedCloseDate,
-    closeTime: formattedCloseTime,
-  };
-  
-    setSubmissionPanelData(formattedSubmissionPanelData);
-  
-    console.log("submitting Data submissions ", formattedSubmissionPanelData);
-  
-    const formData = new FormData();
-    formData.append("submissionPanelData", JSON.stringify(formattedSubmissionPanelData));
-    fileList.forEach((file) => {
-      console.log("file object ", file.originFileObj);
-      formData.append("files", file.originFileObj);
-    });
-  
-    const submissionResult = await uploadSubmissionPanel(formData);
-    if (submissionResult.status === 200) {
-      message.success("Submission panel Uploaded");
-    } else {
-      message.error("Error creating submission panel")
+  const fetchFiles = async (fileList) => {
+    for (const file of fileList) {
+      try {
+        const notes = await getnotes(file.noteLocation);
+        console.log("notes ", notes.data);
+        setFileList([...fileList, notes.data]);
+      } catch (error) {
+        console.log("file fetching error!");
+        message.error("file fetching error!");
+      }
     }
-  
-    dispatch(getAllAccordianByClassID(classID));
-    onClose();
   };
 
+  const checkValidationStatusToSubmit = () => {
+    let errorStatus = true;
+    console.log("overall validate error ", overallValidateError);
+    for (const key in overallValidateError) {
+      if (overallValidateError[key] !== "") {
+        return false;
+      }
+    }
+    const requiredcolumns = ["subPanelName", "subOpenDate", "subOpenTime"];
+    for (const value of requiredcolumns) {
+      if (
+        submissionPanelData[value] == "" ||
+        submissionPanelData[value] == null ||
+        submissionPanelData[value] == undefined
+      ) {
+        if (
+          submissionPanelData?.additionalInfo[value] == "" ||
+          submissionPanelData?.additionalInfo[value] == null ||
+          submissionPanelData?.additionalInfo[value] == undefined
+        ) {
+          message.error(`please fill mandatory columns (${value}) `);
+          errorStatus = false;
+        }
+      }
+    }
+    const firstDateTime = `${dayjs(submissionPanelData["subOpenDate"]).format("YYYY-MM-DD")} ${submissionPanelData["subOpenTime"]}`;
+    const secondDateTime = `${dayjs(submissionPanelData["subCloseDate"]).format("YYYY-MM-DD")} ${submissionPanelData["subCloseTime"]}`;
 
-  useEffect(()=>{
-    console.log("submission time ",submissionPanelData);
-  },[submissionPanelData])
+    // Compare the dates
 
+    console.log("first data ",firstDateTime);
+    console.log("last data ",secondDateTime);
 
-  const handleFormValuesChange = (changedValues, allValues) => {
-    setSubmissionPanelData({ ...submissionPanelData, ...changedValues });
+    if (moment(firstDateTime).isBefore(secondDateTime)) {
+      // First date-time is before the second one
+    } else if (moment(firstDateTime).isSame(secondDateTime)) {
+      console.log("Both date-times are the same.");
+      message.error("Both start and end date-times are the same.");
+      errorStatus = false;
+    } else {
+      console.log("First date-time is after the second one.");
+      message.error("start date-time is after the end date time.");
+      errorStatus = false;
+    }
+
+    return errorStatus;
+  };
+
+  const handleSubmissionPanelSubmit = async () => {
+    if (submissionInfo != null) {
+      handleUpdateSubmissionPanelSubmit();
+    } else {
+      handleNewSubmissionPanelSubmit();
+    }
+  };
+
+  const handleNewSubmissionPanelSubmit = async () => {
+    console.log("submitting Data submissions ");
+
+    if (checkValidationStatusToSubmit()) {
+      const formData = new FormData();
+      formData.append(
+        "submissionPanelData",
+        JSON.stringify(submissionPanelData)
+      );
+      fileList.forEach((file) => {
+        console.log("file object ", file.originFileObj);
+        formData.append("files", file.originFileObj);
+      });
+
+      const submissionResult = await uploadSubmissionPanel(formData);
+      if (submissionResult.status === 200) {
+        message.success("Submission panel Uploaded");
+      }
+
+      dispatch(getAllAccordianByClassID(classID));
+      onClose();
+    }
+  };
+
+  const handleUpdateSubmissionPanelSubmit = async () => {
+    console.log("submitting Data submissions ");
+
+    if (checkValidationStatusToSubmit()) {
+      const formData = new FormData();
+      formData.append(
+        "submissionPanelData",
+        JSON.stringify(submissionPanelData)
+      );
+      fileList.forEach((file) => {
+        console.log("file object ", file.originFileObj);
+        formData.append("files", file.originFileObj);
+      });
+
+      const submissionResult = await UpdateUploadSubmissionPanel(formData);
+      if (submissionResult.status === 200) {
+        message.success("Submission panel Uploaded");
+      }
+
+      dispatch(getAllAccordianByClassID(classID));
+      onClose();
+    } else {
+      message.error("Please fill mandatory columns");
+    }
+  };
+
+  useEffect(() => {
+    console.log("submission data ", submissionPanelData);
+  }, [submissionPanelData]);
+
+  const handleFormValuesChange = (e) => {
+    setSubmissionPanelData({
+      ...submissionPanelData,
+      [e.target.name]: e.target.value,
+    });
+    setOverallValidateError({
+      ...overallValidateError,
+      [e.target.name]: stringValidationWithLenght(e.target.value, 29),
+    });
+  };
+
+  const handleAdditionalInfo = (value) => {
+    setSubmissionPanelData({ ...submissionPanelData, additionalInfo: value });
+    setOverallValidateError({
+      ...overallValidateError,
+      additionalInfo: stringEmptyValidation(value),
+    });
+  };
+
+  const handleDataChange = (date, dateString, type) => {
+    if (type == "subOpenDate") {
+      setSubmissionPanelData({
+        ...submissionPanelData,
+        subOpenDate: dateString,
+      });
+    } else if (type == "subCloseDate") {
+      setSubmissionPanelData({
+        ...submissionPanelData,
+        subCloseDate: dateString,
+      });
+    }
+  };
+
+  const handleTimeChange = (time, timeString, type) => {
+    if (type == "subOpenTime") {
+      setSubmissionPanelData({
+        ...submissionPanelData,
+        subOpenTime: timeString,
+      });
+    } else if (type == "subCloseTime") {
+      setSubmissionPanelData({
+        ...submissionPanelData,
+        subCloseTime: timeString,
+      });
+    }
   };
 
   const suffixIcon = (
@@ -117,13 +266,12 @@ const SubmissionAddingPanel = ({ accID,submissionaddingpanelOpen, setSubmissionA
     </Button>
   );
 
-
   return (
     <>
       <Drawer
-        getContainer={false}
-        title="Add Class"
-          width={720}
+        // getContainer={false}
+        title={`${submissionInfo ? "Update Submission" : "New Submission"}`}
+        width={720}
         onClose={onClose}
         open={submissionaddingpanelOpen}
         styles={{
@@ -138,36 +286,38 @@ const SubmissionAddingPanel = ({ accID,submissionaddingpanelOpen, setSubmissionA
               onClick={handleSubmissionPanelSubmit}
               className="bg-blue-700 px-2 py-1 ml-2 hover:bg-blue-800 text-white font-medium rounded-lg"
             >
-              Open
+              {submissionInfo ? "Update " : "Open"}
             </button>
           </Space>
         }
       >
-        <Form 
-        initialValues={submissionPanelData}
-        form={form}
-        onChange={handleFormValuesChange}
-        layout="vertical" hideRequiredMark>
+        <Form layout="vertical" hideRequiredMark>
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item
-                name="title"
+                validateStatus={
+                  overallValidateError?.subPanelName ? "error" : "success"
+                }
+                help={overallValidateError?.subPanelName || ""}
                 label="Submission Title"
                 rules={[
                   {
                     required: true,
-                    message: "Please enter Submission Title",
                   },
                 ]}
               >
-                <Input placeholder="Please enter name for submission" />
+                <Input
+                  name="subPanelName"
+                  value={submissionPanelData?.subPanelName}
+                  onChange={handleFormValuesChange}
+                  placeholder="Please enter name for submission"
+                />
               </Form.Item>
-              </Col>
-              </Row>
-              <Row gutter={16}>
-                <Col span={12}>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
               <Form.Item
-               name="startDate"
                 label="Submission Starting date"
                 rules={[
                   {
@@ -176,13 +326,22 @@ const SubmissionAddingPanel = ({ accID,submissionaddingpanelOpen, setSubmissionA
                   },
                 ]}
               >
-              {/* onChange={(date,dateString)=>setSubmissionPanelData({...submissionPanelData,startDate:dateString})} */}
-                <DatePicker format="YYYY-MM-DD" defaultValue={dayjs()} minDate={dayjs()}    className="w-full"/>
+                {/* onChange={(date,dateString)=>setSubmissionPanelData({...submissionPanelData,startDate:dateString})} */}
+                <DatePicker
+                  value={dayjs(submissionPanelData?.subOpenDate) || dayjs()}
+                  onChange={(date, dataString) =>
+                    handleDataChange(date, dataString, "subOpenDate")
+                  }
+                  name="subOpenDate"
+                  format="YYYY-MM-DD"
+                  defaultValue={dayjs()}
+                  minDate={dayjs()}
+                  className="w-full"
+                />
               </Form.Item>
-              </Col>
-              <Col span={12}>
+            </Col>
+            <Col span={12}>
               <Form.Item
-                name="startTime"
                 label="Submission Starting Time"
                 rules={[
                   {
@@ -191,14 +350,27 @@ const SubmissionAddingPanel = ({ accID,submissionaddingpanelOpen, setSubmissionA
                   },
                 ]}
               >
-                <TimePicker   format="HH:mm:ss" defaultValue={dayjs()} defaultPickerValue={dayjs()} minDate={dayjs()} className="w-full"/>
+                <TimePicker
+                  name="subOpenTime"
+                  value={
+                    submissionPanelData?.subOpenTime === "00:00:00"
+                      ? null
+                      : moment(submissionPanelData?.subOpenTime, "HH:mm:ss")
+                  }
+                  onChange={(time, timeString) =>
+                    handleTimeChange(time, timeString, "subOpenTime")
+                  }
+                  format="HH:mm:ss"
+                  defaultValue={moment()}
+                  defaultPickerValue={moment()}
+                  className="w-full"
+                />
               </Form.Item>
-              </Col>
-              </Row>
-              <Row gutter={16}>
-              <Col span={12}>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
               <Form.Item
-                name="closeDate"
                 label="Submission Closing date"
                 rules={[
                   {
@@ -207,12 +379,20 @@ const SubmissionAddingPanel = ({ accID,submissionaddingpanelOpen, setSubmissionA
                   },
                 ]}
               >
-                <DatePicker defaultValue={dayjs()} minDate={dayjs()}  className="w-full"/>
+                <DatePicker
+                  name="subCloseDate"
+                  value={dayjs(submissionPanelData?.subCloseDate) || dayjs()}
+                  onChange={(date, dateString) =>
+                    handleDataChange(date, dateString, "subCloseDate")
+                  }
+                  defaultValue={dayjs()}
+                  minDate={dayjs()}
+                  className="w-full"
+                />
               </Form.Item>
-              </Col>
-              <Col span={12}>
+            </Col>
+            <Col span={12}>
               <Form.Item
-                name="closeTime"
                 label="Submission Closing Time"
                 rules={[
                   {
@@ -221,41 +401,69 @@ const SubmissionAddingPanel = ({ accID,submissionaddingpanelOpen, setSubmissionA
                   },
                 ]}
               >
-                <TimePicker format="HH:mm:ss"  defaultValue={dayjs()} defaultPickerValue={dayjs()} minDate={dayjs()} className="w-full"/>
+                <TimePicker
+                  name="subCloseTime"
+                  value={
+                    submissionPanelData?.subCloseTime === "00:00:00"
+                      ? null
+                      : moment(submissionPanelData?.subCloseTime, "HH:mm:ss")
+                  }
+                  onChange={(time, timeString) =>
+                    handleTimeChange(time, timeString, "subCloseTime")
+                  }
+                  format="HH:mm:ss"
+                  defaultValue={moment()}
+                  defaultPickerValue={moment()}
+                  minDate={moment()}
+                  className="w-full"
+                />
               </Form.Item>
-              </Col>
-              </Row>
-              <Row gutter={16}>
-                <Col span={24}>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={24}>
               <Form.Item
                 // name="additionInfo"
+                validateStatus={
+                  overallValidateError?.additionInfo ? "error" : "success"
+                }
+                help={overallValidateError?.additionInfo || ""}
                 label="Additional Infomation"
                 rules={[
                   {
                     required: true,
-                    message: "Please enter information",
                   },
                 ]}
               >
-                <ReactQuill value={additionalinfo} onChange={setAdditionalInfo}   theme="snow"/>
+                <ReactQuill
+                  name="additionInfo"
+                  value={submissionPanelData?.additionalInfo}
+                  onChange={(info) => handleAdditionalInfo(info)}
+                  theme="snow"
+                />
               </Form.Item>
-              <Form.Item
-                
-                label="Additional materials"
-              >
+
+              {previousUploadedFiles?.map((file) => (
+                <SubmissionPanelUploadingCard
+                  previousUploadedFiles={previousUploadedFiles}
+                  setPreviousUploadedFiles={setPreviousUploadedFiles}
+                  setDeleteActionedFiles={setDeleteActionedFiles}
+                  deleteActionedFiles={deleteActionedFiles}
+                  note={file}
+                />
+              ))}
+              <Form.Item label="Additional materials">
                 <Upload
-        // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-        listType="picture"
-        fileList={fileList}
-        multiple
-        onChange={handleFileChange}
-      >
-        <Button icon={<UploadOutlined />}>Upload</Button>
-      </Upload>
+                  // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  listType="picture"
+                  fileList={fileList}
+                  multiple
+                  onChange={handleFileChange}
+                >
+                  <Button icon={<UploadOutlined />}>Upload</Button>
+                </Upload>
               </Form.Item>
-              
             </Col>
-            
           </Row>
         </Form>
       </Drawer>

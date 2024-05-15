@@ -22,10 +22,14 @@ import {
   get_all_subjects,
   get_classs_with_halls_and_days,
   newClass,
+  selectedClass,
 } from "../../Actions/class";
 import { useForm } from "antd/es/form/Form";
 import ClassTimeSlotcard from "./ClassTimeSlotcard";
-import { getActivatedAllHalls, updateClass } from "../../API";
+import { getActivatedAllHalls, getClassesByTeacher, getCreatedZoomMeeting, getSpecificClass, updateClass } from "../../API";
+import { salaryValidation, stringValidationWithLenght } from "../../Utils/Validations";
+import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }) => {
   const teacherID = JSON.parse(localStorage.getItem("profile"))?.result?.UserID;
@@ -39,15 +43,10 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
   const [classAvailability, setClassAvailability] = useState([]);
   const [selectedtimeSlots, setSelectedTimeSlots] = useState(["", ""]);
   const [classData, setClassData] = useState(null);
-    // className: "",
-    // startTime: "",
-    // endTime: "",
-    // classMode: "physical",
-    // classDay: "monday",
-    // gradeID: "",
-    // subjectID: "",
-    // hallID: "",
-    // teacherID: "",
+  const [errorValidator,setErrorValidator]=useState(null);
+  const {classID}=useParams();
+  const dispatch=useDispatch();
+
  
   const [classtimeslot, setClassTimeSlot] = useState({
     StartTime: "",
@@ -96,6 +95,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
 
   const handleFormValuesChange = (e) => {
     setClassData({ ...classData, [e.target.name]:e.target.value});
+    handleValidations(e);
   };
 
   const handleAddingNewSubject = () => {
@@ -113,6 +113,70 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
   }, [classData?.hallID, classData?.ClassDay]);
 
 
+  const handleValidations=(e)=>{
+    if (e.target.name=="ClassFee") {
+      setErrorValidator({...errorValidator,ClassFee:salaryValidation(e.target.value)});
+    }else if(e.target.name=="ClassName"){
+      setErrorValidator({...errorValidator,ClassName:stringValidationWithLenght(e.target.value,49)})
+    }
+  }
+
+
+  const handleAddingZoom=async()=>{
+    try {
+      const meetingInfo={
+        classID:"clas", 
+        gradeName:"ggs", 
+        subjectName:"krs"
+      }
+        const meetingFetchingResult=await getCreatedZoomMeeting(meetingInfo);
+        console.log("meeting fetch result ",meetingFetchingResult);
+    } catch (error) {
+      console.log("error ",error);
+      message.error("Zoom meeting fetching  error")
+    }
+  }
+
+
+  const checkValidationStatusToSubmit = () => {
+    let errorStatus = true;
+    console.log("overall validate error ",errorValidator);
+    for (const key in errorValidator) {
+      if (errorValidator[key] !== "") {
+        return false;
+      }
+    }
+    const requiredcolumns = [
+      "ClassDay",
+      "ClassMode",
+      "ClassName",
+      "StartTime",
+      "classFee",
+      "endTime",
+      "gradeID",
+      "hallID",
+      "subjectID"
+
+    ];
+    for (const value of requiredcolumns) {
+      if (
+        classData[value] == "" ||
+        classData[value] == null ||
+        classData[value] == undefined
+      ) {
+        if (classData?.additionalInfo[value] == "" ||
+        classData?.additionalInfo[value] == null ||
+        classData?.additionalInfo[value] == undefined) {
+          message.error(`please fill mandatory columns (${value}) `);
+          errorStatus = false;
+        }
+        
+      }
+    }
+    return errorStatus;
+  };
+
+
   const handleSubmitClassDetails=()=>{
    
     if (classEditingData!=null) {
@@ -125,10 +189,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
   const handleSubmitNewClassAccount = async () => {
     console.log("final class ", classData);
     if (
-      classtimeslot.StartTime != "" &&
-      classtimeslot.endTime != "" &&
-      classData.className != "" &&
-      classData.gradeID != ""
+     checkValidationStatusToSubmit()
     ) {
       const creatinResult = await newClass(classData);
       console.log("class creation result ", creatinResult);
@@ -150,22 +211,24 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
   const handleSubmitUpdateClass = async () => {
     console.log("final class ", classData);
     if (
-      classtimeslot.StartTime != "" &&
-      classtimeslot.endTime != "" &&
-      classData.className != "" &&
-      classData.gradeID != ""
+      checkValidationStatusToSubmit()
     ) {
       const updateResult = await updateClass(classData);
       console.log("class creation result ", updateResult);
       if (updateResult.status==200) {
         message.success("class updated successfully")
+        const classDataResult=await getSpecificClass(classID);
+        if (classDataResult?.status==200) {
+          console.log("class result is ",classDataResult);
+          dispatch(selectedClass(classDataResult.data[0]));
+        }
       }else{
         message.error("Class Creation Error")
       }
       handleClose();
 
     } else {
-      message.error("please complete all relevent details");
+      message.error("please complete all relevent To Update details");
     }
   };
 
@@ -268,7 +331,9 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
           <Row gutter={16} >
             <Col span={12} >
               <Form.Item
-                
+
+                validateStatus={errorValidator?.ClassName ? "error" : "success"}
+                help={errorValidator?.ClassName || ""}
                 label="Class Name"
                 rules={[
                   {
@@ -358,6 +423,9 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
                   >
                     Physical
                   </Tag>
+                  <Tag onClick={handleAddingZoom} className="text-center p-1 bg-purple-500 text-white px-2 font-medium hover:bg-purple-600">
+                    Add Zoom Meeting
+                  </Tag>
                 </div>
               </Form.Item>
             </Col>
@@ -384,7 +452,8 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
             </Col>
             <Col span={12}>
               <Form.Item
-                
+                 validateStatus={errorValidator?.ClassFee ? "error" : "success"}
+                 help={errorValidator?.ClassFee || ""}
                 label="Class Fee"
                 rules={[
                   {

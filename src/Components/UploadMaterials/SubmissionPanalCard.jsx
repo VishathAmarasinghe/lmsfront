@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getAllAccordianByClassID } from "../../Actions/class";
 import SubmissionModel from "./SubmissionModel";
+import SubmissionAddingPanel from "../Class/SubmissionAddingPanel";
 
 const SubmissionPanalCard = ({ submission, mainMaterial }) => {
   const date = new Date(mainMaterial.uploadDate);
@@ -19,12 +20,24 @@ const SubmissionPanalCard = ({ submission, mainMaterial }) => {
   const user=JSON.parse(localStorage.getItem("profile")).result;
   const closeDate = new Date(submission.subCloseDate);
   const closeDateString = closeDate.toISOString().split("T")[0];
+  const [submissionPanelEditingOpen,setSubmissionPanelEditingOpen]=useState(false);
+
+
+
+
+  console.log("main material is  ",mainMaterial);
 
 
   const handlepopConfirmClose=()=>{
     setDeleteLoading(false);
     setDeleteConfirmation(false);
   }
+
+  const handleOpenSubmisionEditPanel=()=>{
+    setSubmissionPanelEditingOpen(true);
+  }
+
+ 
 
   const handleDeletesubmission=async()=>{
     setDeleteLoading(true);
@@ -50,6 +63,7 @@ const SubmissionPanalCard = ({ submission, mainMaterial }) => {
 
   return (
     <>
+    <SubmissionAddingPanel accID={null} mainMaterial={mainMaterial} submissionInfo={submission} submissionaddingpanelOpen={submissionPanelEditingOpen} setSubmissionAddingPanelOpen={setSubmissionPanelEditingOpen} />
     <SubmissionModel submission={submission} mainMaterial={mainMaterial} submissionModelOpen={submissionModelOpen} setSubmissionModelOpen={setSubmissionModelOpen} />
     <Tag
    
@@ -96,7 +110,7 @@ const SubmissionPanalCard = ({ submission, mainMaterial }) => {
               <DeleteOutline className="hover:bg-white p-1 rounded-lg hover:text-black" />
             </button>
             </Popconfirm>
-            <button>
+            <button onClick={handleOpenSubmisionEditPanel}>
               <EditOutlined className="hover:bg-white p-1 rounded-lg hover:text-black" />
             </button>
           </div>:<></>

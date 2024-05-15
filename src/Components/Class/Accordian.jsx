@@ -8,6 +8,7 @@ import NoteAddingPanel from "./NoteAddingPanel";
 import SubmissionAddingPanel from "./SubmissionAddingPanel";
 import NoteCard from "../UploadMaterials/NoteCard";
 import SubmissionPanalCard from "../UploadMaterials/SubmissionPanalCard";
+import NewAccordianAdder from "./NewAccordianAdder";
 
 const Accordian = ({ accDetails, setSubAccID, openeditingDrawer, setOpeneditingDrawer }) => {
   const user=JSON.parse(localStorage.getItem("profile")).result;
@@ -15,6 +16,8 @@ const Accordian = ({ accDetails, setSubAccID, openeditingDrawer, setOpeneditingD
   const [submissionaddingpanelOpen, setSubmissionAddingPanelOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [accordianEditingDrawer,setAccordianEditingDrawer]=useState(false);
+
 
   const handleaddbtnClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -39,8 +42,20 @@ const Accordian = ({ accDetails, setSubAccID, openeditingDrawer, setOpeneditingD
     setSubmissionAddingPanelOpen(true);
   };
 
+
+  const handleOpenAccordianEditingDrawer=()=>{
+    setAccordianEditingDrawer(true);
+  }
+
   return (
     <div>
+      <NewAccordianAdder
+              subAccID={accDetails?.subaccID}
+              setSubAccID={null}
+              openeditingDrawer={accordianEditingDrawer}
+              setOpeneditingDrawer={setAccordianEditingDrawer}
+              accDetails={accDetails}  
+      />
       <NoteAddingPanel accID={accDetails.accordianID} notemodelOpen={notemodelOpen} setnotemodelOpen={setnotemodelOpen} />
       <SubmissionAddingPanel accID={accDetails.accordianID} submissionaddingpanelOpen={submissionaddingpanelOpen} setSubmissionAddingPanelOpen={setSubmissionAddingPanelOpen} />
       <ConfigProvider
@@ -88,7 +103,7 @@ const Accordian = ({ accDetails, setSubAccID, openeditingDrawer, setOpeneditingD
                     <MenuItem onClick={handleNoteAddingPanel}>Notes</MenuItem>
                     <MenuItem onClick={handleSubmissionPanelOpening}>Submission Panel</MenuItem>
                   </Menu>
-                  <button>
+                  <button onClick={handleOpenAccordianEditingDrawer}>
                     <EditRoundedIcon className="text-[#9C9C9C] text-[20px] scalar-cardlg hover:text-blue-700" />
                   </button>
                 </div>:<></>

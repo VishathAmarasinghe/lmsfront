@@ -15,7 +15,7 @@ const MainClassPage = () => {
   const [classes,setClasses]=useState([]);
 
   
-    const [addingCompOpen,setAddingCompOpen]=useState(false);
+  const [addingCompOpen,setAddingCompOpen]=useState(false);
 
   useEffect(()=>{
     if(user?.role=="teacher"){

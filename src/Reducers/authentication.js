@@ -1,7 +1,10 @@
+import { jwtDecode } from "jwt-decode";
 const authReducer=(state={authData:null},action)=>{
     switch (action.type) {
         case "SIGNIN":
             console.log("data is ",action.data);
+            const values=jwtDecode(action?.data?.token);
+            console.log("token values is  ",values);
             localStorage.setItem("profile",JSON.stringify({...action?.data}));
             return {...state,authData:action?.data};
         case "LOGOUT":

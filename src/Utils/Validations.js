@@ -264,7 +264,34 @@ const stringEmptyValidation = (stringValue) => {
   }
 };
 
+
+const stringValidationWithLenght = (inputString, maxLength) => {
+  const stringRegex = /^[a-zA-Z\s]*$/;
+
+  if (!stringRegex.test(inputString)) {
+    return "Cannot contain numbers or symbols";
+  }
+
+  if (inputString.length > maxLength) {
+    return `Cannot exceed ${maxLength} characters`;
+  }
+
+  return "";
+};
+
+
+
+
+
+
+
+
+
+
+
+
 export {
+  stringValidationWithLenght,
   stringEmptyValidation,
   email_SMS_CredentialtemplateValidation,
   hallNameValidation,

@@ -11,13 +11,9 @@ const SubmissionsUploadingcard = ({setUploadedFiles}) => {
         onChange(info) {
           const { status } = info.file;
           if (status !== 'uploading') {
-            console.log(info.file, info.fileList);
+            message.loading("Working on the file")
           }
-          if (status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully.`);
-          } else if (status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-          }
+          
           setUploadedFiles(info.fileList.map(file=>file.originFileObj));
         },
         onDrop(e) {
