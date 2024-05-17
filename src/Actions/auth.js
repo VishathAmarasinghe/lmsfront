@@ -39,7 +39,8 @@ export const signIn=(loginDetails,notification,navigation,setloading)=>async(dis
         notification.success(
             {
               message:"Login Success",
-              description:`login as ${data?.result?.role}`
+              description:`login as ${data?.result?.role}`,
+              duration:1
             }
           )
 

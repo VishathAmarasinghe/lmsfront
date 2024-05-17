@@ -305,3 +305,7 @@ export const getSelectedClassSelectedStudentAttendance=(classID,studentID)=>API.
 export const getClassFeePaymentForStudent=(UserID)=>API.get(`/payment/paymentsRelatedToStudent?UserID=${UserID}`);
 
 export const getCreatedZoomMeeting=(meetingInfo)=>API.post(`/classService/createMeeting`,meetingInfo);
+
+export const sendForgotPasswordEmail=(email)=>API.get(`/auth/forgotPasswordEmail?email=${email}`);
+
+export const resetPassword=(passwordData)=>API.post(`/auth/resetPassword`,passwordData);

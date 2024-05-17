@@ -10,10 +10,12 @@ import { useNavigate } from "react-router-dom";
 import { message, notification } from "antd";
 import { loginValidation } from "../Utils/Validations";
 import { getUserPhoto } from "../API";
+import ForgetPasswordEmailForm from "./ForgetPasswordEmailForm";
 
 export const LoginForm = () => {
   const dispatch=useDispatch();
   const navigate=useNavigate();
+  const [openForgotPasswordModel,setPasswordModelOpen]=useState(false);
   const [ValidationErrors,setValidationErrors]=useState(
     {
       userNameValidation:"",
@@ -25,6 +27,10 @@ export const LoginForm = () => {
       userName_Email:"",
       password:""
   });
+
+  const handleOpenForgotPasswordModel=()=>{
+    setPasswordModelOpen(true);
+  }
 
 
 
@@ -52,6 +58,7 @@ export const LoginForm = () => {
     }
   return (
     <div className="bg-white shadow-2xl w-full md:w-[70%] m-5 p-8 rounded-2xl">
+      <ForgetPasswordEmailForm openModel={openForgotPasswordModel} setOpenModel={setPasswordModelOpen}/>
         <h1 className="text-2xl font-inter font-extrabold text-center my-1 text-[#5B6BD4]">Login</h1>
         <h2 className="text-xl font-inter font-medium text-center my-1">Welcome</h2>
       <div className="flex flex-col mb-3">
@@ -112,7 +119,7 @@ export const LoginForm = () => {
             
           </div>
           <div>
-            <p className="cursor-pointer">Forgot Password</p>
+            <p onClick={handleOpenForgotPasswordModel} className="cursor-pointer">Forgot Password</p>
           </div>
       </div>
       

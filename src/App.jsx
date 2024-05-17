@@ -11,6 +11,7 @@ import ProgressReport from "./Pages/CommonPages/ReportTemplates/ProgressReport";
 import { useDispatch } from "react-redux";
 import { logout } from "./Actions/auth";
 import { jwtDecode } from "jwt-decode";
+import ResetPasswordScreen from "./Pages/CommonPages/ResetPasswordScreen";
 
 
 
@@ -49,6 +50,8 @@ function App() {
       <Route path="/" Component={()=>(!user?<LoginRegistration actionType="login"/>:<PageStructure/>)}/>
       <Route path="/class/:classID" Component={()=>(!user?<LoginRegistration actionType="login"/>:<ClassPageStructure/>)}/>
       <Route path="/" Component={()=>(!user?<LoginRegistration actionType="login"/>:<Navigate to="/"/>)}/>
+      <Route path="/resetPassword/:token" Component={ResetPasswordScreen}/>
+
       <Route path="/report/teacher" Component={TeacherPaymentDetailReport}/>
       <Route path="/report/progressReport" Component={ProgressReport}/>
     </Routes>
