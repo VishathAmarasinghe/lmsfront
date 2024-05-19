@@ -3,7 +3,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Modal, Upload } from "antd";
 import ImgCrop from "antd-img-crop";
 
-const ProfilePicUploading = ({ setuploadingImage }) => {
+const ProfilePicUploading = ({ setuploadingImage,existingImageUrl }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
@@ -78,7 +78,11 @@ const ProfilePicUploading = ({ setuploadingImage }) => {
           onPreview={handlePreview}
           onChange={handleChange}
         >
-          {fileList.length >= 1 ? null : uploadButton}
+          {fileList.length >= 1 ? null : existingImageUrl ? (
+            <img src={existingImageUrl} alt="ProfilePic" style={{ width: '100%' }} />
+          ) : (
+            uploadButton
+          )}
         </Upload>
       </ImgCrop>
       <Modal

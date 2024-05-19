@@ -13,14 +13,16 @@ const StudentCardSheedCreationModel = ({
   };
 
   const handleOk = async () => {
-    const billImage = await htmlToImagetranslator(document.getElementById('canvesImage'));
+    const billImage = await htmlToImagetranslator(
+      document.getElementById("canvesImage")
+    );
     const doc = new jsPDF({
       orientation: "landscape",
-      unit: "mm", // Set unit to millimeters
-      format: "a4" // Set format to A4
+      unit: "mm",
+      format: "a4",
     });
 
-    doc.addImage(billImage, "png", 1, 1, 210, 297); // Set image size to A4
+    doc.addImage(billImage, "png", 1, 1, 210, 297);
     doc.save("StudentCards.pdf");
 
     setStudentCardSheetModelOpen(false);
@@ -32,7 +34,7 @@ const StudentCardSheedCreationModel = ({
 
   return (
     <Modal
-      width={"80%"}
+      width={"350mm"}
       title="Paper Format"
       open={studentCardSheedModelOpen}
       onOk={handleOk}
@@ -57,16 +59,22 @@ const StudentCardSheedCreationModel = ({
         <div className="bg-white p-4 mx-auto max-w-md flex flex-col justify-center items-center">
           <div
             id="canvesImage"
-            className="bg-white border  grid grid-cols-3 grid-rows-3    border-gray-400 rounded-lg shadow-lg "
+            className="bg-white border-2 border-red-400 grid grid-cols-3 grid-rows-3 gap-0 border-gray-400 rounded-lg shadow-lg"
             style={{ width: "297mm", height: "210mm" }}
           >
-            {selectedCardContent?.map((card) => (
-              <img
-                src={`http://localhost:5000/${card?.studentcard}`}
-                alt="img"
+            {selectedCardContent?.map((card, index) => (
+              <div
+                key={index}
+                className="border-2 border-red-700"
                 style={{ width: "8.5cm", height: "5.5cm" }}
-                className="border-2 border-green-600"
-              />
+              >
+                <img
+                  src={`http://localhost:5000/${card?.studentcard}`}
+                  alt="img"
+                  style={{}}
+                  className="border-2 border-green-600"
+                />
+              </div>
             ))}
           </div>
         </div>

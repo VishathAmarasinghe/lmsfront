@@ -15,6 +15,7 @@ export const studentRegister=(formData,navigation,notification)=>async(dispatch)
               description:`${data.message}`
             }
           )
+        navigation("/login")
         
     } catch (error) {
         console.log("error in sending Data ",error);

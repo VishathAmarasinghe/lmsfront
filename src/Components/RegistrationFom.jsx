@@ -41,14 +41,17 @@ const RegistrationFom = () => {
       NIC: "",
       school: "",
       profilepic:"",
+      gender:"Male"
     },
     parent: {
       firstName: "",
+      LastName:"",
       NIC: "",
       email: "",
       phoneNo: "",
       address: "",
       occupation: "",
+      gender:"Male"
     },
   });
 
@@ -91,6 +94,7 @@ const RegistrationFom = () => {
           errorValidator={errorValidator}
           formData={formData}
           handleChangingFormData={handleChangingFormData}
+          setFormData={setFormData}
         />
       ),
     },
@@ -99,8 +103,10 @@ const RegistrationFom = () => {
       content: (
         <RegistrationFormTwo
         setuploadingImage={setuploadingImage}
+        uploadedImage={uploadedImage}
           errorValidator={errorValidator}
           formData={formData}
+          setFormData={setFormData}
           handleChangingFormData={handleChangingFormData}
         />
       ),

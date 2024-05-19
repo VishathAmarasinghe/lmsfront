@@ -1,47 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { lecturer } from "../../assets";
-import { getUserPhoto } from "../../API";
-import { getUserProfilePicture } from "../../Actions/user";
 import JsBarcode from "jsbarcode";
 import { formatBarcode } from "../../Utils/Validations";
 
-const StudentCard = ({ studentData,barCode }) => {
-  const [barcodeValue, setBarcodeValue] = useState("1");
+const StudentCard = ({ studentData, barCode }) => {
   useEffect(() => {
-    console.log("student data is ",studentData);
-    const date = new Date();
-    const year = date.getFullYear();
-   
-    
-    
-    console.log("prifle pic ", studentData?.photo);
-  }, []);
-
-  useEffect(() => {
-    const result = getUserProfilePicture(studentData?.photo);
-    console.log("profile picture result ", result);
-  }, []);
-
-
-  useEffect(()=>{
-    JsBarcode("#barcode",barCode ,{
-      height:"40",
-      
+    JsBarcode("#barcode", barCode, {
+      format: "CODE128", 
+      height: 25,
     });
-  },[barCode])
-
+  }, [barCode]);
 
   return (
     <div
       id="studentCard"
-      className="w-[390px]  flex flex-col mb-2 border-2 border-black"
+      style={{
+        width: "8.5cm",
+        height: "5.5cm",
+       
+      }}
+      className="flex flex-col mb-2 border-2 border-black"
     >
-      <div className="w-full  flex flex-col justify-center items-center p-1 bg-[#5B6BD4]">
+      <div className="w-full flex flex-col justify-center items-center p-1 bg-[#5B6BD4]">
         <h1 className="font-inter font-semibold text-[15px] text-white">
           Savitha Education Institute
         </h1>
         <p className="text-white font-inter text-[10px] font-normal">
-          Tel:0112894233,0713234566
+          Tel: 0112894233, 0713234566
         </p>
       </div>
       <div className="flex flex-row h-full items-center justify-around bg-white">
@@ -50,6 +34,10 @@ const StudentCard = ({ studentData,barCode }) => {
             src={`http://localhost:5000/${studentData?.photo}`}
             alt="student"
             className=""
+            style={{
+              maxWidth: "100%",
+              maxHeight: "100%",
+            }}
           />
         </div>
         <div className="w-[60%] flex flex-col items-center justify-center">
@@ -63,9 +51,8 @@ const StudentCard = ({ studentData,barCode }) => {
             <p className="font-inter font-semibold">Student Name</p>
             <p className="font-inter">{studentData?.firstName}</p>
           </div>
-          <div className="w-full   flex flex-col justify-center items-center">
-            
-            <img id="barcode"/>
+          <div className="w-full flex flex-col justify-center items-center">
+            <svg id="barcode" />
           </div>
         </div>
       </div>

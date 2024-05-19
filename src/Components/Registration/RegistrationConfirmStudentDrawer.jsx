@@ -13,14 +13,18 @@ import {
   Select,
   Space,
   Switch,
+  Tag,
+  message,
 } from "antd";
-import ProfilePicUploading from "../TeacherComp/ProfilePicUploading";
+import ProfilePicUploading from "../TeacherComp/TeacherProfilePicUploading";
 import {
   get_parents_byStudents,
   get_pending_confirmed_students,
   updateUserData,
 } from "../../Actions/user";
 import { useDispatch } from "react-redux";
+import CameraCaptureModal from "./CameraCaptureModal";
+import { addressValidation, emailValidation, firstNameLastNameValidation, phoneNumberValidation, stringValidationWithLenght, validateNIC } from "../../Utils/Validations";
 
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -36,16 +40,35 @@ const RegistrationConfirmStudentDrawer = ({
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
   const [studentData, setStudentData] = useState({});
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [studentValidationError,setStudentValidationError]=useState(null);
+  const [camaraModelVisibile, setCamaraModelVisible]=useState(false);
+  const [camaraPhoto,SetCamaraPhoto]=useState(null);
+  const [parentValidationError,setParentValidationError]=useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
     // form.setFieldsValue(selectedStudent);
     setStudentData(selectedStudent);
-  }, [selectedStudent, form]);
+  }, [selectedStudent]);
+
+  useEffect(()=>{
+    if (camaraPhoto!=null) {
+      if (profilePicture!=null) {
+        message.error("Please delete selected photo from device")
+      }else{
+        setProfilePicture(camaraPhoto);
+      }
+    }
+  },[camaraPhoto,profilePicture])
 
   const handleSwitchChange = (checked) => {
     setEditing(checked);
   };
+
+  useEffect(() => {
+    setStudentData({ ...studentData, profilePic: profilePicture });
+  }, [profilePicture]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,32 +93,78 @@ const RegistrationConfirmStudentDrawer = ({
     console.log("finalized values ", values);
   };
 
+
+
   const updatedDataSaving = async (values) => {
-    const data = updateUserData(values);
-    console.log("updated outcome ", data);
-    dispatch(get_pending_confirmed_students());
-    onClose();
+    if (checkValidationStatusToSubmit()) {
+      const data = updateUserData(values);
+      console.log("updated outcome ", data);
+      dispatch(get_pending_confirmed_students());
+      onClose();
+    }
+    
   };
 
-  const showDrawer = () => {
-    setOpeneditingDrawer(true);
-  };
+
+
+
+  const checkValidationStatusToSubmit=()=>{
+    let errorStatus=true;
+    for (const key in studentValidationError) {
+      if (studentValidationError[key] !== "") {
+        return false;
+      }
+    }
+    const requiredcolumns=["firstName","lastName","address","email","phoneNo","school"]
+    for(const value of requiredcolumns){
+      if (studentData[value]=="" || studentData[value]==null || studentData[value]==undefined) {
+        message.error("please fill mandatory columns")
+        errorStatus=false;
+      }
+    }
+    for(const parent of parentValidationError){
+      for (const key in parent) {
+        if (parent[key] !== "") {
+          return false;
+        }
+      }
+    }
+    const requiredcolumnsParents=["firstName","lastName","address","email","phoneNo","NIC"]
+    for(const parent of parentData){
+      for(const value of requiredcolumnsParents){
+        if (parent[value]=="" || parent[value]==null || parent[value]==undefined) {
+          message.error("please fill mandatory columns")
+          errorStatus=false;
+        }
+      }
+    }
+    
+    return errorStatus;
+  }
+
+
+
+
+
+
+
+
 
   const onClose = () => {
     setSelectedStudent(null);
     setOpeneditingDrawer(false);
   };
 
-  const onFinish = (values) => {
-    console.log("Received values from form: ", values);
+  const onFinish = () => {
     const combinedParentstudent = { studentData: studentData, parentData };
     console.log("parent Data and student Data ", combinedParentstudent);
     updatedDataSaving(combinedParentstudent);
     // Handle form submission here
   };
 
-  const handleStudentFieldChange = (value, field) => {
-    setSelectedStudent({ ...studentData, [field]: value });
+  const handleStudentFieldChange = (e) => {
+    setSelectedStudent({ ...studentData, [e.target.name]: e.target.value });
+    studentValidationChecker(e);
   };
 
   const handleParentFieldChange = (parentIndex, field, value) => {
@@ -104,12 +173,75 @@ const RegistrationConfirmStudentDrawer = ({
       index === parentIndex ? { ...parent, [field]: value } : parent
     );
     setParentData(updatedParentData);
+    parentValidationChecker(parentIndex,field,value)
   };
+
+  const handleCaptureModelOpen=()=>{
+    console.log("btton cluckedn  ",camaraModelVisibile);
+    if (camaraPhoto!=null) {
+      if (camaraPhoto==profilePicture) {
+        SetCamaraPhoto(null);
+        setProfilePicture(null);
+      }
+      
+    }else{
+      setCamaraModelVisible(true);
+    }
+    
+  }
+
+
+  const studentValidationChecker=(e)=>{
+    if (e.target.name=="firstName" || e.target.name=="lastName" ) {
+      setStudentValidationError({...studentValidationError,[e.target.name]:firstNameLastNameValidation(e.target.value)})
+    }else if(e.target.name=="address"){
+      setStudentValidationError({...studentValidationError,[e.target.name]:addressValidation(e.target.value)})
+    }else if(e.target.name=="email"){
+      setStudentValidationError({...studentValidationError,[e.target.name]:emailValidation(e.target.value)})
+    }else if(e.target.name=="School"){
+      setStudentValidationError({...studentValidationError,[e.target.name]:stringValidationWithLenght(e.target.value,39)})
+    }else if(e.target.name=="phoneNo"){
+      setStudentValidationError({...studentValidationError,[e.target.name]:phoneNumberValidation(e.target.value,39)})
+    }
+  }
+
+  const parentValidationChecker=(parentIndex,field,value)=>{
+    const updatedParentValidationError = [...parentValidationError];
+    if (field === "firstName" || field === "lastName") {
+      updatedParentValidationError[parentIndex] = {
+        ...updatedParentValidationError[parentIndex],
+        [field]: firstNameLastNameValidation(value),
+      };
+      
+    }else if(field=="address"){
+      updatedParentValidationError[parentIndex] = {
+        ...updatedParentValidationError[parentIndex],
+        [field]: addressValidation(value),
+      };
+    }else if(field=="NIC"){
+      updatedParentValidationError[parentIndex] = {
+        ...updatedParentValidationError[parentIndex],
+        [field]: validateNIC(value),
+      };
+    }else if(field=="phoneNo"){
+      updatedParentValidationError[parentIndex] = {
+        ...updatedParentValidationError[parentIndex],
+        [field]: phoneNumberValidation(value),
+      };
+    }else if(field=="email"){
+      updatedParentValidationError[parentIndex] = {
+        ...updatedParentValidationError[parentIndex],
+        [field]: emailValidation(value),
+      };
+    }
+    setParentValidationError(updatedParentValidationError);
+  }
+
 
   return (
     <>
       <Drawer
-        getContainer={false}
+        // getContainer={false}
         title="Verify Student"
         width={720}
         onClose={onClose}
@@ -128,11 +260,11 @@ const RegistrationConfirmStudentDrawer = ({
                     Switch: {
                       base: {
                         "&:hover": {
-                          backgroundColor: "transparent", 
+                          backgroundColor: "transparent",
                         },
                         "&:not(:hover)": {
-                          color: "initial", 
-                          backgroundColor: "#C5C5C5", 
+                          color: "initial",
+                          backgroundColor: "#C5C5C5",
                         },
                       },
                     },
@@ -150,7 +282,7 @@ const RegistrationConfirmStudentDrawer = ({
               </ConfigProvider>
             </div>
             <button
-              onClick={() => form.submit()}
+              onClick={() => onFinish()}
               className="bg-blue-700 px-2 py-1 ml-2 hover:bg-blue-800 text-white font-medium rounded-lg"
             >
               Verify
@@ -159,38 +291,55 @@ const RegistrationConfirmStudentDrawer = ({
         }
       >
         <Form
-          form={form}
           layout="vertical"
-          initialValues={selectedStudent}
-          onFinish={saveUpdatedDetails}
           hideRequiredMark
         >
           <div>
             <p className="text-[15px] font-inter font-medium text-gray-500">
               Student Information
             </p>
+            <CameraCaptureModal setuploadingImage={SetCamaraPhoto} camaraModelVisibile={camaraModelVisibile} setCamaraModelVisible={setCamaraModelVisible}/>
           </div>
           <Row gutter={16}>
             <Col span={24}>
-              {/* <Form.Item
+              <Form.Item
                 name="Profile Picture"
                 label="Profile Picture"
+              
                 rules={[
                   {
                     required: true,
                     message: "Please add your profile pic",
                   },
                 ]}
-              > */}
-              {/* <ProfilePicUploading /> */}
-              {/* </Form.Item> */}
+              >
+                <div className="flex flex-row justify-start">
+                  <ProfilePicUploading
+                    setProfilePicture={setProfilePicture}
+                    existingImageUrl={
+                      selectedStudent?.photo != null
+                        ? profilePicture!=null?profilePicture:`http://localhost:5000/${selectedStudent?.photo}`
+                        : null
+                    }
+                  />
+                  <Tag
+                    onClick={handleCaptureModelOpen}
+                    className="flex flex-row  justify-center items-center"
+                    color={camaraPhoto==null?"cyan":"red"}
+                  >
+                    {camaraPhoto==null?"Take Photo Now":"Delete Camara Photo"}
+                  </Tag>
+                </div>
+              </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="firstName"
+                
                 label="First Name"
+                validateStatus={studentValidationError?.firstName?"error":"success"}
+                help={studentValidationError?.firstName || ""}
                 rules={[
                   {
                     required: true,
@@ -199,10 +348,9 @@ const RegistrationConfirmStudentDrawer = ({
                 ]}
               >
                 <Input
+                name="firstName"
                   readOnly={!editing}
-                  onChange={(e) =>
-                    handleStudentFieldChange(e.target.value, "firstName")
-                  }
+                  onChange={handleStudentFieldChange}
                   value={studentData?.firstName}
                   placeholder="Please enter your First Name"
                 />
@@ -210,8 +358,10 @@ const RegistrationConfirmStudentDrawer = ({
             </Col>
             <Col span={12}>
               <Form.Item
-                name="lastName"
+                
                 label="Last Name"
+                validateStatus={studentValidationError?.lastName?"error":"success"}
+                help={studentValidationError?.lastName || ""}
                 rules={[
                   {
                     required: true,
@@ -220,10 +370,9 @@ const RegistrationConfirmStudentDrawer = ({
                 ]}
               >
                 <Input
+                name="lastName"
                   readOnly={!editing}
-                  onChange={(e) =>
-                    handleStudentFieldChange(e.target.value, "lastName")
-                  }
+                  onChange={handleStudentFieldChange}
                   value={studentData?.lastName}
                   placeholder="Please enter your last name"
                 />
@@ -233,8 +382,9 @@ const RegistrationConfirmStudentDrawer = ({
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="address"
                 label="Address"
+                validateStatus={studentValidationError?.address?"error":"success"}
+                help={studentValidationError?.address || ""}
                 rules={[
                   {
                     required: true,
@@ -243,10 +393,9 @@ const RegistrationConfirmStudentDrawer = ({
                 ]}
               >
                 <Input
+                  name="address"
                   readOnly={!editing}
-                  onChange={(e) =>
-                    handleStudentFieldChange(e.target.value, "address")
-                  }
+                  onChange={handleStudentFieldChange}
                   value={studentData?.address}
                   placeholder="Please enter your address"
                 />
@@ -254,8 +403,9 @@ const RegistrationConfirmStudentDrawer = ({
             </Col>
             <Col span={12}>
               <Form.Item
-                name="email"
                 label="Email"
+                validateStatus={studentValidationError?.email?"error":"success"}
+                help={studentValidationError?.email || ""}
                 rules={[
                   {
                     required: true,
@@ -264,10 +414,9 @@ const RegistrationConfirmStudentDrawer = ({
                 ]}
               >
                 <Input
+                  name="email"
                   readOnly={!editing}
-                  onChange={(e) =>
-                    handleStudentFieldChange(e.target.value, "email")
-                  }
+                  onChange={handleStudentFieldChange}
                   value={studentData?.email}
                   placeholder="Please enter your email"
                 />
@@ -277,8 +426,10 @@ const RegistrationConfirmStudentDrawer = ({
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="school"
+                
                 label="School"
+                validateStatus={studentValidationError?.school?"error":"success"}
+                help={studentValidationError?.school || ""}
                 rules={[
                   {
                     required: true,
@@ -287,10 +438,9 @@ const RegistrationConfirmStudentDrawer = ({
                 ]}
               >
                 <Input
+                name="school"
                   readOnly={!editing}
-                  onChange={(e) =>
-                    handleStudentFieldChange(e.target.value, "school")
-                  }
+                  onChange={handleStudentFieldChange}
                   value={studentData?.school}
                   placeholder="Please enter your school"
                 />
@@ -298,8 +448,10 @@ const RegistrationConfirmStudentDrawer = ({
             </Col>
             <Col span={12}>
               <Form.Item
-                name="phoneNo"
+                
                 label="Phone No"
+                validateStatus={studentValidationError?.phoneNo?"error":"success"}
+                help={studentValidationError?.phoneNo || ""}
                 rules={[
                   {
                     required: true,
@@ -308,10 +460,9 @@ const RegistrationConfirmStudentDrawer = ({
                 ]}
               >
                 <Input
+                  name="phoneNo"
                   readOnly={!editing}
-                  onChange={(e) =>
-                    handleStudentFieldChange(e.target.value, "phoneNo")
-                  }
+                  onChange={handleStudentFieldChange}
                   value={studentData?.phoneNo}
                   placeholder="Please enter your phoneNo"
                 />
@@ -335,16 +486,15 @@ const RegistrationConfirmStudentDrawer = ({
                 {parentData.map((parent, index) => (
                   <Panel header={`Parent ${index + 1}`} key={parent.UserID}>
                     <Form
-                      form={form}
                       layout="vertical"
-                      initialValues={selectedStudent}
-                      onFinish={onFinish}
                       hideRequiredMark
                     >
                       <Row gutter={16}>
                         <Col span={12}>
                           <Form.Item
                             label="First Name"
+                            validateStatus={parentValidationError[index]?.firstName ? "error" : "success"}
+                            help={parentValidationError[index]?.firstName || ""}
                             rules={[
                               {
                                 required: true,
@@ -366,7 +516,10 @@ const RegistrationConfirmStudentDrawer = ({
                           </Form.Item>
                         </Col>
                         <Col span={12}>
-                          <Form.Item label="Last Name">
+                          <Form.Item label="Last Name"
+                          validateStatus={parentValidationError[index]?.lastName ? "error" : "success"}
+                          help={parentValidationError[index]?.lastName || ""}
+                          >
                             <Input
                               readOnly={!editing}
                               onChange={(e) =>
@@ -383,7 +536,10 @@ const RegistrationConfirmStudentDrawer = ({
                       </Row>
                       <Row gutter={16}>
                         <Col span={12}>
-                          <Form.Item label="Address">
+                          <Form.Item label="Address"
+                          validateStatus={parentValidationError[index]?.address ? "error" : "success"}
+                          help={parentValidationError[index]?.address || ""}
+                          >
                             <Input
                               readOnly={!editing}
                               onChange={(e) =>
@@ -398,7 +554,10 @@ const RegistrationConfirmStudentDrawer = ({
                           </Form.Item>
                         </Col>
                         <Col span={12}>
-                          <Form.Item label="Phone No">
+                          <Form.Item label="Phone No"
+                          validateStatus={parentValidationError[index]?.phoneNo ? "error" : "success"}
+                          help={parentValidationError[index]?.phoneNo || ""}
+                          >
                             <Input
                               readOnly={!editing}
                               onChange={(e) =>
@@ -415,7 +574,10 @@ const RegistrationConfirmStudentDrawer = ({
                       </Row>
                       <Row gutter={16}>
                         <Col span={12}>
-                          <Form.Item label="Email">
+                          <Form.Item label="Email"
+                          validateStatus={parentValidationError[index]?.email ? "error" : "success"}
+                          help={parentValidationError[index]?.email || ""}
+                          >
                             <Input
                               readOnly={!editing}
                               onChange={(e) =>
@@ -430,7 +592,10 @@ const RegistrationConfirmStudentDrawer = ({
                           </Form.Item>
                         </Col>
                         <Col span={12}>
-                          <Form.Item label="NIC">
+                          <Form.Item label="NIC"
+                          validateStatus={parentValidationError[index]?.NIC ? "error" : "success"}
+                          help={parentValidationError[index]?.NIC || ""}
+                          >
                             <Input
                               readOnly={!editing}
                               onChange={(e) =>
@@ -446,7 +611,6 @@ const RegistrationConfirmStudentDrawer = ({
                         </Col>
                       </Row>
                     </Form>
-
                   </Panel>
                 ))}
               </Collapse>
