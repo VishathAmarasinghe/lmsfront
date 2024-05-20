@@ -97,7 +97,7 @@ const RegistrationConfirmStudentDrawer = ({
 
   const updatedDataSaving = async (values) => {
     if (checkValidationStatusToSubmit()) {
-      const data = updateUserData(values);
+      const data =await updateUserData(values);
       console.log("updated outcome ", data);
       dispatch(get_pending_confirmed_students());
       onClose();

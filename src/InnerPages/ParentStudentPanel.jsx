@@ -70,7 +70,7 @@ const ParentStudentPanel = () => {
     <div className="w-full h-[100%] flex flex-col items-center shadow-2xl overflow-y-auto">
     <div className="w-full">
       <h1 className="font-inter font-semibold text-[18px] ml-8 my-2 text-gray-500">
-        Student Performance
+        Student Information
       </h1>
     </div>
 

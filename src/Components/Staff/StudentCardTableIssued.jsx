@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Avatar, Button, Input, Space, Table, Tag } from "antd";
+import { Avatar, Button, Input, Popconfirm, Space, Table, Tag, message } from "antd";
 import Highlighter from "react-highlight-words";
 import lecturerAvatar from "../../assets/lecturer.jpg";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
@@ -8,15 +8,29 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 import StaffDetailEditingDrawer from "./StaffDetailEditingDrawer";
+import { reCreateStudentCard } from "../../API";
 
 
-const StudentCardTableIssued = ({   pastCards }) => {
+const StudentCardTableIssued = ({   pastCards,fetchHandOveredStudentCards }) => {
   const [opendeleteModel, setOpendeleteModel] = useState(false);
   
   const [selectedStaffMember,setSelectedTeacher]=useState(null);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+
+  const handleRecreateCard=async(rowData)=>{
+    try {
+      const reCreateResult=await reCreateStudentCard(rowData?.UserID);
+      if (reCreateResult.status==200) {
+        message.success("Send To pending list to recreate Card!")
+      }
+    } catch (error) {
+      console.log("re creation Error!");
+      message.error("Re creation Error!")
+    }
+    fetchHandOveredStudentCards();
+  }
 
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -177,11 +191,25 @@ const StudentCardTableIssued = ({   pastCards }) => {
       dataIndex: "cardStatus",
       render: (pic,rowData) => {
         return pic == "handOvered" ? (
+          <Popconfirm
+              title="Re Create Student Card"
+              description="Are you sure to Recreate Student Card?"
+              onConfirm={()=>handleRecreateCard(rowData)}
+              okType="default"
+              okButtonProps={{
+                className: "bg-blue-500 hover:bg-blue-600 text-white",
+              }}
+              placement="left"
+              okText="Yes"
+              cancelText="No"
+            >
             <Tag
-            className="scalar-card flex flex-row w-[50%] justify-around bg-purple-600 hover:bg-purple-700  text-white font-medium"
+            className="scalar-card flex flex-row w-full justify-around bg-purple-600 hover:bg-purple-700  text-white font-medium"
           >
             <p>ReCreate Card</p>
-          </Tag>):<></>
+          </Tag>
+          </Popconfirm>
+          ):<></>
       },
     },
   ];

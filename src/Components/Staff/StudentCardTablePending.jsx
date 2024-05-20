@@ -10,7 +10,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import StaffDetailEditingDrawer from "./StaffDetailEditingDrawer";
 import StudentCardSheedCreationModel from "./StudentCardSheedCreationModel";
 
-const StudentCardTablePending = ({ pendingCards }) => {
+const StudentCardTablePending = ({ pendingCards,fetchPendingStudentCards }) => {
 
   const [studentCardSheedModelOpen,setStudentCardSheetModelOpen]=useState(false);
 
@@ -25,6 +25,10 @@ const StudentCardTablePending = ({ pendingCards }) => {
   const handleOpenSheetModel=()=>{
     setStudentCardSheetModelOpen(true);
   }
+
+  useEffect(()=>{
+
+  },[])
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -255,8 +259,8 @@ const StudentCardTablePending = ({ pendingCards }) => {
   ];
 
   return (
-    <div className="w-full border-2 border-red-600">
-      <StudentCardSheedCreationModel selectedCardContent={selectedCardContent} studentCardSheedModelOpen={studentCardSheedModelOpen} setStudentCardSheetModelOpen={setStudentCardSheetModelOpen}/>
+    <div className="w-full ">
+      <StudentCardSheedCreationModel selectedRowKeys={selectedRowKeys} fetchPendingStudentCards={fetchPendingStudentCards} selectedCardContent={selectedCardContent} studentCardSheedModelOpen={studentCardSheedModelOpen} setStudentCardSheetModelOpen={setStudentCardSheetModelOpen}/>
       <Table
         pagination={{ pageSize: 4 }}
         columns={columns}

@@ -1,130 +1,227 @@
-import { Col, ConfigProvider, Form, Input, Row, message } from "antd";
+import { Button, Col, ConfigProvider, Form, Input, InputNumber, Row, message } from "antd";
 import React, { useEffect, useState } from "react";
 import StudentCard from "../Components/Registration/StudentCard";
 import RegistationBill from "../Components/Registration/RegistationBill";
 import { useSelector } from "react-redux";
 import { htmlToImagetranslator } from "../Utils/htmlCanvasToImage";
-import { activateStudentAndParent, registrationPayment } from "../API";
+import { activateStudentAndParent, createStudentCard, getLatestRegistrationFee, registrationPayment } from "../API";
 import { useDispatch } from "react-redux";
 import { change_page_number } from "../Actions/PageNumbers";
 import { formatBarcode } from "../Utils/Validations";
 
 const RegistrationPaymentProceeder = () => {
-  const [form] = Form.useForm();
   const issuerID = JSON.parse(localStorage.getItem("profile"))?.result?.UserID;
-  const [barCodeNumber,setBarcodeNumber]=useState(null);
-  const [studentData,setStudentData]=useState({
-    barcode:null,
-    studentCardPhoto:null,
-    studentID:null,
-    cardStatus:"pending"
-  })
+  const [barCodeNumber, setBarcodeNumber] = useState(null);
+  const [loading,setLoading]=useState(false);
+  const [studentData, setStudentData] = useState({
+    barcode: null,
+    studentCardPhoto: null,
+    studentID: null,
+    cardStatus: "pending"
+  });
+
+
   const { registrationBillInfo } = useSelector(
     (state) => state.registrationBillInfo
   );
-  const dispatch=useDispatch();
-  // const [paymentDatavalues, setpaymentDatavalues]=useState();
+
+
+  const dispatch = useDispatch();
   const [paymentData, setPaymentData] = useState({
     payment: {
-      amountToPay: 5000,
-      payedAmount: 4500,
-      registrationFee: 1200,
-      balance: 500,
-      issuer: "",
+      amountToPay: 0,
+      payedAmount: 0,
+      registrationFee: 0,
+      balance: 0,
+      issuer: issuerID,
       issueType: "Received",
-      studentID:registrationBillInfo?.studentID,
+      studentID: registrationBillInfo?.studentID,
       receiverID: registrationBillInfo?.UserID,
-      receiverName:  registrationBillInfo?.firstName +" " +registrationBillInfo?.lastName,
-      additionalCharges: 500,
+      receiverName: registrationBillInfo?.firstName + " " + registrationBillInfo?.lastName,
+      additionalCharges: 0,
       description: "registration",
     },
     receiptimage: "",
   });
 
+
+
   useEffect(() => {
-    console.log("registration bill details", registrationBillInfo);
     if (registrationBillInfo) {
+      console.log("registration bill ingo ",registrationBillInfo);
+      getLatestRegistrationFeeInfo();
+    }
+    setBarcodeNumber(String(String(formatBarcode(registrationBillInfo?.UserID)) + String(formatBarcode(registrationBillInfo?.studentID))));
+  }, [registrationBillInfo]);
+
+
+
+  useEffect(() => {
+    if (registrationBillInfo && paymentData.payment.registrationFee !== 0) {
       const updatedPaymentData = {
         ...paymentData,
         payment: {
           ...paymentData.payment,
           receiverID: registrationBillInfo.UserID,
           issuer: issuerID,
-          receiverName:
-            registrationBillInfo.firstName +
-            " " +
-            registrationBillInfo.lastName,
+          receiverName: registrationBillInfo.firstName + " " + registrationBillInfo.lastName,
         },
       };
 
       setPaymentData(updatedPaymentData);
-
-      form.setFieldValue("payment", updatedPaymentData.payment);
-      
     }
-    setBarcodeNumber(String(String(formatBarcode(registrationBillInfo?.UserID)) + String(formatBarcode(registrationBillInfo?.studentID))))
-    console.log("payment Data ", paymentData);
-  }, [registrationBillInfo, form]);
+  }, [registrationBillInfo, paymentData.payment.registrationFee]);
 
 
-  useEffect(()=>{
-    setStudentData({...studentData,barcode:barCodeNumber,...registrationBillInfo});
-  },[barCodeNumber])
 
 
-  useEffect(()=>{
-    if (paymentData.receiptimage!=null && studentData.studentCardPhoto!=null) {
-      handleProceedPayment();
-    }
-  },[studentData.studentCardPhoto,paymentData.receiptimage])
 
-
-  const createBillImageAndStudentCardImage=async()=>{
-    const billImage = await htmlToImagetranslator(document.getElementById('registrationBillContainer'));
-    if (billImage !== "" && billImage !== null) {
-       setPaymentData({ ...paymentData, receiptimage: billImage });
-    }
-
-    const studentIDCardImage = await htmlToImagetranslator(document.getElementById("studentCard"));
-    if (studentIDCardImage !== "" && studentIDCardImage !== null) {
-       setStudentData({ ...studentData, studentCardPhoto: studentIDCardImage });
+  const getLatestRegistrationFeeInfo = async () => {
+    try {
+      const registrationFee = await getLatestRegistrationFee();
+      setPaymentData(prevState => ({
+        ...prevState,
+        payment: {
+          ...prevState.payment,
+          registrationFee: registrationFee.data?.amount || 0
+        }
+      }));
+    } catch (error) {
+      console.log("last reg fee fetching Error ", error);
+      message.error("Latest Registration Fee fetching Error!")
     }
   }
 
 
- 
+
+  useEffect(() => {
+    if (paymentData.receiptimage != null && studentData.studentCardPhoto != null) {
+      handleProceedPayment();
+    }
+  }, [studentData.studentCardPhoto, paymentData.receiptimage]);
 
 
+
+
+  const createBillImageAndStudentCardImage = async () => {
+    if (paymentData.payment.balance>=0 && paymentData.payment.payedAmount>0) {
+      const billImage = await htmlToImagetranslator(document.getElementById('registrationBillContainer'));
+      if (billImage !== "" && billImage !== null) {
+        setPaymentData({ ...paymentData, receiptimage: billImage });
+      }
   
+      const studentIDCardImage = await htmlToImagetranslator(document.getElementById("studentCard"));
+      if (studentIDCardImage !== "" && studentIDCardImage !== null) {
+        setStudentData({ ...studentData, studentCardPhoto: studentIDCardImage,barcode:barCodeNumber,studentID:registrationBillInfo.studentID,UserID:registrationBillInfo.UserID,email:registrationBillInfo?.email,phoneNo:registrationBillInfo?.phoneNo,firstName:registrationBillInfo.firstName,issuerID:issuerID });
+      }
+    }else{
+      message.error("Please make sure payments are correct!")
+    }
+   
+  }
+
+
+
+
+  useEffect(() => {
+    if (studentData.barcode != null && studentData.barcode !== "") {
+      createStudentCardDetails();
+    }
+  }, [studentData.barcode]);
+
+
+
+
+  const createStudentCardDetails = async () => {
+    try {
+      const studentCardData = {
+        studentData: studentData,
+        barcode: barCodeNumber
+      };
+    } catch (error) {
+      message.error("student card creation error!");
+      console.log("error ", error);
+    }
+  }
+
+
+
+
   const handleProceedPayment = async () => {
     try {
+      if (paymentData.payment.balance>=0) {
+
+        setLoading(true);
       const paymentResult = await registrationPayment(paymentData);
-      const studentActivationResult = await activateStudentAndParent(studentData);
-      console.log("data ", paymentResult.data);
+      console.log("activating student ID ",studentData);
+      
+      console.log("payment result   ", paymentResult);
+      // console.log("Avtivation Result   ", studentActivationResult);
       if (paymentResult.status === 200) {
         message.success("Payment Proceeded Successfully!");
-       
-      }
-  
-      console.log("ongoing student details ", studentData);
-     
-      if (studentActivationResult.status === 200) {
-        message.success("Student Activated!");
-        console.log("student activation Result ", studentActivationResult);
-        
-      }
-
-      if (studentActivationResult.status===200 &&  paymentResult.status===200) {
+        const studentActivationResult = await activateStudentAndParent(studentData);
         dispatch(change_page_number("17"));
+        if (studentActivationResult.status === 200) {
+          message.success("Student Activated!");
+          console.log("student activation Result ", studentActivationResult);
+        }
+  
+        // if (studentActivationResult.status === 200 && paymentResult.status === 200) {
+          
+        // }
+        setLoading(false);
       }
 
+      console.log("ongoing student details ", studentData);
+
+    }else{
+      setLoading(false);
+      message.error("Check the balance")
+    }
     } catch (error) {
+      setLoading(false);
       console.error("Error in handleProceedPayment:", error);
       message.error("Payment Updation Error!")
-
     }
   };
-  
+
+
+
+  useEffect(()=>{
+    setPaymentData(prevState => ({
+      ...prevState,
+      payment: {
+        ...prevState.payment,
+        amountToPay:paymentData?.payment?.registrationFee+paymentData?.payment?.additionalCharges
+      }
+    }));
+  },[paymentData.payment.registrationFee,paymentData.payment.additionalCharges])
+
+
+
+
+  const handleAdditionalChangersChange=(value)=>{
+    setPaymentData(prevState => ({
+      ...prevState,
+      payment: {
+        ...prevState.payment,
+        additionalCharges:value
+      }
+    }));
+  }
+
+  const handlePaidValue=(value)=>{
+    setPaymentData(prevState => ({
+      ...prevState,
+      payment: {
+        ...prevState.payment,
+        payedAmount:value,
+        balance:value-prevState.payment.amountToPay
+      }
+    }));
+    setStudentData({ ...studentData, barcode:barCodeNumber,studentID:registrationBillInfo.UserID });
+
+  }
 
 
   return (
@@ -148,10 +245,8 @@ const RegistrationPaymentProceeder = () => {
                 <p className="text-[19px] mb-2 font-medium">Billing info</p>
               </div>
               <Form
-                form={form}
                 className="font-medium text-[14px]"
                 layout="horizontal"
-                initialValues={paymentData.payment}
                 hideRequiredMark
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
@@ -161,10 +256,11 @@ const RegistrationPaymentProceeder = () => {
                   <Col span={24}>
                     <Form.Item
                       className="font-medium mb-5"
-                      name="receiverID"
+                      
                       label="Register No"
                     >
                       <Input
+                      name="receiverID"
                         value={paymentData.payment.receiverID}
                         readOnly
                         placeholder="Please enter registration no"
@@ -175,68 +271,76 @@ const RegistrationPaymentProceeder = () => {
                 <Row gutter={16}>
                   <Col span={24}>
                     <Form.Item
-                      name="receiverName"
+                      
                       label="Student Name"
                       className="font-medium mb-5"
                     >
                       <Input
                       readOnly
+                      name="receiverName"
                         value={paymentData.payment.receiverName}
                         placeholder="Please enter student name"
                       />
                     </Form.Item>
                     <Form.Item
                     
-                      name="registrationFee"
+                     
                       label="RegistrationFee"
                       className="font-medium mb-5"
                     >
                       <Input
                       readOnly
+                      name="registrationFee"
                         value={paymentData.payment.registrationFee}
                         placeholder="Please enter registration fee"
                       />
                     </Form.Item>
                     <Form.Item
-                      name="additionalCharges"
+                     
                       label="Additional Charges"
                       className="font-medium mb-5"
                     >
-                      <Input
-                      readOnly
+                      <InputNumber
+                      className="w-full"
+                       name="additionalCharges"
+                       onChange={handleAdditionalChangersChange}
                         value={paymentData.payment.additionalCharges}
                         placeholder="Please enter Additional Charges"
                       />
                     </Form.Item>
                     <Form.Item
-                      name="amountToPay"
                       label="Total Payment"
                       className="font-medium mb-5"
                     >
                       <Input
                       readOnly
+                      name="amountToPay"
                         value={paymentData.payment.amountToPay}
                         placeholder="Please enter Total payment"
                       />
                     </Form.Item>
                     <Form.Item
-                      name="payedAmount"
-                      label="Payment"
+                    
+                      label="Paid Amount"
                       className="font-medium mb-5"
                     >
-                      <Input
+                      <InputNumber
                       autoFocus
+                      className="w-full"
+                      name="payedAmount"
+                      onChange={handlePaidValue}
                         value={paymentData.payment.payedAmount}
                         placeholder="Please enter payment"
                       />
                     </Form.Item>
                     <Form.Item
-                      name="balance"
+                      
                       label="Balance"
                       className="font-medium mb-5"
                     >
                       <Input
                       readOnly
+                      name="balance"
                         value={paymentData.payment.balance}
                         placeholder="Please enter  Balance"
                       />
@@ -251,16 +355,16 @@ const RegistrationPaymentProceeder = () => {
             {/* <button className="bg-blue-500 p-2 w-[96%] mb-2 text-white font-semibold hover:bg-blue-600 rounded-lg scalar-card">
               Print Card
             </button> */}
-            <button onClick={createBillImageAndStudentCardImage} className="bg-green-700 p-2 w-[96%] mb-2 text-white font-semibold hover:bg-green-800 rounded-lg scalar-card">
+            <Button loading={loading} onClick={createBillImageAndStudentCardImage} className="bg-green-700  w-[96%] mb-2 text-white font-semibold hover:bg-green-800 rounded-lg scalar-card">
               Proceed Payment
-            </button>
-            <button className=" p-2 w-[96%] mb-2  text-red-700 border-2 border-red-700 font-bold hover:bg-red-700 hover:text-white rounded-lg scalar-card">
+            </Button>
+            <Button className=" w-[96%] mb-2  text-red-700 border-2 border-red-700 font-bold hover:bg-red-700 hover:text-white rounded-lg scalar-card">
               Cancle
-            </button>
+            </Button>
           </div>
         </div>
         <div className="w-[95%] lg:w-[40%]  mt-2 bg-white flex flex-col justify-center items-center p-2 rounded-xl">
-          <div className="w-[90%] md:w-[75%] mt-4  flex ">
+          <div className="  mt-4  flex ">
             <StudentCard barCode={barCodeNumber} studentData={registrationBillInfo} />
           </div>
           <RegistationBill barCode={barCodeNumber} paymentData={paymentData} />

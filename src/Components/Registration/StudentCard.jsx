@@ -14,8 +14,8 @@ const StudentCard = ({ studentData, barCode }) => {
     <div
       id="studentCard"
       style={{
-        width: "8.5cm",
-        height: "5.5cm",
+        width: "8.9cm",
+        height: "5.9cm",
        
       }}
       className="flex flex-col mb-2 border-2 border-black"

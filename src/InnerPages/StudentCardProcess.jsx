@@ -4,6 +4,7 @@ import { getHandoveredCards, getNotHandoveredCards } from '../API';
 import StudentCardTablePending from '../Components/Staff/StudentCardTablePending';
 import StudentCardTableIssued from '../Components/Staff/StudentCardTableIssued';
 import LoadingInnerPage from './LoadingInnerPage';
+import StudentCardManufacturingScanner from '../Components/UploadMaterials/StudentCardManufacturingScanner';
 
 const StudentCardProcess = () => {
     const [pastCards,setPastCards]=useState([]);
@@ -62,8 +63,9 @@ const StudentCardProcess = () => {
             setSelectedSegment("New Cards")
         }else if(value=="Issued Cards"){
             setSelectedSegment("Issued Cards");
-        }
-
+        }else if(value=="Scan Cards"){
+          setSelectedSegment("Scan Cards");
+      }
     }
 
   return (
@@ -87,14 +89,14 @@ const StudentCardProcess = () => {
             }}
           >
             <Segmented
-              options={["New Cards","Issued Cards"]}
+              options={["New Cards","Issued Cards","Scan Cards"]}
               defaultChecked="New Cards"
               onChange={handleSegmentChange}
             />
           </ConfigProvider>
           {
             loading?<LoadingInnerPage/>:
-            selectedSegment=="Issued Cards"?<StudentCardTableIssued pastCards={pastCards}/>:<StudentCardTablePending pendingCards={pendingCards}/>
+            selectedSegment=="Issued Cards"?<StudentCardTableIssued fetchHandOveredStudentCards={fetchHandOveredStudentCards} pastCards={pastCards}/>:selectedSegment=="New Cards"?<StudentCardTablePending fetchPendingStudentCards={fetchPendingStudentCards} pendingCards={pendingCards}/>:<StudentCardManufacturingScanner/>
           }
       
 

@@ -309,3 +309,12 @@ export const getCreatedZoomMeeting=(meetingInfo)=>API.post(`/classService/create
 export const sendForgotPasswordEmail=(email)=>API.get(`/auth/forgotPasswordEmail?email=${email}`);
 
 export const resetPassword=(passwordData)=>API.post(`/auth/resetPassword`,passwordData);
+
+
+export const createStudentCard=(studentCardData)=>API.post("/user/createStudentCard",studentCardData);
+
+export const studentCardStatus=(UserIDArray)=>API.get(`/user/studentCardStatusChange?UserIDArray=${UserIDArray}`)
+
+
+export const reCreateStudentCard=(UserID)=>API.get(`/user/reCreateStudentCard?UserID=${UserID}`)
+
