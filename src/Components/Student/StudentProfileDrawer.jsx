@@ -19,6 +19,7 @@ import {
 } from "antd";
 import TeacherProfilePicUploading from "../TeacherComp/TeacherProfilePicUploading";
 import {
+  deleteClassesFromStudent,
   getClassesForSelectedStudent,
   getFullUserInformation,
   updateFullUserInformation,
@@ -51,8 +52,21 @@ const StudentProfileDrawer = ({
   const [editing, setEditing] = useState(false);
   const [ProfilePic, setProfilePicture] = useState(null);
   const [overallValidateError, setOverallValidateError] = useState({});
-  const defaultStudent=JSON.parse(localStorage.getItem("profile"))?.result;
-  const dispatch=useDispatch();
+  const defaultStudent = JSON.parse(localStorage.getItem("profile"))?.result;
+  const [selectedClassIds, setSelectedClassIDs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleClassSelection = (classID) => {
+    if (selectedClassIds.includes(classID)) {
+      const classRemovedArray = selectedClassIds?.filter(
+        (classIDinfo) => classIDinfo != classID
+      );
+      setSelectedClassIDs(classRemovedArray);
+    } else {
+      setSelectedClassIDs([...selectedClassIds, classID]);
+    }
+  };
 
   const showDrawer = () => {
     setProfileOpeneditingDrawer(true);
@@ -62,20 +76,16 @@ const StudentProfileDrawer = ({
   };
 
   useEffect(() => {
-    if (openprofileeditingDrawer?.status==true) {
-      if (selectedStudent==null) {
+    if (openprofileeditingDrawer?.status == true) {
+      if (selectedStudent == null) {
         fetchStudentDetails();
-     }else{
-       setUserDetails(selectedStudent);
-       fetchStudentClasses(selectedStudent?.UserID);
-       console.log("selected student is ", selectedStudent);
-     }
+      } else {
+        setUserDetails(selectedStudent);
+        fetchStudentClasses(selectedStudent?.UserID);
+        console.log("selected student is ", selectedStudent);
+      }
     }
-   
-   
-  }, [selectedStudent,openprofileeditingDrawer?.status]);
-
-
+  }, [selectedStudent, openprofileeditingDrawer?.status]);
 
   useEffect(() => {
     setUserDetails({
@@ -87,20 +97,43 @@ const StudentProfileDrawer = ({
     });
   }, [editing]);
 
-
-  const fetchStudentDetails=async()=>{
+  const handleDeleteStudentFromClass = async () => {
     try {
-      const studentDetails=await getFullUserInformation(defaultStudent?.UserID);
-      console.log("incomng student result ",studentDetails);
+      setLoading(true);
+      const studentRemovingDetails = {
+        classList: selectedClassIds,
+        studentID: selectedStudent?.UserID,
+      };
+      const deleteResult = await deleteClassesFromStudent(
+        studentRemovingDetails
+      );
+      if (deleteResult.status == 200) {
+        fetchStudentClasses(selectedStudent?.UserID);
+        setSelectedClassIDs([]);
+        message.success("Student Removed From class Successfully!");
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log("error ", error);
+      message.error("Error occured from ");
+      setLoading(false);
+    }
+  };
+
+  const fetchStudentDetails = async () => {
+    try {
+      const studentDetails = await getFullUserInformation(
+        defaultStudent?.UserID
+      );
+      console.log("incomng student result ", studentDetails);
       setUserDetails(studentDetails.data);
 
       fetchStudentClasses(defaultStudent?.UserID);
     } catch (error) {
       console.log("error!");
-      message.error("Student Details Fetching Error!")
+      message.error("Student Details Fetching Error!");
     }
-  }
-
+  };
 
   const fetchStudentClasses = async (studentID) => {
     try {
@@ -143,14 +176,14 @@ const StudentProfileDrawer = ({
           setEditing(false);
           setUserDetails(null);
           setProfileOpeneditingDrawer(false);
-          if (selectedStudent==null) {
+          if (selectedStudent == null) {
             dispatch(updateLoginUser(defaultStudent?.UserID));
           }
         } else {
           message.error(updationResult.data);
         }
-      }else{
-        message.error("please check input errors andn empty columns!")
+      } else {
+        message.error("please check input errors andn empty columns!");
       }
     } catch (error) {
       console.log("error ", error);
@@ -227,7 +260,6 @@ const StudentProfileDrawer = ({
 
   const genderSelectionChange = (value) => {
     setUserDetails({ ...userDetails, gender: value });
-
   };
 
   return (
@@ -409,9 +441,7 @@ const StudentProfileDrawer = ({
               <Form.Item
                 label="Phone No"
                 validateStatus={
-                  overallValidateError?.phoneNo
-                    ? "error"
-                    : "success"
+                  overallValidateError?.phoneNo ? "error" : "success"
                 }
                 help={overallValidateError?.phoneNo || ""}
                 rules={[
@@ -549,21 +579,50 @@ const StudentProfileDrawer = ({
 
           <Row gutter={16}>
             <Col span={24}>
-              <Form.Item label="Student Classes">
+              <Form.Item
+                label="Student Classes"
+                help={
+                  defaultStudent.role == "staff" && classList?.length!=0
+                    ? "click on the card to remove student from class"
+                    : ""
+                }
+              >
                 {classList.length != 0 ? (
-                  <div className="w-full  grid grid-cols-3">
-                    {classList?.map((classData) => (
-                      <Tag
-                        key={classData?.classID}
-                        color="blue"
-                        className="p-2 hover:bg-blue-500"
-                      >
-                        <div className="w-full flex flex-row justify-between">
-                          <p>{classData?.classID}</p>
-                          <p>{classData?.ClassName}</p>
-                        </div>
-                      </Tag>
-                    ))}
+                  <div className="w-full flex flex-col">
+                    <div className="w-full  grid grid-cols-3">
+                      {classList?.map((classData) => (
+                        <Tag
+                          onClick={() =>
+                            handleClassSelection(classData?.classID)
+                          }
+                          key={classData?.classID}
+                          color="blue"
+                          className={`p-2 ${
+                            selectedClassIds.includes(classData?.classID)
+                              ? "bg-blue-500 text-white"
+                              : ""
+                          } hover:bg-blue-500 hover:text-white`}
+                        >
+                          <div className="w-full flex flex-row justify-between">
+                            <p>{classData?.classID}</p>
+                            <p>{classData?.ClassName}</p>
+                          </div>
+                        </Tag>
+                      ))}
+                    </div>
+                    {selectedClassIds?.length > 0 &&
+                    defaultStudent.role == "staff" ? (
+                      <div className="w-full flex flex-col items-end mt-2 ">
+                        <Button
+                          onClick={handleDeleteStudentFromClass}
+                          className="bg-red-500 mr-1 hover:bg-red-600 text-white"
+                        >
+                          Delete Selected Classes
+                        </Button>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 ) : (
                   <div className="w-full">
@@ -574,81 +633,85 @@ const StudentProfileDrawer = ({
             </Col>
           </Row>
 
-          <Row gutter={16}>
-            <div className="w-full border-2 border-blue-600">
-              <Collapse>
-                <Panel header="Change Password" key="1">
-                  <Col span={24}>
-                    <Form.Item label="User Name">
-                      <Input
-                        readOnly
-                        name="username"
-                        value={userDetails?.username}
-                        placeholder="Please enter your Old Password"
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      label="Old Password"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please enter your Old Password",
-                        },
-                      ]}
-                    >
-                      <Input
-                        readOnly={!editing}
-                        value={userDetails?.oldpassword}
-                        name="oldpassword"
-                        placeholder="Please enter your Old Password"
-                      />
-                    </Form.Item>
+          {defaultStudent.role != "staff" && defaultStudent.role != "owner" ? (
+            <Row gutter={16}>
+              <div className="w-full border-2 border-blue-600">
+                <Collapse>
+                  <Panel header="Change Password" key="1">
+                    <Col span={24}>
+                      <Form.Item label="User Name">
+                        <Input
+                          readOnly
+                          name="username"
+                          value={userDetails?.username}
+                          placeholder="Please enter your Old Password"
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        label="Old Password"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please enter your Old Password",
+                          },
+                        ]}
+                      >
+                        <Input
+                          readOnly={!editing}
+                          value={userDetails?.oldpassword}
+                          name="oldpassword"
+                          placeholder="Please enter your Old Password"
+                        />
+                      </Form.Item>
 
-                    <Form.Item
-                      label="New Password"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please enter New Password",
-                        },
-                      ]}
-                    >
-                      <Input.Password
-                        name="newPassword"
-                        value={userDetails?.newPassword}
-                        readOnly={!editing}
-                        placeholder="Please enter New Password"
-                        visibilityToggle={{
-                          visible: newpasswordVisible,
-                          onVisibleChange: setnewPasswordVisible,
-                        }}
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      label="Confirm New Password"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please enter New Password again",
-                        },
-                      ]}
-                    >
-                      <Input.Password
-                        name="confirmPassword"
-                        value={userDetails?.confirmPassword}
-                        readOnly={!editing}
-                        placeholder="Please enter New Password"
-                        visibilityToggle={{
-                          visible: newConfirmPasswordVisible,
-                          onVisibleChange: setNewConfirmPasswordVisible,
-                        }}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Panel>
-              </Collapse>
-            </div>
-          </Row>
+                      <Form.Item
+                        label="New Password"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please enter New Password",
+                          },
+                        ]}
+                      >
+                        <Input.Password
+                          name="newPassword"
+                          value={userDetails?.newPassword}
+                          readOnly={!editing}
+                          placeholder="Please enter New Password"
+                          visibilityToggle={{
+                            visible: newpasswordVisible,
+                            onVisibleChange: setnewPasswordVisible,
+                          }}
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        label="Confirm New Password"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please enter New Password again",
+                          },
+                        ]}
+                      >
+                        <Input.Password
+                          name="confirmPassword"
+                          value={userDetails?.confirmPassword}
+                          readOnly={!editing}
+                          placeholder="Please enter New Password"
+                          visibilityToggle={{
+                            visible: newConfirmPasswordVisible,
+                            onVisibleChange: setNewConfirmPasswordVisible,
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Panel>
+                </Collapse>
+              </div>
+            </Row>
+          ) : (
+            <></>
+          )}
         </Form>
       </Drawer>
     </>

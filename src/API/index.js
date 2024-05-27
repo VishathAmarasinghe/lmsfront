@@ -1,9 +1,10 @@
 import { Announcement } from "@mui/icons-material";
+import { data } from "autoprefixer";
 import axios from "axios";
 
 
 const API=axios.create({
-  baseURL:"http://localhost:5050"
+  baseURL:"http://localhost:5050/v1"
 })
 
 
@@ -19,8 +20,10 @@ API.interceptors.request.use((req)=>{
 export const registerStudent=(registrationData)=>API.post("/auth/signUp",registrationData);
 export const signIn=(loginDetails)=>API.post("/auth/signIn",loginDetails);
 
-
+//documented
 export const get_pending_confirmed_users=()=>API.get("/user/pendinguser");
+
+
 export const get_parent_details_according_to_Student=(studentID)=>API.get("/user/parentStudentInfo?studentID="+studentID);
 
 export const updateParentStudentData=(updateData)=>API.patch("/user/updateuser",updateData);
@@ -123,6 +126,10 @@ export const getClassesForSelectedStudent=(studentID)=>API.get(`/classService/cl
 export const getClassesForNotSelectedStudent=(studentID)=>API.get(`/classService/classforNotStudents?studentID=${studentID}`)
 
 export const addStudentsToClass=(studentAddingData)=>API.post(`/classService/addToClasses`,studentAddingData);
+
+export const deleteClassesFromStudent=(studentRemovingDetails)=>API.delete(`/classService/deleteClassesFromStudent`,{data:{studentRemovingDetails}});
+
+export const deleteClassesFromTeacher=(TeacherRemovingDetails)=>API.delete(`/classService/deleteClassesFromTeacher`,{data:{TeacherRemovingDetails}});
 
 export const checkStudentClassFeePayment=(studentpaymentData)=>API.post(`/payment/classfeeExisitance`,studentpaymentData);
 
@@ -317,4 +324,17 @@ export const studentCardStatus=(UserIDArray)=>API.get(`/user/studentCardStatusCh
 
 
 export const reCreateStudentCard=(UserID)=>API.get(`/user/reCreateStudentCard?UserID=${UserID}`)
+
+
+export const getAllTeachersByClass=(classID)=>API.get(`/classService/allTeachersByclass?classID=${classID}`)
+
+
+export const getAllStudentsByClass=(classID)=>API.get(`/classService/allStudentsByclass?classID=${classID}`)
+
+export const addNewTeachertoTheClass=(classData)=>API.post(`/classService/addTeacherToTheClass`,classData);
+
+export const classStatusChange=(classStatusData)=>API.patch(`/classService//changeClassStatus`,classStatusData);
+
+
+
 

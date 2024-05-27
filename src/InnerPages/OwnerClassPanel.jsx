@@ -41,7 +41,7 @@ const OwnerClassPanel = () => {
     <div className="w-[95%]   bg-white h-[90%]  flex flex-col lg:flex-col overflow-y-auto items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
     <div className=" overflow-y-auto h-[90%] w-[95%] mt-5">
       {
-        loading?<LoadingInnerPage/>:<OwnerClassTable classData={classData} classDetailedPanelOpen={classDetailedPanelOpen} setClassDetailedPanelOpen={setClassDetailedPanelOpen}/>
+        loading?<LoadingInnerPage/>:<OwnerClassTable fetchClassInfo={fetchClassInfo} classData={classData} classDetailedPanelOpen={classDetailedPanelOpen} setClassDetailedPanelOpen={setClassDetailedPanelOpen}/>
       }
     </div>
     </div>

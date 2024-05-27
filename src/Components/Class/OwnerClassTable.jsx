@@ -1,22 +1,41 @@
 import React, { useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Avatar, Button, Input, Space, Table, Tag } from "antd";
+import { Avatar, Button, Input, Popconfirm, Space, Table, Tag, message } from "antd";
 import Highlighter from "react-highlight-words";
 import lecturerAvatar from "../../assets/lecturer.jpg";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import OwnerClassDetailsShowerModel from "./OwnerClassDetailsShowerModel";
+import { classStatusChange } from "../../API";
 
 
 
 
-const OwnerClassTable = ({ classData,classDetailedPanelOpen,setClassDetailedPanelOpen }) => {
+const OwnerClassTable = ({ classData,classDetailedPanelOpen,setClassDetailedPanelOpen,fetchClassInfo }) => {
   const [opendeleteModel, setOpendeleteModel] = useState(false);
   const [selectedClass,setSelectedClass]=useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+
+
+  const reactivateDeactivateClass=async(classData,status)=>{
+    try {
+      const classStatusData={
+        classStatus:status,
+        classID:classData?.classID
+      }
+      const classStatusChangingResult=await classStatusChange(classStatusData);
+      if (classStatusChangingResult.status==200) {
+        fetchClassInfo();
+        message.success(`Class ${status} Successfully!`)
+      }
+    } catch (error) {
+      message.error(`${status} process faild, Please try again later.`)
+      console.log("error ",error);
+    }
+  }
 
  
 
@@ -185,21 +204,71 @@ const OwnerClassTable = ({ classData,classDetailedPanelOpen,setClassDetailedPane
         width: "15%",
         ...getColumnSearchProps("ClassMode"),
       },
+      {
+        title: "Status",
+        dataIndex: "classStatus",
+        key: "classStatus",
+        width: "15%",
+        ...getColumnSearchProps("classStatus"),
+      },
     {
       title: "Action",
-      dataIndex: "classID",
-      key: "classID",
+      dataIndex: "classStatus",
+      key: "classStatus",
       render: (pic,rowData) => {
-        return (
+        return pic=="activated"? (
+          <div className="w-full flex flex-row">
             <Tag
             onClick={()=>handleOpenClassDetailModel(rowData)}
             color="green"
               className=" flex flex-col w-full text-center   font-medium bg-green-600 text-white hover:bg-green-700 scalar-card"
              
             >
-              <p className="ml-2">View More Info</p>
+              <p className="">View More Info</p>
             </Tag>
-        ) 
+            <Popconfirm
+            title="Deactivate Class"
+            description="Are you sure to deactivate this class?"
+            onConfirm={() => reactivateDeactivateClass(rowData,"deactivated")}
+            okType="default"
+            okButtonProps={{
+              className: "bg-blue-500 hover:bg-blue-600 text-white",
+            }}
+            placement="left"
+            okText="Yes"
+            cancelText="No"
+          >
+            <Tag
+            color="green"
+              className=" flex flex-col w-full text-center   font-medium bg-red-600 text-white hover:bg-red-700 scalar-card"
+             
+            >
+              <p className="">Deactivate Class</p>
+            </Tag>
+            </Popconfirm>
+            </div>
+        ):pic=="deactivated"?
+        <Popconfirm
+            title="Reactivate Class"
+            description="Are you sure to Reactivate this class?"
+            onConfirm={() => reactivateDeactivateClass(rowData,"activated")}
+            okType="default"
+            okButtonProps={{
+              className: "bg-blue-500 hover:bg-blue-600 text-white",
+            }}
+            placement="left"
+            okText="Yes"
+            cancelText="No"
+          >
+        <Tag
+        color="green"
+          className=" flex flex-col w-full text-center   font-medium bg-purple-600 text-white hover:bg-purple-700 scalar-card"
+         
+        >
+          <p>Reactivate Class</p>
+        </Tag>
+        </Popconfirm>
+        :<></>
       },
     },
   ];

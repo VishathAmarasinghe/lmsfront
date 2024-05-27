@@ -60,6 +60,11 @@ const ClassContentDescription = ({ classDetails }) => {
           ),
           span: 3,
         },
+        {
+          label: "Meeting Link",
+          children: classDetails.meetingLink?<a href={classDetails?.meetingLink} target="_blank">{classDetails?.meetingLink}</a>:"Not provided",
+          span: 3,
+        },
       ];
 
       setDescriptionList(items);

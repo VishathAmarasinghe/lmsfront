@@ -220,7 +220,7 @@ const SubmissionAddingPanel = ({
     });
     setOverallValidateError({
       ...overallValidateError,
-      [e.target.name]: stringValidationWithLenght(e.target.value, 29),
+      [e.target.name]: stringValidationWithLenght(e.target.value, 100),
     });
   };
 

@@ -44,6 +44,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
   const [selectedtimeSlots, setSelectedTimeSlots] = useState(["", ""]);
   const [classData, setClassData] = useState(null);
   const [errorValidator,setErrorValidator]=useState(null);
+  const [meetingLink,setMeetingLink]=useState(null);
   const {classID}=useParams();
   const dispatch=useDispatch();
 
@@ -58,9 +59,9 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
   useEffect(()=>{
     if (addingCompOpen==true) {
       if (classEditingData!=null) {
-        const {ClassDay,ClassMode,ClassName, StartTime,classFee,classID,endTime,gradeID,hallID,medium,subjectID}=classEditingData;
+        const {ClassDay,ClassMode,ClassName, StartTime,classFee,classID,endTime,gradeID,hallID,medium,subjectID,meetingLink}=classEditingData;
         setClassData({
-          ClassDay,ClassMode,ClassName, StartTime,classFee,classID,endTime,gradeID,hallID,medium,subjectID
+          ClassDay,ClassMode,ClassName, StartTime,classFee,classID,endTime,gradeID,hallID,medium,subjectID,meetingLink
         })
         // handleOnlinePhysicalMode(classEditingData?.classMode=="physical"?true:false);
       }
@@ -124,13 +125,23 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
 
   const handleAddingZoom=async()=>{
     try {
-      const meetingInfo={
-        classID:"clas", 
-        gradeName:"ggs", 
-        subjectName:"krs"
+      
+      if (classData?.ClassName!="" && classData?.ClassName!=null && classData?.gradeID!="" && classData?.gradeID!=null && classData?.subjectID!="" && classData?.subjectID!=null &&  classData?.ClassDay!="" && classData?.ClassDay!=null) {
+        const meetingInfo={
+          className:classData?.ClassName, 
+          gradeName:classData?.gradeName, 
+          subjectName:classData?.subjectName,
+          classDay:classData?.ClassDay
+        }
+          const meetingFetchingResult=await getCreatedZoomMeeting(meetingInfo);
+          if (meetingFetchingResult.status==200) {
+            setClassData({...classData,meetingLink:meetingFetchingResult.data?.meetingLink})
+          }
+          console.log("meeting fetch result ",meetingFetchingResult);
+      }else{
+        message.error("Please complete ClassName,Grade, subject and class Day to proceed with meeting link!")
       }
-        const meetingFetchingResult=await getCreatedZoomMeeting(meetingInfo);
-        console.log("meeting fetch result ",meetingFetchingResult);
+      
     } catch (error) {
       console.log("error ",error);
       message.error("Zoom meeting fetching  error")
@@ -397,6 +408,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
               <Form.Item
                 // name="classMode"
                 label="Class Mode"
+                help={<a target="_blank">{classData?.meetingLink}</a>}
                 rules={[
                   {
                     required: true,
