@@ -38,7 +38,7 @@ const MainClassPage = () => {
     <div className="w-full h-[100%] flex flex-col items-center   shadow-2xl  overflow-y-auto  ">
       <div className="w-[95%] mt-3  h-[95%] overflow-y-auto  ">
         {
-          user?.role=="teacher"?<div className="w-full my-3 border-2 border-green-600 h-10 ">
+          user?.role=="teacher"?<div className="w-full my-3  h-10 ">
           <button  className="bg-blue-700 p-2 text-white rounded-md" onClick={()=>setAddingCompOpen(true)} >
               <div className="flex flex-row">
                   <PlusOutlined/>

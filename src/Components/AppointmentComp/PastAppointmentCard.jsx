@@ -6,6 +6,7 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { pastcomp1,pastcomp2,pastcomp3,pastcomp4,pastcomp5,pastcomp6 } from '../../assets'
 import { Popconfirm, Tag, message } from 'antd';
 import { deleteAppoinment } from '../../API';
+import dayjs from 'dayjs';
 
 const PastAppointmentCard = ({appintment,fetchParentAppointments}) => {
     console.log("appointment details ",appintment);
@@ -31,7 +32,7 @@ const PastAppointmentCard = ({appintment,fetchParentAppointments}) => {
             <PastCardrowComp titleName={"Teacher Note"} value={appintment?.teacherNote==null?"No Note":appintment?.teacherNote} />
         </div>
         <div className=' w-full md:w-[40%]  border-[#5B6BD4] border-r-2 border-l-0 pr-3'>
-            <PastCardrowComp titleName={"Date & Time"} value={appintment?.date==null && appintment?.time==null?"Not Confirmed":appintment.date+"  "+appintment.time}/>
+            <PastCardrowComp titleName={"Date & Time"} value={appintment?.date==null && appintment?.time==null?"Not Confirmed":dayjs(appintment.date).format("YYYY-MM-DD")+"  "+appintment.time}/>
             <PastCardrowComp titleName={"Publish Date"} value={String(appintment?.appointmentpublishDate).substring(0,10)}/>
             <PastCardrowComp titleName={"Description"} value={appintment?.description} />
         </div>

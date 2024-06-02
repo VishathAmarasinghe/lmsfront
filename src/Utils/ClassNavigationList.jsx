@@ -32,7 +32,6 @@ const studentClassItems = [
     getItem("Course Content", "A1", <AppstoreOutlined/>),
     getItem("Participants", "A2", <TeamOutlined />),
     getItem("Grade Book", "A3", <PieChartOutlined/>),
-    getItem("Anouncements", "A4", <CalendarOutlined />),
    
   ];
 
@@ -44,7 +43,6 @@ const studentClassItems = [
         getItem("Marks", "A7", <AppstoreOutlined/>),
         getItem("Mark Analytics", "A8", <LineChartOutlined/>),
     ]),
-    getItem("Anouncements", "A9", <CalendarOutlined />),
    
   ];
 

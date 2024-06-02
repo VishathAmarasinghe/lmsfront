@@ -1,15 +1,16 @@
 import React, { useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Avatar, Button, Input, Space, Table, Tag } from "antd";
+import { Avatar, Button, Input, Popconfirm, Space, Table, Tag, message } from "antd";
 import Highlighter from "react-highlight-words";
 import lecturerAvatar from "../../assets/lecturer.jpg";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import { deleteResults } from "../../API";
 
 
 
-const TeacherResultTable = ({ classResult,selectedClassResult,setSelectedClassResult,openingResultPanel,setOpeningResultPanel }) => {
+const TeacherResultTable = ({fetchClassResults, classResult,selectedClassResult,setSelectedClassResult,openingResultPanel,setOpeningResultPanel }) => {
   const [selectedTeacher,setSelectedTeacher]=useState(null);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -31,6 +32,20 @@ const TeacherResultTable = ({ classResult,selectedClassResult,setSelectedClassRe
   console.log("roow data of selected resut ",rowData);
     setSelectedClassResult(rowData);
     setOpeningResultPanel(true);
+ }
+
+ const handleDeleteResult=async(rowData)=>{
+  try {
+
+    const deleteStatus=await deleteResults(rowData?.resultID);
+    if (deleteStatus.status==200) {
+      message.success("Results deleted successfully!")
+      fetchClassResults();
+    }
+  } catch (error) {
+    message.error("Result Deletion Error!")
+    console.log("error ",error);
+  }
  }
 
 
@@ -194,11 +209,25 @@ const TeacherResultTable = ({ classResult,selectedClassResult,setSelectedClassRe
             >
               <p className="ml-2">Edit Info</p>
             </Tag>
+            <Popconfirm
+              title="Deleting Result"
+              description="Are you sure you want to delete entire results?"
+              onConfirm={()=>handleDeleteResult(rowData)}
+              okType="default"
+              okButtonProps={{
+                className: "bg-blue-500 hover:bg-blue-600 text-white",
+              }}
+              placement="left"
+              okText="Yes"
+              cancelText="No"
+            >
             <Tag
+
               className="scalar-card flex flex-row justify-center w-full text-center  bg-red-600 text-white font-medium hover:bg-red-700 "
             >
               <p className="ml-2">Delete</p>
             </Tag>
+            </Popconfirm>
             </div>
         );
       },

@@ -5,6 +5,8 @@ import AppointmentPendingTable from "../Components/AppointmentComp/AppointmentPe
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setPendingAppointments } from "../Actions/appointments";
+import { isDateTimePast } from "../Utils/DateTimeValidator";
+import dayjs from "dayjs";
 
 const TeacherAppointmentPendingPanel = () => {
     const teacherID=JSON.parse(localStorage.getItem("profile")).result.UserID;
@@ -26,12 +28,15 @@ const TeacherAppointmentPendingPanel = () => {
 
   const fetchCreatedAppointments = async () => {
     setLoading(true);
+    console.log("created appointments ",createdAppointmentsArray);
     const reCreatedAppointments = createdAppointmentsArray.map((appointment) => ({
         ...appointment,
-        publishdate: appointment.appointmentpublishDate.substring(0, 10),
+        date:dayjs(appointment?.date).format("YYYY-MM-DD"),
+        publishdate: dayjs(appointment.appointmentpublishDate).format("YYYY-MM-DD"),
         parentName: appointment.parentFirstName + " " + appointment.parentLastName,
         studentName: appointment.studentFirstName + " " + appointment.studentLastName,
-        userStatus: appointment.status
+        userStatus: appointment.status,
+        currentStatus:(appointment?.date!=null && appointment?.date!="")?isDateTimePast(dayjs(appointment?.date).format("YYYY-MM-DD"),appointment?.time)==true?"Overdue":"Upcomming":"Pending"
     }));
 
     setCreatedAppointments(reCreatedAppointments);
@@ -52,7 +57,7 @@ const TeacherAppointmentPendingPanel = () => {
         </h1>
       </div>
 
-      <div className="w-[95%]  bg-white h-[90%]  flex flex-col lg:flex-col overflow-y-auto items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
+      <div className="w-[95%]   bg-white h-[90%]  flex flex-col lg:flex-col overflow-y-auto items-center  rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
         {loading ? <LoadingInnerPage /> : <AppointmentPendingTable appointment={createdAppointments}/> }
       </div>
     </div>

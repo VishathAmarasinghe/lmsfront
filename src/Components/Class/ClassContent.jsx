@@ -86,12 +86,13 @@ const ClassContent = () => {
                     MenuListProps={{
                       "aria-labelledby": "basic-button",
                     }}
+
                   >
                     <MenuItem onClick={newAccordianAdder}>New Accordien</MenuItem>
                     <MenuItem onClick={handleClose}>Content Box</MenuItem>
                   </Menu>
                   <button onClick={handleOpenClassItemEditingModel} className="my-2">
-                    <BorderColorRoundedIcon className="text-[#9b9b9b] text-[20px] scalar-cardlg hover:text-black" />
+                    <BorderColorRoundedIcon  className="text-[#9b9b9b] text-[20px] scalar-cardlg hover:text-black" />
                   </button>
                 </div>
               )}

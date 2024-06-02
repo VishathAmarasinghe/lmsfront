@@ -1,4 +1,4 @@
-import { Badge, Descriptions, Modal, Popconfirm, Tag, message } from "antd";
+import { Badge, Descriptions, Modal, Popconfirm, Tag, message, Button } from "antd";
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import parse from "html-react-parser";
@@ -29,57 +29,39 @@ const SubmissionModel = ({
   const [allSubmissions,setAllSubmissions]=useState([]);
 
   useEffect(() => {
-    if (submissionModelOpen == true) {
+    if (submissionModelOpen === true) {
       handleSubmittedAssignment();
-      if(user?.result?.role=="teacher"){
+      if(user?.result?.role === "teacher"){
         fetchingAllStudentSubmissions();
       }
     }
   }, [submissionModelOpen,uploadedFiles]);
 
-
-
-
-  const fetchingAllStudentSubmissions=async()=>{
+  const fetchingAllStudentSubmissions = async () => {
     try {
-        const studentSubmissions=await getStudentSubmissionsByPanel(submission?.panelID)
-        console.log("student all submisssions ",studentSubmissions);
-        const studentSubmissionArray=studentSubmissions.data?.map((submission)=>({
+        const studentSubmissions = await getStudentSubmissionsByPanel(submission?.panelID);
+        console.log("student all submisssions ", studentSubmissions);
+        const studentSubmissionArray = studentSubmissions.data?.map((submission) => ({
           ...submission,
-          ...submission?.studentInfo
-        }))
-        console.log("refactored student Submission Array ",studentSubmissionArray);
+          ...submission?.studentInfo,
+          photoName: submission?.studentInfo?.photo + ")" + submission?.studentInfo?.firstName,
+          submissionDate: dayjs(submission?.submissionDate).format("YYYY-MM-DD")
+        }));
+        console.log("refactored student Submission Array ", studentSubmissionArray);
         setAllSubmissions(studentSubmissionArray);
     } catch (error) {
-        console.log("error ",error);
+        console.log("error ", error);
         message.error("All student Submissions Fetching Error!");
     }
-}
-
-
-
-
-
-
+  }
 
   const checkSubmissionClosedOrNot = () => {
     const closingDateTime = `${dayjs(submission.subCloseDate).format("YYYY-MM-DD")}T${submission.subCloseTime}`;
     const currentDateTime = moment();
-    console.log("closing data is  ",closingDateTime);
+    console.log("closing data is  ", closingDateTime);
 
-    if (moment(closingDateTime).isAfter(currentDateTime)) {   
-      console.log("after the time");
-        return true;
-    } else {
-      console.log("before the time");
-        return false;
-    }
-};
-
-
-
-
-
+    return moment(closingDateTime).isAfter(currentDateTime);
+  };
 
   const handleSubmittedAssignment = async () => {
     const assignment = await getSubmittedAssignment(
@@ -88,14 +70,14 @@ const SubmissionModel = ({
     );
 
     console.log("assignment Data", assignment);
-    if (assignment.data.length == 0) {
+    if (assignment.data.length === 0) {
       setSubmittedAssignment(false);
     } else {
       setSubmittedAssignment(assignment.data);
     }
   };
 
-  const handleSubmissionSave = async() => {
+  const handleSubmissionSave = async () => {
     console.log("profile data ", user);
     setDissableSubmitButton(true);
     const submissionData = {
@@ -109,20 +91,16 @@ const SubmissionModel = ({
       formData.append("files", file);
     });
 
-    const uploadResult =await submitSubmissions(formData);
-    console.log("upload result is here  ",uploadResult);
-    if (uploadResult.status == 200) {
+    const uploadResult = await submitSubmissions(formData);
+    console.log("upload result is here  ", uploadResult);
+    if (uploadResult.status === 200) {
       message.success("Assignment Submitted successfully!");
-    //   setSubmissionModelOpen(false);  
-      setUploadedFiles([])
+      setUploadedFiles([]);
     } else {
       message.error("uploading Error!");
       setDissableSubmitButton(false);
     }
   };
-
-
-
 
   const panelClose = () => {
     setSubmissionModelOpen(false);
@@ -130,59 +108,49 @@ const SubmissionModel = ({
     console.log("closing clicked");
   };
 
-
-
-
   useEffect(() => {
     console.log("submission Data ", submission);
     console.log("mainMaterials ", mainMaterial);
   }, []);
 
-
-
-
-  const handledeleteUploadedSubmission= async() => {
+  const handledeleteUploadedSubmission = async () => {
     try {
         setSubmissionDeleteLoading(true);
-        const assignmentData={
-            panelID:submission.panelID,
-            studentID:user?.result?.UserID,
-            assignmentLocation:submittedAssignment[0].submisionDoc
-        }
+        const assignmentData = {
+            panelID: submission.panelID,
+            studentID: user?.result?.UserID,
+            assignmentLocation: submittedAssignment[0].submisionDoc
+        };
 
-
-        console.log("clicked deleing assignment ",assignmentData);
-        const deleteResult=await deleteSubmissionAssignment(assignmentData)
-        if (deleteResult.status==200) {
+        console.log("clicked deleing assignment ", assignmentData);
+        const deleteResult = await deleteSubmissionAssignment(assignmentData);
+        if (deleteResult.status === 200) {
             message.success("submission deleted successfully");
             setDissableSubmitButton(false);
-
-        }else{
+        } else {
             message.error("error deleting submission");
         }
         setSubmissionDeleteLoading(false);
         setUploadedFiles([]);
         handleClosingDeletingSubmitted();
     } catch (error) {
-        console.log("error deleting submission",error);
+        console.log("error deleting submission", error);
     }
-
-  }
-
+  };
 
   const handleClickedNote = async () => {
-    console.log("Submitted assignment data  ",submittedAssignment[0]);
+    console.log("Submitted assignment data  ", submittedAssignment[0]);
     const download = await getnotes(submittedAssignment[0].submisionDoc);
 
-    if (download.status == 200) {
-      fileDownload(download.data,((submittedAssignment[0].submisionDoc).split("/"))[1]);
-}
-}
+    if (download.status === 200) {
+      fileDownload(download.data, ((submittedAssignment[0].submisionDoc).split("/"))[1]);
+    }
+  };
 
-
-  const handleClosingDeletingSubmitted= () => {
+  const handleClosingDeletingSubmitted = () => {
     setdeleteConfirmation(false);
-  }
+  };
+
 
 
   const items = [
@@ -211,18 +179,16 @@ const SubmissionModel = ({
       label: "Submission Close Time",
       children: submission.subCloseTime,
     },
-    user?.result?.role=="student"?
-    {
+    user?.result?.role === "student" ? {
       key: "6",
       label: "Submission Status",
       span: 3,
-      children:
-        submittedAssignment !== false ? (
-          <Badge status="success" text="Submitted" />
-        ) : (
-          <Badge status="processing" text="Not Submitted" />
-        ),
-    }:{},
+      children: submittedAssignment !== false ? (
+        <Badge status="success" text="Submitted" />
+      ) : (
+        <Badge status="processing" text="Not Submitted" />
+      ),
+    } : {},
     {
       key: "7",
       label: "Additional Infomation",
@@ -239,9 +205,7 @@ const SubmissionModel = ({
           <Countdown
             targetDate={
               new Date(
-                `${dayjs(submission.subCloseDate).format("YYYY-MM-DD")}T${
-                  submission.subCloseTime
-                }`
+                `${dayjs(submission.subCloseDate).format("YYYY-MM-DD")}T${submission.subCloseTime}`
               )
             }
           />{" "}
@@ -259,18 +223,25 @@ const SubmissionModel = ({
       }
       centered
       open={submissionModelOpen}
-      onOk={handleSubmissionSave}
-      onCancel={() => panelClose()}
       closeIcon={null}
       width={"85%"}
-      okText="Submit"
       maskClosable={false}
-      okButtonProps={{
-        className: `bg-blue-500 hover:bg-blue-600 ${user?.result?.role=="teacher"?"hidden":""}`,
-        disabled: dissableSubmitButton,
-      }}
+      footer={[
+        <Button key="back" onClick={panelClose}>
+          Cancel
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          className={`bg-blue-500 hover:bg-blue-600 ${user?.result?.role === "teacher" ? "hidden" : ""}`}
+          disabled={dissableSubmitButton || !checkSubmissionClosedOrNot()}
+          onClick={handleSubmissionSave}
+        >
+          Submit
+        </Button>,
+      ]}
     >
-      <div className="w-full  flex flex-col justify-center items-center">
+      <div className="w-full flex flex-col justify-center items-center">
         <Descriptions
           className="w-full"
           labelStyle={{ fontWeight: "bold" }}
@@ -279,58 +250,59 @@ const SubmissionModel = ({
           bordered
           items={items}
         />
-        {
-          user?.result?.role=="teacher"?<SubmissionsShowingTeacherPanel allSubmissions={allSubmissions} submissionModelOpen={submissionModelOpen} submissionData={submission}/>:  <>
-          {!submittedAssignment && checkSubmissionClosedOrNot() ? (
-            <div className="w-[90%] mt-5">
-              <SubmissionsUploadingcard setUploadedFiles={setUploadedFiles} />
-            </div>
-          ) : (
-            <div className="w-full flex flex-col">
-              <div className="mt-3  flex flex-col justify-center ">
-                {submittedAssignment !== false &&
-                  submittedAssignment.map((file, index) => (
-                    <Tag
-                      color="green"
-                      className="flex flex-row hover:bg-green-500 hover:text-white  items-center p-2"
-                      key={index}
-                    >
-                      <div className="h-full mr-2 flex flex-col items-center justify-center ">
-                        <FileOutlined className="text-[35px]" />
-                      </div>
-                      <div onClick={handleClickedNote}>
-                        <p className="text-[16px] font-semibold">
-                          {file.submisionDoc.split("/")[1]}
-                        </p>
-                        <p>{dayjs(file.submissionDate).format("YYYY-MM-DD")}</p>
-                        <p>{file.submissionTime}</p>
-                      </div>
-                      <div className="w-full  flex flex-col items-end mr-4">
-                        <Popconfirm
-                          placement="topRight"
-                          title="Delete"
-                          description="Are you sure you want to delete Submitted one"
-                          open={opendeleteConfirmation}
-                          onConfirm={handledeleteUploadedSubmission}
-                          okButtonProps={{
-                            loading: submissionDeleteLoading,
-                            className: "bg-blue-500 hover:bg-blue-600",
-                          }}
-                          onCancel={() => handleClosingDeletingSubmitted()}
-                        >
-                          <button onClick={()=>setdeleteConfirmation(true)}>
-                            <DeleteOutlined className="text-[15px] p-1 hover:bg-red-500 rounded-md" />
-                          </button>
-                        </Popconfirm>
-                      </div>
-                    </Tag>
-                  ))}
+        {user?.result?.role === "teacher" ? (
+          <SubmissionsShowingTeacherPanel allSubmissions={allSubmissions} submissionModelOpen={submissionModelOpen} submissionData={submission} />
+        ) : (
+          <>
+            {!submittedAssignment && checkSubmissionClosedOrNot() ? (
+              <div className="w-[90%] mt-5">
+                <SubmissionsUploadingcard setUploadedFiles={setUploadedFiles} />
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="w-full flex flex-col">
+                <div className="mt-3 flex flex-col justify-center">
+                  {submittedAssignment !== false &&
+                    submittedAssignment.map((file, index) => (
+                      <Tag
+                        color="green"
+                        className="flex flex-row hover:bg-green-500 hover:text-white items-center p-2"
+                        key={index}
+                      >
+                        <div className="h-full mr-2 flex flex-col items-center justify-center ">
+                          <FileOutlined className="text-[35px]" />
+                        </div>
+                        <div onClick={handleClickedNote}>
+                          <p className="text-[16px] font-semibold">
+                            {file.submisionDoc.split("/")[1]}
+                          </p>
+                          <p>{dayjs(file.submissionDate).format("YYYY-MM-DD")}</p>
+                          <p>{file.submissionTime}</p>
+                        </div>
+                        <div className="w-full flex flex-col items-end mr-4">
+                          <Popconfirm
+                            placement="topRight"
+                            title="Delete"
+                            description="Are you sure you want to delete Submitted one"
+                            open={opendeleteConfirmation}
+                            onConfirm={handledeleteUploadedSubmission}
+                            okButtonProps={{
+                              loading: submissionDeleteLoading,
+                              className: "bg-blue-500 hover:bg-blue-600",
+                            }}
+                            onCancel={handleClosingDeletingSubmitted}
+                          >
+                            <button onClick={() => setdeleteConfirmation(true)}>
+                              <DeleteOutlined className="text-[15px] p-1 hover:bg-red-500 rounded-md" />
+                            </button>
+                          </Popconfirm>
+                        </div>
+                      </Tag>
+                    ))}
+                </div>
+              </div>
+            )}
           </>
-        }
-     
+        )}
       </div>
     </Modal>
   );

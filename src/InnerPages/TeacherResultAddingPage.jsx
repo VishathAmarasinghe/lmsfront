@@ -6,6 +6,7 @@ import TeacherResultTable from '../Components/TeacherComp/TeacherResultTable'
 import { getResultHeadingForClass } from '../API'
 import { useParams } from 'react-router-dom'
 import ClassResultInfoModel from '../Components/TeacherComp/ClassResultInfoModel'
+import dayjs from 'dayjs'
 
 const TeacherResultAddingPage = () => {
   const {classID}=useParams();
@@ -30,7 +31,7 @@ const TeacherResultAddingPage = () => {
       console.log("class reuslt info ",classResultinfo);
       const editedClassResult=classResultinfo?.data?.map((result)=>({
         ...result,
-        publishDate:result.publishDate.substring(0,10)
+        publishDate:dayjs(result.publishDate).format("YYYY-MM-DD")
       }))
       setClassResult(editedClassResult);
       setLoading(false);
@@ -74,7 +75,7 @@ const TeacherResultAddingPage = () => {
       <div className=" overflow-y-auto h-[90%] w-[95%]">
         <ClassResultInfoModel selectedClassResult={selectedClassResult} openingResultPanel={openingResultPanel} setOpeningResultPanel={setOpeningResultPanel}/>
         {
-          loading?<LoadingInnerPage/>:<TeacherResultTable openingResultPanel={openingResultPanel} setOpeningResultPanel={setOpeningResultPanel} selectedClassResult={selectedClassResult} setSelectedClassResult={setSelectedClassResult} classResult={classResult}/>
+          loading?<LoadingInnerPage/>:<TeacherResultTable fetchClassResults={fetchClassResults} openingResultPanel={openingResultPanel} setOpeningResultPanel={setOpeningResultPanel} selectedClassResult={selectedClassResult} setSelectedClassResult={setSelectedClassResult} classResult={classResult}/>
           
         }
           

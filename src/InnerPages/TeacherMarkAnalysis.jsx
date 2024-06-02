@@ -58,7 +58,7 @@ const TeacherMarkAnalysis = () => {
       </div>
 
       <div className="w-[95%]   bg-white h-[90%]  flex flex-col lg:flex-col overflow-y-auto items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
-        <div className=" w-[95%] border-2 border-red-400 overflow-x-hidden mt-4 mb-2">
+        <div className=" w-[95%]  overflow-x-hidden mt-4 mb-2">
           <Form className="font-medium" layout="vertical" hideRequiredMark>
             <Row gutter={16}>
               <Col span={24}>
@@ -87,7 +87,7 @@ const TeacherMarkAnalysis = () => {
             </Row>
           </Form>
         </div>
-        <div className=" overflow-y-auto border-2 h-[90%] flex flex-row  border-green-500 w-[95%]">
+        <div className=" overflow-y-auto  h-[90%] flex flex-row   w-[95%]">
           <div className="w-[50%] h-full">
             <BarchartComp chartData={chartData}/>
           </div>

@@ -78,6 +78,11 @@ export const uploadNotes=(formData)=>API.post("/classService/noteUpload", formDa
 
 
 
+  export const downloadAllSubmissions=(panelID)=>API.get(`/classService/downloadAllSubmisions?panelID=${panelID}`,{
+    responseType:"blob"
+  });
+
+
 
 
 
@@ -199,6 +204,10 @@ export const getStudentAndTeacherDetails=(allPeople)=>API.post("/user/teacherAnd
 
 export const getStudentListAsExcel=(studentList)=>API.post("/user/generateStudentExcel",studentList,{responseType:"blob"})
 
+
+export const getStudentResultAddingSheetAsExcel=(studentList)=>API.post("/user/generateStudentResultExcel",studentList,{responseType:"blob"})
+
+
 export const getResultHeadingForClass=(classID)=>API.get(`/classService/resultForClass?classID=${classID}`);
 
 
@@ -207,6 +216,9 @@ export const uploadResultWithExcel=(formData)=>API.post("/classService/uploadRes
     "Content-Type": "multipart/form-data",
   },
 });
+
+export const uploadResultmanual=(resultData)=>API.post("/classService/uploadResultManual",resultData);
+
 
 export const getChartData=(chartData)=>API.post("/classService/charts",chartData);
 
@@ -328,13 +340,17 @@ export const reCreateStudentCard=(UserID)=>API.get(`/user/reCreateStudentCard?Us
 
 export const getAllTeachersByClass=(classID)=>API.get(`/classService/allTeachersByclass?classID=${classID}`)
 
-
 export const getAllStudentsByClass=(classID)=>API.get(`/classService/allStudentsByclass?classID=${classID}`)
 
 export const addNewTeachertoTheClass=(classData)=>API.post(`/classService/addTeacherToTheClass`,classData);
 
-export const classStatusChange=(classStatusData)=>API.patch(`/classService//changeClassStatus`,classStatusData);
+export const classStatusChange=(classStatusData)=>API.patch(`/classService/changeClassStatus`,classStatusData);
 
+export const studentResultsByResultID=(resultID)=>API.get(`/classService/studentResultsByResultID?resultID=${resultID}`);
+
+export const updateResults=(resultData)=>API.patch("/classService/results",resultData);
+
+export const deleteResults=(resultID)=>API.delete("/classService/results",{data:{resultID}});
 
 
 

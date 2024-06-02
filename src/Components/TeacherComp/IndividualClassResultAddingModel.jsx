@@ -1,24 +1,83 @@
 import React, { useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import {
-  Avatar,
   Button,
   Input,
-  Popconfirm,
   Space,
   Table,
-  Tag,
-  message,
-  notification,
+  Form,
 } from "antd";
 import Highlighter from "react-highlight-words";
-import { getnotes } from "../../API";
-import fileDownload from "js-file-download";
 
-const AssignmentSubmittedStudentTable = ({ allStudentSubmissions }) => {
+const EditableCell = ({
+  title,
+  editable,
+  children,
+  dataIndex,
+  record,
+  handleSave,
+  ...restProps
+}) => {
+  const [editing, setEditing] = useState(false);
+  const inputRef = useRef(null);
+  const form = Form.useFormInstance();
+
+  const toggleEdit = () => {
+    setEditing(!editing);
+    form.setFieldsValue({
+      [dataIndex]: record[dataIndex],
+    });
+  };
+
+  const save = async () => {
+    try {
+      const values = await form.validateFields();
+      toggleEdit();
+      handleSave({ ...record, ...values });
+    } catch (errInfo) {
+      console.log("Save failed:", errInfo);
+    }
+  };
+
+  let childNode = children;
+
+  if (editable) {
+    childNode = editing ? (
+      <Form.Item
+        style={{
+          margin: 0,
+        }}
+        name={dataIndex}
+        rules={[
+          {
+            required: true,
+            message: `${title} is required.`,
+          },
+        ]}
+      >
+        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+      </Form.Item>
+    ) : (
+      <div
+        className="editable-cell-value-wrap"
+        style={{
+          paddingRight: 24,
+        }}
+        onClick={toggleEdit}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  return <td {...restProps}>{childNode}</td>;
+};
+
+const IndividualClassResultAddingModel = ({ studentResultList, setStudentResultList }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+  const [form] = Form.useForm();
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -30,19 +89,6 @@ const AssignmentSubmittedStudentTable = ({ allStudentSubmissions }) => {
     clearFilters();
     setSearchText("");
   };
-
-
-  const handleDownloadSubmissionSingleStudent=async(submissionInfo)=>{
-    try {
-      const download = await getnotes(submissionInfo?.submisionDoc);
-      if (download.status == 200) {
-        fileDownload(download.data,submissionInfo?.submisionDoc);
-      }
-    } catch (error) {
-      message.error("single student submission downloading error!")
-      console.log("single student submission downloading error!");
-    }
-  }
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -146,64 +192,54 @@ const AssignmentSubmittedStudentTable = ({ allStudentSubmissions }) => {
         text
       ),
   });
+
+  const handleSave = (row) => {
+    const newData = [...studentResultList];
+    const index = newData.findIndex((item) => row.key === item.key);
+    if (index > -1) {
+      const item = newData[index];
+      newData.splice(index, 1, {
+        ...item,
+        ...row,
+      });
+      setStudentResultList(newData);
+    } else {
+      newData.push(row);
+      setStudentResultList(newData);
+    }
+  };
+
   const columns = [
-    {
-      title: "",
-      dataIndex: "photoName",
-      key: "photoName",
-      width: "5%",
-      render: (fname) => (
-        <div className="flex items-center">
-          <Avatar
-            className="scalar-cardlg"
-            style={{ backgroundColor: "#87d068" }}
-            icon={
-              fname &&
-              fname.split(")")[0] &&
-              fname.split(")")[0] !== "" &&
-              fname.split(")")[0] != null &&
-              fname.split(")")[0] != "null" ? (
-                <img src={`http://localhost:5000/${fname.split(")")[0]}`} />
-              ) : (
-                fname.split("(")[1].substring(0, 1)
-              )
-            }
-          />
-        </div>
-      ),
-    },
     {
       title: "UserID",
       dataIndex: "UserID",
       key: "UserID",
-      width: "5%",
+      width: "10%",
       ...getColumnSearchProps("UserID"),
-      sorter: (a, b) => a.UserID.length - b.UserID.length,
-      sortDirections: ["descend", "ascend"],
     },
     {
       title: "First Name",
       dataIndex: "firstName",
       key: "firstName",
-      width: "10%",
+      width: "15%",
       ...getColumnSearchProps("firstName"),
-      sorter: (a, b) => a.lname.length - b.lname.length,
+      sorter: (a, b) => a.firstName.length - b.firstName.length,
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Last Name",
       dataIndex: "lastName",
       key: "lastName",
-      width: "10%",
+      width: "15%",
       ...getColumnSearchProps("lastName"),
-      sorter: (a, b) => a.lname.length - b.lname.length,
+      sorter: (a, b) => a.lastName.length - b.lastName.length,
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
-      width: "15%",
+      width: "20%",
       ...getColumnSearchProps("email"),
     },
     {
@@ -213,41 +249,63 @@ const AssignmentSubmittedStudentTable = ({ allStudentSubmissions }) => {
       ...getColumnSearchProps("phoneno"),
     },
     {
-      title: "Submission Date",
-      dataIndex: "submissionDate",
-      key: "submissionDate",
-      ...getColumnSearchProps("submissionDate"),
+      title: "Mark/Result",
+      dataIndex: "mark",
+      key: "mark",
+      width: "15%",
+      editable: true,
+      ...getColumnSearchProps("mark"),
     },
     {
-      title: "Submission Time",
-      dataIndex: "submissionTime",
-      key: "submissionTime",
-      ...getColumnSearchProps("submissionTime"),
+      title: "Feedback",
+      dataIndex: "markFeedback",
+      key: "markFeedback",
+      width: "25%",
+      editable: true,
+      ...getColumnSearchProps("markFeedback"),
     },
-    {
-      title: "Action",
-      dataIndex: "userStatus",
-
-      key: "userStatus",
-      render: (pic, rowData) => {
-        return (
-          <div className="w-full flex flex-row">
-            <Tag onClick={()=>handleDownloadSubmissionSingleStudent(rowData)} className="scalar-card flex flex-row w-full text-center  bg-green-600 text-white font-medium hover:bg-green-700 ">
-              Download
-
-
-            </Tag>
-          </div>
-        );
-      },
-    },
-
   ];
+
+  const mergedColumns = columns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (record) => ({
+        record,
+        editable: col.editable,
+        dataIndex: col.dataIndex,
+        title: col.title,
+        handleSave,
+      }),
+    };
+  });
+
   return (
     <>
-      <Table pagination={{pageSize:3}}  columns={columns} dataSource={allStudentSubmissions} />
+    <div className="w-full  p-2 rounded-md bg-red-100 my-1 font-medium text-[12px]">
+        <p>You can double click on the mark/result tab and feedback tab to edit curresponding marks</p>
+        <p>Please make sure to save result before closing the result adding panel</p>
+        <p>sd</p>
+    </div>
+      <Form form={form} component={false}>
+        <Table
+          pagination={{ pageSize: 6 }}
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+          bordered
+          dataSource={studentResultList}
+          columns={mergedColumns}
+          rowClassName="editable-row"
+        />
+      </Form>
+      
     </>
   );
 };
 
-export default AssignmentSubmittedStudentTable;
+export default IndividualClassResultAddingModel;

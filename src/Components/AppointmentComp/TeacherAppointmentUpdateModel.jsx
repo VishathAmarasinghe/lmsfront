@@ -39,13 +39,17 @@ const TeacherAppointmentUpdateModel = ({
     time: "",
     additionalInfo: "",
     appointmentID: selectedAppointment?.appointmentID,
+    parentPhoneNo:selectedAppointment?.parentPhoneNo,
+    title:selectedAppointment?.title,
+    senderID:selectedAppointment?.teacherID,
+    receiverID:selectedAppointment?.parentID
   });
 
   useEffect(() => {
     if (openeditingDrawer == true) {
       console.log("came here opend");
       setUpddateState(false);
-      setAppointmentConfirmData({...appoinmentConfirmData,appointmentID:selectedAppointment?.appointmentID})
+      setAppointmentConfirmData({...appoinmentConfirmData,appointmentID:selectedAppointment?.appointmentID,parentPhoneNo:selectedAppointment?.parentPhoneNo,title:selectedAppointment?.title,senderID:selectedAppointment?.teacherID, receiverID:selectedAppointment?.parentID})
       fetchClassesRelatedToBothTeacherAndStudent();
     }
   }, [openeditingDrawer]);

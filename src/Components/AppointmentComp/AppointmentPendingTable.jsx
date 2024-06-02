@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { SearchOutlined } from "@ant-design/icons";
-import { Avatar, Button, Input, Space, Table, Tag,Alert, message } from "antd";
+import { DeleteFilled, SearchOutlined } from "@ant-design/icons";
+import { Avatar, Button, Input, Space, Table, Tag,Alert, message, Popconfirm } from "antd";
 import Highlighter from "react-highlight-words";
 
 
 import { useDispatch } from "react-redux";
 import TeacherAppointmentUpdateModel from "./TeacherAppointmentUpdateModel";
+import { deleteAppoinment } from "../../API";
+import { setPendingAppointments } from "../../Actions/appointments";
+import dayjs from "dayjs";
 
 
 
@@ -33,6 +36,20 @@ const AppointmentPendingTable = ({appointment}) => {
     setSelectedAppointment(rowdata);
     setOpeneditingDrawer(true);
     
+  }
+
+
+  const deleteOverDueAppoinemnt=async(rowData)=>{
+    try {
+      const deleteResult=await deleteAppoinment(rowData?.appointmentID);
+      if (deleteResult.status==200) {
+        message.success("Appintment deleted Successfully!")
+        dispatch(setPendingAppointments(JSON.parse(localStorage.getItem("profile"))?.result?.UserID));
+      }
+    } catch (error) {
+      console.log("error ",error);
+      message.error("Overdue Appointment Deleting Error!")
+    }
   }
 
 
@@ -153,36 +170,51 @@ const AppointmentPendingTable = ({appointment}) => {
       title: "AppointmentID",
       dataIndex: "appointmentID",
       key: "appointmentID",
-      width: "20%",
+      width: "10%",
       ...getColumnSearchProps("AppointmentID"),
-      sorter: (a, b) => a.UserID.length - b.UserID.length,
+      sorter: (a, b) => {
+        const numA = parseInt(a.appointmentID.replace(/^\D+/g, ''), 10);
+        const numB = parseInt(b.appointmentID.replace(/^\D+/g, ''), 10);
+        return numA - numB;
+      },
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Publish Date",
       dataIndex: "publishdate",
       key: "publishdate",
-      width: "20%",
+      width: "10%",
       ...getColumnSearchProps("publishdate"),
-      sorter: (a, b) => a.firstName.length - b.firstName.length,
+      sorter: (a, b) => {
+        const dateA = dayjs(a.publishdate);
+        const dateB = dayjs(b.publishdate);
+        return dateA.isBefore(dateB) ? -1 : dateA.isAfter(dateB) ? 1 : 0;
+      },
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Parent Name",
       dataIndex: "parentName",
       key: "parentName",
-      width: "20%",
+      width: "15%",
       ...getColumnSearchProps("parentName"),
       sorter: (a, b) => {
-        if (a.lastName !== null && b.lastName !== null) {
-          return a.lastName.length - b.lastName.length;
+        if (a.parentName !== null && b.parentName !== null) {
+          return a.parentName.length - b.parentName.length;
         } else {
-          if (a.lastName === null && b.lastName === null) return 0;
-          if (a.lastName === null) return 1;
+          if (a.parentName === null && b.parentName === null) return 0;
+          if (a.parentName === null) return 1;
           return -1;
         }
       },
       sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Parent Phone No",
+      dataIndex: "parentPhoneNo",
+      key: "parentPhoneNo",
+      width: "15%",
+      ...getColumnSearchProps("parentPhoneNo"),
     },
    
     {
@@ -191,6 +223,49 @@ const AppointmentPendingTable = ({appointment}) => {
       key: "studentName",
       width: "20%",
       ...getColumnSearchProps("studentName"),
+    },
+    {
+      title: "Status",
+      dataIndex: "currentStatus",
+      key: "currentStatus",
+      width: "15%",
+      ...getColumnSearchProps("currentStatus"),
+      render:(datas,rowData)=>{
+        return datas=="Pending"?(
+         <Tag className={`w-[100%] font-medium text-center bg-yellow-600 hover:bg-yellow-700 text-white`}>
+           Pending
+         </Tag>
+        ):datas=="Overdue"?
+        (
+          <div className="w-full flex flex-row">
+          <Tag  className={`w-[100%] font-medium text-center bg-red-600 hover:bg-red-700 text-white`}>
+          Overdue
+        </Tag>
+        <Popconfirm
+            title="Delete Overdue Appointment"
+            description="Are you sure to delete the overdue appointment?"
+            onConfirm={()=>deleteOverDueAppoinemnt(rowData)}
+            okType="default"
+            okButtonProps={{
+              className: "bg-blue-500 hover:bg-blue-600 text-white",
+            }}
+            placement="left"
+            okText="Yes"
+            cancelText="No"
+          >
+        <Tag color="red">
+          <DeleteFilled />
+        </Tag>
+        </Popconfirm>
+        </div>
+        ):datas=="Upcomming"?
+        (
+          <Tag color="green" className={`w-[100%] font-medium text-center bg-blue-600 hover:bg-blue-700 text-white`}>
+          Upcomming
+        </Tag>
+        ):<></>
+
+       }
     },
     {
       title:"Confirmation",
@@ -207,7 +282,7 @@ const AppointmentPendingTable = ({appointment}) => {
    
   ];
   return (
-    <div className="w-full mt-2">
+    <div className="w-full p-2 mt-2">
         <TeacherAppointmentUpdateModel selectedAppointment={selectedAppointment} setSelectedAppointment={setSelectedAppointment} openeditingDrawer={openeditingDrawer} setOpeneditingDrawer={setOpeneditingDrawer}/>
       <Table columns={columns} dataSource={formattedData} pagination={{pageSize:7}}  />
 
