@@ -20,6 +20,7 @@ import {
   get_all_grades,
   get_all_halls,
   get_all_subjects,
+  get_classes_by_teacher,
   get_classs_with_halls_and_days,
   newClass,
   selectedClass,
@@ -30,6 +31,7 @@ import { getActivatedAllHalls, getClassesByTeacher, getCreatedZoomMeeting, getSp
 import { salaryValidation, stringValidationWithLenght } from "../../Utils/Validations";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import GradeAddingModel from "./GradeAddingModel";
 
 const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }) => {
   const teacherID = JSON.parse(localStorage.getItem("profile"))?.result?.UserID;
@@ -45,6 +47,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
   const [classData, setClassData] = useState(null);
   const [errorValidator,setErrorValidator]=useState(null);
   const [meetingLink,setMeetingLink]=useState(null);
+  const [gradeAddingModelOpen,setGradeAddingModelOpen]=useState(false);
   const {classID}=useParams();
   const dispatch=useDispatch();
 
@@ -175,12 +178,13 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
         classData[value] == null ||
         classData[value] == undefined
       ) {
-        if (classData?.additionalInfo[value] == "" ||
-        classData?.additionalInfo[value] == null ||
-        classData?.additionalInfo[value] == undefined) {
-          message.error(`please fill mandatory columns (${value}) `);
-          errorStatus = false;
-        }
+        // if (classData?.additionalInfo[value] == "" ||
+        // classData?.additionalInfo[value] == null ||
+        // classData?.additionalInfo[value] == undefined) {
+          
+        // }
+        message.error(`please fill mandatory columns (${value}) `);
+        errorStatus = false;
         
       }
     }
@@ -205,7 +209,8 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
       const creatinResult = await newClass(classData);
       console.log("class creation result ", creatinResult);
       if (creatinResult.status==200) {
-        notification.success("class Created successfully")
+        notification.success({message:"class Created successfully",description:"Your class Created staff can add new students now!"})
+        dispatch(get_classes_by_teacher(teacherID))
       }else{
         notification.error("Class Creation Error")
       }
@@ -215,6 +220,11 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
       message.error("please complete all relevent details");
     }
   };
+
+
+  const handleOpenGradeAddingModel=()=>{
+    setGradeAddingModelOpen(true);
+  }
 
 
 
@@ -302,7 +312,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
 
   const handleOnlinePhysicalMode = (mode) => {
     setOnlineMode(mode);
-    setClassData({ ...classData, classMode: mode ? "online" : "physical" });
+    setClassData({ ...classData, ClassMode: mode ? "online" : "physical" });
   };
 
   return (
@@ -333,7 +343,9 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
         <SubjectAddingDrawer
           subjectAddingDrawerOpen={subjectAddingDrawerOpen}
           setSubjectAddingDrawerOpen={setSubjectAddingDrawerOpen}
+          fetch_grades_subjects_halls={fetch_grades_subjects_halls}
         />
+        <GradeAddingModel fetch_grades_subjects_halls={fetch_grades_subjects_halls} gradeAddingDrawerOpen={gradeAddingModelOpen} setGradeAddingDrawer={setGradeAddingModelOpen}/>
         <Form
           layout="vertical"
           //   onFinish={handleSubmitNewClassAccount}
@@ -383,7 +395,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col span={12} >
               <Form.Item
                 
                 label="Select Grade"
@@ -394,6 +406,8 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
                   },
                 ]}
               >
+                <Row gutter={16}>
+                <Col span={16}>
                 <Select
                 name="gradeID"
                 value={classData?.gradeID}
@@ -402,7 +416,18 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
                   }
                   options={allgrades}
                 />
+                </Col>
+                <Col span={8}>
+                <button
+                      onClick={handleOpenGradeAddingModel}
+                      className="bg-blue-600 p-2 rounded-md text-white"
+                    >
+                      Add new Grade
+                </button>
+                </Col>
+                </Row>
               </Form.Item>
+              
             </Col>
             <Col span={12}>
               <Form.Item
@@ -474,7 +499,7 @@ const ClassAddingModel = ({ addingCompOpen, setAddingCompOpen,classEditingData }
                   },
                 ]}
               >
-               <Input name="ClassFee" onChange={handleFormValuesChange} value={classData?.classFee}  placeholder="Please enter class fee" />
+               <Input name="classFee" onChange={handleFormValuesChange} value={classData?.classFee}  placeholder="Please enter class fee" />
               </Form.Item>
             </Col>
           </Row>

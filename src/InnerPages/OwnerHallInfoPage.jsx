@@ -20,6 +20,9 @@ const OwnerHallInfoPage = () => {
   },[])
 
 
+  
+
+
 
   const fetchHallInfomation=async()=>{
     try {

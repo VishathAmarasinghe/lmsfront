@@ -41,7 +41,7 @@ const ClassPayments = () => {
           Class Fees Payment
         </h1>
       </div>
-      <div className="w-[95%] bg-white h-[90%] border-2 border-red-600 flex flex-row lg:flex-row justify-between rounded-xl  p-1 shadow-xl ring-1 ring-gray-300">
+      <div className="w-[95%] bg-white h-[90%]  flex flex-row lg:flex-row justify-between rounded-xl  p-1 shadow-xl ring-1 ring-gray-300">
         <div className=' shadow-xl p-2 rounded-xl  w-[58%]'>
           <StudentScanOrSearchCard ref={studentScanOrSeachCardRef} selectedStudent={selectedStudent} setSelectedStudent={setSelectedStudent} />
         </div>

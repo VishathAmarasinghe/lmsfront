@@ -26,8 +26,10 @@ const HallDataEditingDrawer = ({
   const [hallData, setHallData] = useState(null);
   const [editing, setEditing] = useState(false);
   const [overallValidateError,setOverallValidateError]=useState({});
+  const [loading,setLoading]=useState(false);
 
   useEffect(() => {
+    console.log("selected Hall data is ",selectedHall);
     if (selectedHall != null) {
       setHallData({ ...selectedHall });
     }
@@ -35,7 +37,7 @@ const HallDataEditingDrawer = ({
     if (hallDrawerOpen?.task == "New") {
       setEditing(true);
     }
-  }, [selectedHall]);
+  }, [selectedHall,hallDrawerOpen?.openState]);
 
 
   
@@ -72,7 +74,7 @@ const HallDataEditingDrawer = ({
     }
     const requiredcolumns=["hallName","seatCount","ACtype"]
     for(const value of requiredcolumns){
-      if (userDetails[value]=="" || userDetails[value]==null || userDetails[value]==undefined) {
+      if (hallData[value]=="" || hallData[value]==null || hallData[value]==undefined) {
         message.error("please fill mandatory columns")
         errorStatus=false;
       }
@@ -86,6 +88,7 @@ const HallDataEditingDrawer = ({
   const handleUpdateProfile = async () => {
     console.log("added ", hallData);
     try {
+      setLoading(true);
       if (checkValidationStatusToSubmit()) {
         if (hallDrawerOpen?.task == "New") {
           console.log("creation came here");
@@ -111,6 +114,8 @@ const HallDataEditingDrawer = ({
     } catch (error) {
       message.error("Hall data updating error!")
       console.log("error ",error);
+    }finally{
+      setLoading(false)
     }
     
   };
@@ -178,14 +183,15 @@ const HallDataEditingDrawer = ({
             </ConfigProvider>
           </div>
           {editing || hallDrawerOpen.task == "New" ? (
-            <button
+            <Button
+            loading={loading}
               data-aos="fade-left"
               data-aos-duration="1000"
               onClick={handleUpdateProfile}
               className="bg-blue-700 px-3  py-1 ml-2 hover:bg-blue-800 text-white font-medium rounded-lg"
             >
               {hallDrawerOpen.task == "Update" ? "Update" : "Submit New"} Hall
-            </button>
+            </Button>
           ) : (
             <></>
           )}

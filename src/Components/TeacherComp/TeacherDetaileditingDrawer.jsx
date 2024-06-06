@@ -44,6 +44,7 @@ const TeacherDetaileditingDrawer = ({
   const [profilePicture, setProfilePicture] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [creationLoading,setCreationLoading]=useState(false);
   const [overallValidateError,setOverallValidateError]=useState({});
   
 
@@ -221,14 +222,14 @@ const TeacherDetaileditingDrawer = ({
 
   const handleUpdateProfile = async () => {
     try {
-      setLoading(true);
+      setCreationLoading(true)
       if (checkValidationStatusToSubmit()) {
         const updationResult = await updateFullUserInformation(userDetails);
       console.log("user updation Result ", updationResult);
       if (updationResult.status == 200) {
         message.success("User Successfully Updated!");
         setEditing(false);
-        setLoading(false);
+        setCreationLoading(false)
         if (teacherStatus == "owner") {
           fetchUserInformation(selectedTeacherData.UserID);
         } else {
@@ -236,16 +237,16 @@ const TeacherDetaileditingDrawer = ({
         }
         onClose();
       } else {
-        setLoading(false);
+        setCreationLoading(false);
         message.error(updationResult.data);
       }
       }else{
-        setLoading(false);
+        setCreationLoading(false)
         message.error("please check input errors andn empty columns!")
       }
       
     } catch (error) {
-      setLoading(false);
+      setCreationLoading(false)
       console.log("error ", error);
       message.error("User Details Updation Error!");
     }
@@ -253,27 +254,27 @@ const TeacherDetaileditingDrawer = ({
 
   const createNewProfile = async () => {
     try {
-      setLoading(true);
+      setCreationLoading(true);
       console.log("user Details ", userDetails);
       if (checkValidationStatusToSubmit()) {
         const createResult = await createNewUser(userDetails);
       console.log("user creation Result ", createResult);
       if (createResult.status == 200) {
-        setLoading(false);
+        setCreationLoading(false)
         message.success("User Successfully Created!");
         setEditing(false);
         onClose();
       } else {
-        setLoading(false);
+        setCreationLoading(false)
         message.error(createResult.data);
       }
       }else{
-        setLoading(false);
+        setCreationLoading(false)
         message.error("please check input errors andn empty columns!")
       }
       
     } catch (error) {
-      setLoading(false);
+      setCreationLoading(false)
       console.log("error ", error);
       message.error("New User Creation Error!");
     }
@@ -329,39 +330,48 @@ const TeacherDetaileditingDrawer = ({
               </ConfigProvider>
             </div>
             {editing && openeditingDrawer.task == "Update" ? (
-              <button
+                <div 
                 data-aos="fade-left"
                 data-aos-duration="1000"
+                >
+              <Button
+              loading={creationLoading}
                 onClick={handleUpdateProfile}
                 className="bg-blue-700 px-3  py-1 ml-2 hover:bg-blue-800 text-white font-medium rounded-lg"
               >
                 Update Profile
-              </button>
+              </Button>
+              </div>
             ) : (
               <></>
             )}
             {openeditingDrawer.task == "Verify" ? (
+               <div 
+               data-aos="fade-left"
+               data-aos-duration="1000"
+               >
               <Button
-              loading={loading}
-                data-aos="fade-left"
-                data-aos-duration="1000"
+              loading={creationLoading}
+
                 onClick={handleUpdateProfile}
                 className="bg-blue-700 px-3  py-1 ml-2 hover:bg-blue-800 text-white font-medium rounded-lg"
               >
                 Verify Profile
               </Button>
+              </div>
             ) : (
               <></>
             )}
             {openeditingDrawer.task == "Create" ? (
-              <button
-                data-aos="fade-left"
-                data-aos-duration="1000"
+              <div data-aos="fade-left" data-aos-duration="1000">
+              <Button
+              loading={creationLoading}
                 onClick={createNewProfile}
                 className="bg-blue-700 px-3  py-1 ml-2 hover:bg-blue-800 text-white font-medium rounded-lg"
               >
                 Create Profile
-              </button>
+              </Button>
+              </div>
             ) : (
               <></>
             )}

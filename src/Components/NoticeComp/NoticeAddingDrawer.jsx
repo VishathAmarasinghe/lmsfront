@@ -168,7 +168,7 @@ const NoticeAddingDrawer = ({
             (announcementData.audience == "classStudents" || announcementData.audience == "classStudentsParents" || announcementData.audience == "ClassParents") && announcementData.classGroup.length!=0
           ) {
             notification.info({message:"Announcement is Processing",description:"Annoucement is sending to the corresponding users"})
-            setNoticeAddingDrawerOpen(false);
+            
             const announcementResult = await createNewAnnouncement(
               announcementData
             );
@@ -180,6 +180,8 @@ const NoticeAddingDrawer = ({
                 message: "Announcement Created successfully!",
                 description: "Announcement will be appear in others interfaces",
               });
+              setNoticeAddingDrawerOpen(false);
+
             } else {
               notification.error({
                 message: "Announcement Creation Error!",
@@ -187,6 +189,25 @@ const NoticeAddingDrawer = ({
               });
             }
           }else{
+            const announcementResult = await createNewAnnouncement(
+              announcementData
+            );
+            
+            
+            console.log("annoucment Result  ", announcementResult);
+            if (announcementResult.status == 200) {
+              notification.success({
+                message: "Announcement Created successfully!",
+                description: "Announcement will be appear in others interfaces",
+              });
+              setNoticeAddingDrawerOpen(false);
+
+            } else {
+              notification.error({
+                message: "Announcement Creation Error!",
+                description: "Please try again later.",
+              });
+            }
             message.error("you didnt select any class")
           }
 
@@ -393,7 +414,7 @@ const NoticeAddingDrawer = ({
             <Row gutter={16}>
               <Col span={24}>
                 <FormItem label="Select Mode">
-                  <div className="border-2 border-green-500 grid grid-cols-2">
+                  <div className=" grid grid-cols-2">
                     {sending_Mode.map((modes, index) => (
                       <Tag
                         key={index}

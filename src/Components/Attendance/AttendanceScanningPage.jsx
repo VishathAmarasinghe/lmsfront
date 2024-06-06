@@ -164,7 +164,7 @@ const AttendanceScanningPage = ({selectedClass, setSelectedClass,smsNotification
   const arrangeStudentsToSearch = async () => {
     try {
       const studentResult = await attendanceVerfiicationOfStudentsInclass(selectedClass?.classID);
-      console.log(studentResult.data);
+      console.log("attendance verified students ",studentResult.data);
       setOptionStudentArray(
         studentResult.data.map((student) => ({
           value: `${student.studentID}`,

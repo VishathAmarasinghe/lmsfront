@@ -55,6 +55,7 @@ const OwnerClassDetailsShowerModel = ({
                 photoName: teacher?.photo + ")" + teacher?.firstName,
               })
             );
+            console.log("student Array ",studentArray);
             setStudents(studentArray);
             setTeachers(teacherArray);
           }
@@ -105,7 +106,7 @@ const OwnerClassDetailsShowerModel = ({
         </Button>,
       ]}
     >
-      <div className="w-full border-2 border-red-500 ">
+      <div className="w-full  ">
         <ConfigProvider
           theme={{
             components: {
@@ -122,7 +123,7 @@ const OwnerClassDetailsShowerModel = ({
             onChange={(value) => handleSegmentChanging(value)}
           />
         </ConfigProvider>
-        <div className="w-full border-blue-500 border-2">
+        <div className="w-full ">
           {selectedSegment == "General Info" ? (
             <div className="w-full h-[]">
               <OwnerClassDetailDescription selectedClass={selectedClass} />

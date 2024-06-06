@@ -3,17 +3,38 @@ import TextArea from "antd/es/input/TextArea";
 import React, { useState } from "react";
 import { subjectMedium } from "../../Utils/defaultValues";
 import { stringValidation, stringValidationWithLenght } from "../../Utils/Validations";
+import { addNewSubject } from "../../API";
 
-const SubjectAddingDrawer = ({ subjectAddingDrawerOpen, setSubjectAddingDrawerOpen }) => {
+const SubjectAddingDrawer = ({ subjectAddingDrawerOpen, setSubjectAddingDrawerOpen,fetch_grades_subjects_halls }) => {
   const [validationChecker,setValidationChecker]=useState(null);
   const [subjectData,setSubjectData]=useState(null);
+  const [loading,setLoading]=useState(false);
+
+
   const handleCloseDrawer = () => {
     setSubjectAddingDrawerOpen(false);
+    setSubjectData(null);
   };
 
   const handleSaveSubject=async()=>{
     try {
-      
+      if (checkValidationStatusToSubmit()) {
+        try {
+          setLoading(true);
+          const subjectCreationResult=await addNewSubject(subjectData);
+          if (subjectCreationResult.status==200) {
+            message.success("Subject Added Successfully")
+          }
+          
+        } catch (error) {
+          message.error("Subject Adding Error!")
+          console.log("error ",error);
+        }finally{
+          fetch_grades_subjects_halls();
+          setLoading(false);
+          handleCloseDrawer();
+        }
+      }
     } catch (error) {
       console.log("error ",error);
       message.error("New Subject adding error!")
@@ -25,6 +46,37 @@ const SubjectAddingDrawer = ({ subjectAddingDrawerOpen, setSubjectAddingDrawerOp
     setSubjectData({...subjectData,[e.target.name]:e.target.value});
     handleValidationError(e);
   }
+
+
+  const checkValidationStatusToSubmit = () => {
+    let errorStatus = true;
+    console.log("overall validate error ",validationChecker);
+    console.log("subject data ",subjectData);
+    for (const key in validationChecker) {
+      if (validationChecker[key] !== "") {
+        return false;
+      }
+    }
+    const requiredcolumns = [
+      "subjectDescription",
+      "subjectName",
+
+    ];
+    for (const value of requiredcolumns) {
+      if (
+        subjectData[value] == "" ||
+        subjectData[value] == null ||
+        subjectData[value] == undefined
+      ) {
+          message.error("please fill mandatory columns ");
+          errorStatus = false;
+        }
+    }
+    return errorStatus;
+  };
+
+
+
 
 
   const handleValidationError=(e)=>{
@@ -48,8 +100,8 @@ const SubjectAddingDrawer = ({ subjectAddingDrawerOpen, setSubjectAddingDrawerOp
         <Button key="cancel" onClick={handleCloseDrawer}>
           Cancel
         </Button>,
-        <Button key="submit" className="bg-blue-500 hover:bg-blue-600 text-white" onClick={handleCloseDrawer}>
-          OK
+        <Button key="submit" loading={loading} className="bg-blue-500 hover:bg-blue-600 text-white" onClick={handleSaveSubject}>
+          Add Subject
         </Button>,
       ]}
     >
@@ -102,7 +154,7 @@ const SubjectAddingDrawer = ({ subjectAddingDrawerOpen, setSubjectAddingDrawerOp
                 },
               ]}
             >
-              <TextArea   name="subjectDescription" placeholder="Please enter subject description" />
+              <TextArea value={subjectData?.subjectDescription} onChange={handleInputChange}   name="subjectDescription" placeholder="Please enter subject description" />
             </Form.Item>
 
         </Col>

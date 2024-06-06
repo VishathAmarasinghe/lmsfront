@@ -51,14 +51,16 @@ const RegistrationFormTwo = ({
         
         <Tag onClick={handleCaptureModelOpen} className="flex flex-row  justify-center items-center" color="cyan">Take Photo Now</Tag>
         </div>
-        <p className="text-red-700 text-[12px]">Error text</p>
+        {/* <p className="text-red-700 text-[12px]">Error text</p> */}
       </div>
       <Form layout="vertical" hideRequiredMark>
       <CameraCaptureModal setuploadingImage={setuploadingImage} camaraModelVisibile={camaraModelVisibile} setCamaraModelVisible={setCamaraModelVisible}/>
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={12}  >
             <Form.Item
+            
               label="Gardiant First Name"
+              
               validateStatus={
                 errorValidator.gardientName ? "error" : "success"
               }

@@ -28,7 +28,7 @@ const OwnerAndStaffTimeTable = () => {
 
   useEffect(() => {
     if(user?.role=="teacher"){
-      fetchTeacherClassCalender();
+      fetchTeacherClassCalender(user?.UserID);
     }else if(user?.role=="student"){
       fetchStudentClassCalender();
     }else{
@@ -37,10 +37,10 @@ const OwnerAndStaffTimeTable = () => {
     
   }, []);
 
-  const fetchTeacherClassCalender = async () => {
+  const fetchTeacherClassCalender = async (userID) => {
     setLoading(true);
     try {
-      const classCalenderResult = await getClassesByTeacherCalender(user.UserID);
+      const classCalenderResult = await getClassesByTeacherCalender(userID);
 
       console.log("calender Result ", classCalenderResult?.data);
       setCalenderEvent(classCalenderResult?.data);
@@ -135,7 +135,7 @@ const OwnerAndStaffTimeTable = () => {
       </div>
 
       <div data-aos="fade-right" className="w-[95%]  bg-white h-[90%] flex flex-col items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
-        <div className="w-[95%] border-2 border-green-500 flex flex-row  mt-3">
+        <div className="w-[95%]  flex flex-row  mt-3">
           <ConfigProvider
             theme={{
               components: {

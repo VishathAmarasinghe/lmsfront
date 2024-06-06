@@ -65,14 +65,14 @@ const AddStudentToClass = () => {
           Add Student to Class
         </h1>
       </div>
-      <div className="w-[95%] h-[90%] border-2 border-red-600 flex flex-row lg:flex-row justify-around rounded-xl bg-white p-1 shadow-xl ring-1 ring-gray-300">
-        <div className='border-2 border-pink-700 w-[50%]'>
+      <div className="w-[95%] h-[90%]  flex flex-row lg:flex-row justify-around rounded-xl bg-white p-1 shadow-xl ring-1 ring-gray-300">
+        <div className=' w-[50%]'>
           <StudentScanOrSearchCard selectedStudent={selectedStudent} setSelectedStudent={setSelectedStudent} />
         </div>
-        <div className='border-2 border-green-600 w-[40%] p-2 flex flex-col justify-between'>
-        <div className='w-full  h-[90%] border-2 border-green-400'>
+        <div className=' w-[40%] p-2 flex flex-col justify-between'>
+        <div className='w-full  h-[90%] '>
           <h1 className='text-gray-500 text-[16px]'>Classes</h1>
-          <div className='grid grid-cols-2 border-2 max-h-[85%] border-red-700 w-full overflow-y-auto'>
+          <div className='grid grid-cols-2 2 max-h-[85%]  w-full overflow-y-auto'>
             {availableClasses.length === 0 || availableClasses === null ? (
               <Empty description="Class Data not available" className='text-slate-400'/>
             ) : (

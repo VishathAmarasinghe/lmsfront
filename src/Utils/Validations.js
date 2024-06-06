@@ -119,13 +119,13 @@ function PerformValidations(
       errorStatus = true;
     }
     if (!validatePhone(formData.student.phoneNo)) {
-      errors.stuPhoneNo = "Phone number should contain only 10 numbers.";
+      errors.stuPhoneNo = "078... format";
       errorStatus = true;
     }
   } else if (currentValue == 1) {
     if (!validateName(formData.parent.firstName)) {
       errors.gardientName =
-        "Last name should only contain letters and cannot be empty.";
+        "Name should only contain letters";
       errorStatus = true;
     }
     if (!validateAddress(formData.parent.NIC)) {
@@ -137,7 +137,7 @@ function PerformValidations(
       errorStatus = true;
     }
     if (!validatePhone(formData.parent.phoneNo)) {
-      errors.gardientPhoneNo = "Phone number should contain only 10 numbers.";
+      errors.gardientPhoneNo = "078.. format";
       errorStatus = true;
     }
   }
@@ -265,6 +265,18 @@ const stringEmptyValidation = (stringValue) => {
 };
 
 
+const stringLengthValidation=(inputString,maxLength)=>{
+  if (inputString.length > maxLength) {
+    return `Cannot exceed ${maxLength} characters`;
+  }
+  if (!inputString || inputString.trim().length === 0) {
+    return "Input field is empty or contains only whitespace";
+  } 
+
+  return "";
+}
+
+
 const stringValidationWithLenght = (inputString, maxLength) => {
   const stringRegex = /^[a-zA-Z\s]*$/;
 
@@ -304,4 +316,5 @@ export {
   stringValidation,
   phoneNumberValidation,
   validateNIC,
+  stringLengthValidation
 };

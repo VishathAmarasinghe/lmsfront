@@ -38,6 +38,7 @@ const RegistrationConfirmStudentDrawer = ({
   const [parentData, setParentData] = useState([]);
   const [form] = Form.useForm(); // Initialize form instance
   const [loading, setLoading] = useState(false);
+  const [verifyLoading,setVerifyLoading]=useState(false);
   const [editing, setEditing] = useState(false);
   const [studentData, setStudentData] = useState({});
   const [profilePicture, setProfilePicture] = useState(null);
@@ -97,10 +98,18 @@ const RegistrationConfirmStudentDrawer = ({
 
   const updatedDataSaving = async (values) => {
     if (checkValidationStatusToSubmit()) {
-      const data =await updateUserData(values);
-      console.log("updated outcome ", data);
-      dispatch(get_pending_confirmed_students());
-      onClose();
+      try {
+        const data =await updateUserData(values);
+        console.log("updated outcome ", data);
+        dispatch(get_pending_confirmed_students());
+        onClose();
+        setVerifyLoading(false);
+      } catch (error) {
+        console.log("error ",error);
+        message.error("Data Updating Error!");
+      }
+      setVerifyLoading(false);
+      
     }
     
   };
@@ -158,6 +167,7 @@ const RegistrationConfirmStudentDrawer = ({
   const onFinish = () => {
     const combinedParentstudent = { studentData: studentData, parentData };
     console.log("parent Data and student Data ", combinedParentstudent);
+    setVerifyLoading(true);
     updatedDataSaving(combinedParentstudent);
     // Handle form submission here
   };
@@ -281,12 +291,13 @@ const RegistrationConfirmStudentDrawer = ({
                 />
               </ConfigProvider>
             </div>
-            <button
+            <Button
+            loading={verifyLoading}
               onClick={() => onFinish()}
               className="bg-blue-700 px-2 py-1 ml-2 hover:bg-blue-800 text-white font-medium rounded-lg"
             >
               Verify
-            </button>
+            </Button>
           </Space>
         }
       >

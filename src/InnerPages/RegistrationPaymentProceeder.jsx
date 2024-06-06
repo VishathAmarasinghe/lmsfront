@@ -231,7 +231,7 @@ const RegistrationPaymentProceeder = () => {
           Registration Billing
         </h1>
       </div>
-      <div className="w-[95%]   flex flex-col lg:flex-row justify-around rounded-xl bg-white p-1 shadow-xl ring-1 ring-gray-300">
+      <div className="w-[95%] h-[90%]   flex flex-col lg:flex-row justify-around rounded-xl bg-white p-1 shadow-xl ring-1 ring-gray-300">
         <div className="w-full lg:w-1/2  flex flex-col justify-around items-center p-1 mt-1  rounded-lg">
           <div className=" w-[95%]">
             <ConfigProvider
@@ -351,7 +351,7 @@ const RegistrationPaymentProceeder = () => {
             </ConfigProvider>
           </div>
 
-          <div className="flex flex-col  w-full items-center mt-1">
+          <div className="flex flex-col  w-full items-center">
             {/* <button className="bg-blue-500 p-2 w-[96%] mb-2 text-white font-semibold hover:bg-blue-600 rounded-lg scalar-card">
               Print Card
             </button> */}

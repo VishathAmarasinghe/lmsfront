@@ -72,6 +72,7 @@ const ProfilePicUploading = ({ setuploadingImage,existingImageUrl }) => {
     <>
       <ImgCrop rotationSlider>
         <Upload
+        
           accept="image/png, image/jpeg"
           listType="picture-card"
           fileList={fileList}

@@ -250,7 +250,7 @@ const StaffTable = ({fetchStaffInfo, StaffData, setStaffData,openeditingDrawer, 
       key: "userStatus",
       render: (pic, rowData) => {
         return pic == "activated" ? (
-          <div className="border-2 border-red-400 w-full flex flex-row justify-between">
+          <div className=" w-full flex flex-row justify-between">
             <Tag
               className="scalar-card flex flex-row w-[50%] text-center  bg-yellow-600 text-white font-medium hover:bg-yellow-700 "
               onClick={() => drawerConfigOpening(rowData, "Updated")}
@@ -281,7 +281,7 @@ const StaffTable = ({fetchStaffInfo, StaffData, setStaffData,openeditingDrawer, 
             </Popconfirm>
           </div>
         ) : pic == "deactivated" ? (
-          <div className="border-2 border-red-400 w-full items-center justify-center">
+          <div className=" w-full items-center justify-center">
             <Popconfirm
               title="Reactivate User"
               description="Are you sure to reactivate this user?"
@@ -304,7 +304,7 @@ const StaffTable = ({fetchStaffInfo, StaffData, setStaffData,openeditingDrawer, 
             </Popconfirm>
           </div>
         ) : (
-          <div className="border-2 border-red-400 w-full items-center justify-center">
+          <div className=" w-full items-center justify-center">
             <Tag
               onClick={() => drawerConfigOpening(rowData, "Verify")}
               color="green"

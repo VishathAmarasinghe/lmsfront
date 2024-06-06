@@ -38,11 +38,16 @@ import TeacherDashboard from "../../InnerPages/TeacherDashboard";
 import ParentStudentPanel from "../../InnerPages/ParentStudentPanel";
 import ParentAttendanceShower from "../../InnerPages/ParentAttendanceShower";
 import ParentPaymentshower from "../../InnerPages/ParentPaymentshower";
+import { useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../Actions/auth";
+import { jwtDecode } from "jwt-decode";
 
 
 
 
 const pageChanger = (pageChanger) => {
+  const user=JSON.parse(localStorage.getItem("profile"));
   console.log("aasa ", pageChanger);
   switch (pageChanger) {
     case "1":
@@ -173,7 +178,16 @@ const pageChanger = (pageChanger) => {
 const InnerPageLoader = ({ innerPageKey }) => {
   const { pageNumber } = useSelector((state) => state.page);
   const [renderingPage,SetRenderingPage]=useState(<></>);
+  const user=JSON.parse(localStorage.getItem("profile"));
   useEffect(()=>{
+    const token=user?.token;
+
+    if (token) {
+      const decodedToken=jwtDecode(token);
+      if (decodedToken.exp*1000<new Date().getTime()) {
+        dispatch(logout())
+      }
+    }
       SetRenderingPage(pageChanger(pageNumber));
   },[pageNumber])
   return <>{renderingPage}</>;
@@ -181,3 +195,6 @@ const InnerPageLoader = ({ innerPageKey }) => {
 };
 
 export default InnerPageLoader;
+
+
+

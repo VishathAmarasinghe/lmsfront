@@ -52,7 +52,7 @@ const PageStructure = () => {
 
   useEffect(()=>{
     const userValue=JSON.parse(localStorage.getItem("profile"))?.result?.role;
-    setCurrentUser(userValue);
+    setCurrentUser(JSON.parse(localStorage.getItem("profile"))?.result?.role);
     console.log("current user ",userValue);
 
     if (userValue=="teacher") {

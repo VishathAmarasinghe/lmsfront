@@ -50,8 +50,8 @@ const AddStudentClassCard = ({ color, classItem,selectedStudent, newSelectedClas
         >
             <p>ClassName: {classItem?.ClassName}</p>
             <div className='flex flex-row w-full'>
-                <p className='mr-3'>Subject: {classItem?.Subject}</p>
-                <p>Grade: {classItem?.Grade}</p>
+                <p className='mr-3'> {classItem?.subjectName}</p>
+                <p> {classItem?.gradeName}</p>
             </div>
         </Tag>
     );

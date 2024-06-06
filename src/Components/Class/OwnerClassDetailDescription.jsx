@@ -61,8 +61,9 @@ const OwnerClassDetailDescription = ({selectedClass}) => {
             label: 'Class Statistics',
             children:
             <div className='w-full flex flex-row justify-around'>
-                <Statistic  className='border-2 border-[#5B6BD4] hover:bg-[#CBD3FF]  w-[45%] text-center p-2 bg-[#EBEEFF] font-medium rounded-md' valueStyle={{textAlign:"center"}} prefix={<UserOutlined />}  title="Student Count" value={selectedClass?.students.length}/>
-                <Statistic className='border-2 border-[#5B6BD4] hover:bg-[#CBD3FF] w-[45%] text-center p-2 bg-[#EBEEFF] font-medium rounded-md' valueStyle={{textAlign:"center"}} prefix={<UserOutlined />} title="Teacher Count" value={selectedClass?.teachers.length}/>
+                <Statistic  className='border-2 border-[#5B6BD4] hover:bg-[#CBD3FF]  w-[30%] text-center p-2 bg-[#EBEEFF] font-medium rounded-md' valueStyle={{textAlign:"center"}} prefix={<UserOutlined />}  title="Student Count" value={selectedClass?.students.length}/>
+                <Statistic className='border-2 border-[#5B6BD4] hover:bg-[#CBD3FF] w-[30%] text-center p-2 bg-[#EBEEFF] font-medium rounded-md' valueStyle={{textAlign:"center"}} prefix={<UserOutlined />} title="Teacher Count" value={selectedClass?.teachers.length}/>
+                <Statistic className='border-2 border-[#5B6BD4] hover:bg-[#CBD3FF] w-[30%] text-center p-2 bg-[#EBEEFF] font-medium rounded-md' valueStyle={{textAlign:"center"}} prefix={<UserOutlined />} title="Available Seats" value={selectedClass?.seatCount-selectedClass?.students.length}/>
             </div>,
         },
         

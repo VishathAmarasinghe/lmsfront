@@ -8,7 +8,7 @@ const LoginRegistration = ({actionType}) => {
   return (
     <div className='w-full h-screen border-2 overflow-auto overflow-x-hidden md:overflow-hidden    bg-[#EBEEFF]'>
    
-      <div  className='w-full z-50  h-[10%] bg-[#EBEEFF] fixed top-0  flex items-center md:justify-end justify-center'>
+      <div  className='w-full   h-[10%] bg-[#EBEEFF] fixed top-0  flex items-center md:justify-end justify-center'>
             <img src={logo} className='w-44 mx-6' alt='logo'/>
         </div>
 

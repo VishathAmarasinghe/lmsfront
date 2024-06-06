@@ -61,7 +61,7 @@ const AttendanceMarkPage = () => {
       {
         selectedClass==null?
       
-      <div className="w-[95%] bg-white h-[90%] border-2 border-red-600 flex flex-col lg:flex-col items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
+      <div className="w-[95%] bg-white h-[90%]  flex flex-col lg:flex-col items-center rounded-xl p-1 shadow-xl ring-1 ring-gray-300">
         <div className=" w-full p-5">
           <Form layout="vertical">
             <Form.Item label="Select Class">
@@ -79,7 +79,7 @@ const AttendanceMarkPage = () => {
         </div>
         </div>
         
-        <div className="w-full border-2 border-green-500 h-full flex flex-col  items-center">
+        <div className="w-full  h-full flex flex-col  items-center">
           {filteredClasses.length > 0 ? (
             <div className="w-[98%] grid grid-cols-1 lg:grid-cols-4">
               {filteredClasses.map((classItem) => (

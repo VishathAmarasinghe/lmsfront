@@ -8,18 +8,18 @@ const RegistrationBill = ({ paymentData,barCode }) => {
 
   useEffect(()=>{
     JsBarcode("#barcode2",barCode ,{
-      height:"30",
+      height:"20",
       
     });
   },[barCode])
 
 
   return (
-    <div id='registrationBillContainer' className='w-[360px] '>
+    <div id='registrationBillContainer' className='w-[340px] '>
       <div className='flex flex-col justify-center items-center w-full bg-black'>
         <h1 className='font-semibold text-[15px] text-white mt-1'>Savitha Education Institute</h1>
         <h1 className='text-white'>Homagama</h1>
-        <p className='text-white mb-1'>Tel 0112345678,0711234566</p>
+        {/* <p className='text-white mb-1'>Tel 0112345678,0711234566</p> */}
       </div>
       <div className='w-full bg-[#D9D9D9] flex flex-col justify-center items-center p-3'>
         <div className='flex flex-row w-[60%] justify-between items-center my-1'>
@@ -43,8 +43,7 @@ const RegistrationBill = ({ paymentData,barCode }) => {
           <p> Rs:{paymentData.payment.balance}</p>
         </div>
       </div>
-      <div className="w-full   flex flex-col justify-center items-center">
-            
+      <div className="w-full flex flex-col justify-center items-center">  
             <img id="barcode2"/>
           </div>
       <p className='text-center bg-[#D9D9D9]'>Generated at {`${currentDate} ${currentTime}`}</p>

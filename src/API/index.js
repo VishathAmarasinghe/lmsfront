@@ -37,6 +37,8 @@ export const getAllsubjects=()=>API.get("/classService/subjects");
 
 export const getAllGrades=()=>API.get("/classService/grades");
 
+export const addNewGrade=(gradeData)=>API.post("/classService/newGrade",gradeData);
+
 export const getAllHalls=()=>API.get("/classService/halls");
 
 
@@ -351,6 +353,9 @@ export const studentResultsByResultID=(resultID)=>API.get(`/classService/student
 export const updateResults=(resultData)=>API.patch("/classService/results",resultData);
 
 export const deleteResults=(resultID)=>API.delete("/classService/results",{data:{resultID}});
+
+
+export const getAttendanceByClassIDandTimePeriod=(timePeriod,classID)=>API.get(`/classService/attendanceForSpecificClassSpecificTimePeriod?classID=${classID}&timePeriod=${timePeriod}`);
 
 
 

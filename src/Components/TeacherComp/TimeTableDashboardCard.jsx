@@ -10,6 +10,7 @@ const TimeTableDashboardCard = ({ classData, index }) => {
         <div className='w-full flex flex-row justify-between'>
           <p className='font-medium'>{classData?.fullData?.ClassName}</p>
           <p>{classData?.fullData?.StartTime.substring(0, 5)}</p>
+          <p>{classData?.fullData?.ClassDay}</p>
         </div>
         <div className='w-full flex flex-row justify-between'>
           <p>{classData?.fullData?.subjectName}</p>

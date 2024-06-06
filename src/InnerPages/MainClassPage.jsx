@@ -24,7 +24,7 @@ const MainClassPage = () => {
       fetchStudentClasses();
     }
       console.log("teacher classes are ",classes);
-  },[])
+  },[addingCompOpen])
 
   const fetchStudentClasses=async()=>{
     const classResult=await getClassesForSelectedStudent(user.UserID);

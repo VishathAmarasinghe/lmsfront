@@ -279,7 +279,7 @@ const StaffDetailEditingDrawer = ({
         console.log("user updation Result ", updationResult);
         if (updationResult.status == 200) {
           message.success("User Successfully Updated!");
-          if (updationResult?.data?.passwordStatus==true) {
+          if (updationResult?.data?.passwordStatus==true && staffStatus!="owner") {
             dispatch(logout(navigation));
           }else{
             setEditing(false);

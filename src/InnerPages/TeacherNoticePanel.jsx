@@ -104,7 +104,7 @@ const TeacherNoticePanel = () => {
         </div>
 
         {userInfo?.role == "staff" || userInfo?.role == "owner" ? (
-          <div className="w-[95%] overflow-x-auto border-2 border-red-600">
+          <div className="w-[95%] overflow-x-auto ">
             <NoticeTable fetchAllAnnouncements={fetchAllAnnouncements} annoucementData={allAnnoucementList} />
           </div>
         ) : (
